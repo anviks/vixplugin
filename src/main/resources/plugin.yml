@@ -1,0 +1,89 @@
+name: VixPlugin
+version: '${project.version}'
+main: me.captainpotatoaim.myplugin.Initializer
+api-version: 1.19
+commands:
+  fishplz:
+    description: You could solve world hunger with all that.
+    usage: /fishplz
+  loyalsquad:
+    description: Spawn a loyal army of puppers.
+    usage: "/loyalsquad\n/loyalsquad <player>"
+  slap:
+    description: Slap everyone.
+    usage: Slap!
+  fly:
+    description: Fly.
+    usage: Fly.
+  inventory:
+    description: Open player's inventory.
+    usage: Open inventory.
+  echest:
+    description: Open player's ender chest.
+    usage: Open player's ender chest.
+  launch:
+    description: Launch player(s).
+    usage: Launch someone.
+  zoom:
+    description: Zoom forward.
+  creeper:
+    description: Something.
+  setunbreakable:
+    description: Make a block unbreakable.
+#  permissions:
+#    description: Set, get or remove permissions.
+#    usage: "/permissions set <player> <permission> <true/false>\n
+#    /permissions unset <player> <permission>\n
+#    /permissions get <player>"
+#    aliases:
+#      - perms
+#      - perm
+#      - permission
+  freeze:
+    description: Freeze a player.
+    usage: /freeze <player> <duration>
+  unfreeze:
+    description: Unfreeze a player.
+    usage: /unfreeze <player>
+  gigachest:
+    description: Open a gigachest.
+  givegrenade:
+    description: Give grenades.
+  giveexplosivearrow:
+    description: Give explosive arrows.
+  god:
+    description: Give god mode to yourself or to a player.
+    usage: "/god\n/god <player>"
+    aliases:
+      - godmode
+      - gm
+      - god-mode
+  enchantanything:
+    description: Enchant anything with any level.
+  sandbox:
+    description: Create a sandbox world.
+    usage: " /sandbox create\n
+    /sandbox create <dimension>\n
+    /sandbox join <slot/world name>\n
+    /sandbox join <slot/world name> <player>\n
+    /sandbox leave\n
+    /sandbox leave <player>\n
+    /sandbox delete <slot/world name>"
+  giverailgun:
+    description: Give railgun to yourself.
+  giveteleportarrow:
+    description: Give teleport arrows.
+  creep:
+    description: Idk
+  creep2:
+    description: vol 2
+  tp-up:
+    description: Teleport up to a random height.
+
+permissions:
+  vix.move:
+    description: Allow or deny movement.
+    default: true
+  vix.moderate:
+    description: Access to troll commands.
+    default: op
