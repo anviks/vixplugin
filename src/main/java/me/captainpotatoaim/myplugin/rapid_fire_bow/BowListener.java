@@ -1,42 +1,33 @@
 package me.captainpotatoaim.myplugin.rapid_fire_bow;
 
 import me.captainpotatoaim.myplugin.Initializer;
-import me.captainpotatoaim.myplugin.explosive_arrows.ExplosiveArrow;
 import me.captainpotatoaim.myplugin.util.Inventory;
 import me.captainpotatoaim.myplugin.util.Tagger;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.Tag;
-import org.bukkit.World;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.projectiles.ProjectileSource;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 
-import javax.swing.*;
 import java.util.*;
 
 public class BowListener implements Listener {
-    private final HashMap<UUID, Integer> drawingPlayers = new HashMap<>();
+    private final HashMap<UUID, Integer> shootingPlayers = new HashMap<>();
 
     @EventHandler
-    public void onBowDraw(PlayerInteractEvent event) {
-        Bukkit.broadcastMessage(event.getAction().toString());
-        Action action = event.getAction();
-        Player player = event.getPlayer();
-
-        if (!(action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK))) {
+    void onBowShoot(EntityShootBowEvent event) {
+        if (!(event.getEntity() instanceof Player player)) {
             return;
         }
 
@@ -60,20 +51,35 @@ public class BowListener implements Listener {
     }
 
     @EventHandler
-    public void onBowShoot(EntityShootBowEvent event) {
-        stopShooting(event.getEntity().getUniqueId());
-        Bukkit.broadcastMessage("shot");
+    void onPlayerLeave(PlayerQuitEvent event) {
+        stopShooting(event.getPlayer().getUniqueId());
     }
 
     @EventHandler
-    public void onItemChange(PlayerItemHeldEvent event) {
+    void onClick(PlayerInteractEvent event) {
+        Action action = event.getAction();
+        if (!action.equals(Action.PHYSICAL)) {
+            stopShooting(event.getPlayer().getUniqueId());
+            Bukkit.broadcastMessage("shot");
+        }
+    }
+
+    @EventHandler
+    void onPlayerDeath(PlayerDeathEvent event) {
+        stopShooting(event.getEntity().getUniqueId());
+    }
+
+    @EventHandler
+    void onItemChange(PlayerItemHeldEvent event) {
         stopShooting(event.getPlayer().getUniqueId());
         Bukkit.broadcastMessage("changed item");
     }
 
     private void stopShooting(UUID uuid) {
-        Bukkit.getScheduler().cancelTask(drawingPlayers.get(uuid));
-        drawingPlayers.remove(uuid);
+        Integer taskId = shootingPlayers.remove(uuid);
+        if (taskId != null) {
+            Bukkit.getScheduler().cancelTask(shootingPlayers.get(uuid));
+        }
     }
 
     private void shootArrows(Player player) {
@@ -98,13 +104,14 @@ public class BowListener implements Listener {
         }
 
         byte[] secret = itemArrow.getItemMeta().getPersistentDataContainer().get(Tagger.key, PersistentDataType.BYTE_ARRAY);
-        Bukkit.broadcastMessage(Arrays.toString(secret));
         ItemStack clone = itemArrow.clone();
         clone.setAmount(1);
 
         Runnable shoot = () -> {
             Projectile arrow = player.launchProjectile(arrowClass, player.getEyeLocation().getDirection());
-            player.getInventory().removeItem(clone);
+            if (!player.getInventory().removeItem(clone).isEmpty()) {
+                stopShooting(player.getUniqueId());
+            }
             player.updateInventory();
             if (secret != null) {
                 Tagger.tagEntity(arrow, secret);
@@ -112,8 +119,6 @@ public class BowListener implements Listener {
         };
 
         BukkitTask task = Bukkit.getScheduler().runTaskTimer(JavaPlugin.getPlugin(Initializer.class), shoot, 0, 2);
-        Bukkit.broadcastMessage("Task is running");
-        Bukkit.broadcastMessage(String.valueOf(task.isCancelled()));
-        drawingPlayers.put(player.getUniqueId(), task.getTaskId());
+        shootingPlayers.put(player.getUniqueId(), task.getTaskId());
     }
 }

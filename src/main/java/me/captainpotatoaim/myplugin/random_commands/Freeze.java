@@ -12,6 +12,7 @@ import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -22,8 +23,7 @@ public class Freeze implements CommandExecutor {
     public static HashMap<UUID, Integer> frozenPlayers = new HashMap<>();
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length == 0) {
             sender.sendMessage("Nothing happened.");
             return false;
@@ -63,14 +63,14 @@ public class Freeze implements CommandExecutor {
                 }
             }
 
-            int ticks = 0;
+            int ticks = duration;
 
             switch (unit) {
-                case "s" -> ticks = duration * 20;
-                case "m" -> ticks = duration * 60 * 20;
-                case "h" -> ticks = duration * 60 * 60 * 20;
-                case "d" -> ticks = duration * 24 * 60 * 60 * 20;
-                case "mo" -> ticks = duration * 30 * 24 * 60 * 60 * 20;
+                case "s": ticks *= 20;
+                case "m": ticks *= 60;
+                case "h": ticks *= 60;
+                case "d": ticks *= 24;
+                case "mo": ticks *= 30;
             }
 
             PermissionAttachment attachment = JoinMessage.permissions.get(target.getUniqueId());
@@ -82,13 +82,10 @@ public class Freeze implements CommandExecutor {
 
             int unfreezeTask = sender.getServer()
                     .getScheduler()
-                    .scheduleSyncDelayedTask(JavaPlugin.getPlugin(Initializer.class), new Runnable() {
-                @Override
-                public void run() {
-                    attachment.setPermission("vix.move", true);
-                    target.setFreezeTicks(100);
-                }
-            }, ticks);
+                    .scheduleSyncDelayedTask(JavaPlugin.getPlugin(Initializer.class), () -> {
+                        attachment.setPermission("vix.move", true);
+                        target.setFreezeTicks(100);
+                    }, ticks);
 
         } else {
 

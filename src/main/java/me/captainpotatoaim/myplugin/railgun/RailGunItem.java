@@ -9,7 +9,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class RailGunItem {
 
     public static ItemStack create() {
-
         ItemStack railGun = new ItemStack(Material.TRIDENT, 1);
         ItemMeta railGunMeta = railGun.getItemMeta();
         railGunMeta.setDisplayName(ChatColor.GRAY + "R" + ChatColor.YELLOW + "A" + ChatColor.GRAY + "I" + ChatColor.YELLOW + "L" + ChatColor.GRAY + "G" + ChatColor.YELLOW + "U" + ChatColor.GRAY + "N");

@@ -24,7 +24,6 @@ public class TpArrowLand implements Listener {
 
     @EventHandler
     public void onArrowShot(EntityShootBowEvent event) {
-
         if (event.getEntity() instanceof Player player) {
             if (player.getInventory().containsAtLeast(TeleportArrow.tpArrow(1), 1)) {
                 for (ItemStack itemStack : player.getInventory().getContents()) {

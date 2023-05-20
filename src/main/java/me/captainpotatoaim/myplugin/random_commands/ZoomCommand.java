@@ -8,6 +8,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -16,8 +17,7 @@ public class ZoomCommand implements CommandExecutor {
     public HashMap<UUID, Long> cooldowns = new HashMap<>();
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (sender.isOp() && sender instanceof final Player player) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {        if (sender.isOp() && sender instanceof final Player player) {
             int cooldownTime = 2200;
             if (cooldowns.containsKey(player.getUniqueId())) {
                 long secondsLeft = ((cooldowns.get(player.getUniqueId()) / 1000) + cooldownTime / 1000) - (System.currentTimeMillis() / 1000);

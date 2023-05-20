@@ -109,17 +109,14 @@ public class SandboxCreateCommand {
             if (!worlds.containsKey(i)) {
                 previousCreationTime = System.currentTimeMillis();
                 int slot = i;
-                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(JavaPlugin.getPlugin(Initializer.class), new Runnable() {
-                    @Override
-                    public void run() {
-                        World world = creator.createWorld();
-                        world.setTime(1000);
-                        world.setGameRule(GameRule.KEEP_INVENTORY, true);
-                        world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-                        world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
-                        worlds.put(slot, world);
-                        sender.sendMessage(ChatColor.GREEN + worlds.get(slot).getName() + " created in slot " + slot);
-                    }
+                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(JavaPlugin.getPlugin(Initializer.class), () -> {
+                    World world = creator.createWorld();
+                    world.setTime(1000);
+                    world.setGameRule(GameRule.KEEP_INVENTORY, true);
+                    world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+                    world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
+                    worlds.put(slot, world);
+                    sender.sendMessage(ChatColor.GREEN + worlds.get(slot).getName() + " created in slot " + slot);
                 }, 1);
                 return slot;
             }

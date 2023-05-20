@@ -79,6 +79,12 @@ commands:
     description: vol 2
   tp-up:
     description: Teleport up to a random height.
+  duct-tape:
+    description: Duct-tape someone.
+  grappling-hook:
+    description: Give grappling hook.
+  rapid-bow:
+    description: Give bow that rapid fires.
 
 permissions:
   vix.move:

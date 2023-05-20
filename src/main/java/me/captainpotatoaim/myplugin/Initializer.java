@@ -1,13 +1,20 @@
 package me.captainpotatoaim.myplugin;
 
+import me.captainpotatoaim.myplugin.duct_tape.DuctTape;
+import me.captainpotatoaim.myplugin.duct_tape.DuctTapeListener;
 import me.captainpotatoaim.myplugin.explosive_arrows.ExplosiveArrowLand;
 import me.captainpotatoaim.myplugin.explosive_arrows.GiveExplosiveArrow;
+import me.captainpotatoaim.myplugin.grappling_hook.GiveGrapplingHook;
+import me.captainpotatoaim.myplugin.grappling_hook.GrapplingHookListener;
 import me.captainpotatoaim.myplugin.grenade.GiveGrenade;
 import me.captainpotatoaim.myplugin.grenade.ThrownGrenade;
 import me.captainpotatoaim.myplugin.railgun.GiveRailGun;
 import me.captainpotatoaim.myplugin.railgun.TridentListener;
 import me.captainpotatoaim.myplugin.random_commands.*;
 import me.captainpotatoaim.myplugin.listeners.*;
+import me.captainpotatoaim.myplugin.rapid_fire_bow.Bow;
+import me.captainpotatoaim.myplugin.rapid_fire_bow.BowListener;
+import me.captainpotatoaim.myplugin.rapid_fire_bow.GiveBow;
 import me.captainpotatoaim.myplugin.sandbox.Inventory;
 import me.captainpotatoaim.myplugin.sandbox.SandboxJoinCommand;
 import me.captainpotatoaim.myplugin.sandbox.SandboxMainCommand;
@@ -59,6 +66,9 @@ public final class Initializer extends JavaPlugin {
         getCommand("creep").setExecutor(new CreeperPrank());
         getCommand("creep2").setExecutor(new CreeperPrankWithTp());
         getCommand("tp-up").setExecutor(new TeleportUp());
+        getCommand("duct-tape").setExecutor(new DuctTape());
+        getCommand("grappling-hook").setExecutor(new GiveGrapplingHook());
+        getCommand("rapid-bow").setExecutor(new GiveBow());
 
         getServer().getPluginManager().registerEvents(new DeathMessages(), this);
         getServer().getPluginManager().registerEvents(new JoinMessage(), this);
@@ -69,11 +79,13 @@ public final class Initializer extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new Inventory(), this);
         getServer().getPluginManager().registerEvents(new TridentListener(), this);
         getServer().getPluginManager().registerEvents(new TpArrowLand(), this);
+        getServer().getPluginManager().registerEvents(new DuctTapeListener(), this);
+        getServer().getPluginManager().registerEvents(new GrapplingHookListener(), this);
+        getServer().getPluginManager().registerEvents(new BowListener(), this);
     }
 
     @Override
     public void onDisable() {
-
         for (Player player : getServer().getOnlinePlayers()) {
             if (!defaultWorlds.contains(player.getWorld())) {
                 SandboxJoinCommand.sandboxedPlayers.get(player.getUniqueId()).revertPlayerState();
