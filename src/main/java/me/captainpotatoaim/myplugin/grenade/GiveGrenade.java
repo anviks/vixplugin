@@ -14,8 +14,6 @@ public class GiveGrenade implements CommandExecutor {
             player.getInventory().addItem(GrenadeItem.grenadeItem(Integer.parseInt(args[0])));
         }
 
-
-
         return true;
     }
 }

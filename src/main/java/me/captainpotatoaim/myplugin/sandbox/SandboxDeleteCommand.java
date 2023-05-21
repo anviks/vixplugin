@@ -6,10 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.util.FileUtil;
 
 import java.io.IOException;
 
@@ -69,18 +66,17 @@ public class SandboxDeleteCommand {
         sender.sendMessage(ChatColor.YELLOW + String.format("Deleting %s...", deletedWorld.getName()));
         SandboxCreateCommand.worlds.remove(slot);
 
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(JavaPlugin.getPlugin(Initializer.class), new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    FileUtils.deleteDirectory(deletedWorld.getWorldFolder());
-                    sender.sendMessage(ChatColor.GREEN + String.format("Successfully deleted %s.", deletedWorld.getName()));
-                } catch (IOException e) {
-                    sender.sendMessage(ChatColor.RED + String.format("Failed to delete %s!", deletedWorld.getName()));
-                    throw new RuntimeException(e);
-                }
+        Runnable runnable = () -> {
+            try {
+                FileUtils.deleteDirectory(deletedWorld.getWorldFolder());
+                sender.sendMessage(ChatColor.GREEN + String.format("Successfully deleted %s.", deletedWorld.getName()));
+            } catch (IOException e) {
+                sender.sendMessage(ChatColor.RED + String.format("Failed to delete %s!", deletedWorld.getName()));
+                throw new RuntimeException(e);
             }
-        }, 1);
+        };
+
+        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Initializer.plugin, runnable, 1);
 
 
         return true;

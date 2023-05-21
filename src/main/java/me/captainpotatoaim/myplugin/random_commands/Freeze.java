@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 
 import me.captainpotatoaim.myplugin.listeners.JoinMessage;
 import org.bukkit.permissions.PermissionAttachment;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
@@ -82,7 +81,7 @@ public class Freeze implements CommandExecutor {
 
             int unfreezeTask = sender.getServer()
                     .getScheduler()
-                    .scheduleSyncDelayedTask(JavaPlugin.getPlugin(Initializer.class), () -> {
+                    .scheduleSyncDelayedTask(Initializer.plugin, () -> {
                         attachment.setPermission("vix.move", true);
                         target.setFreezeTicks(100);
                     }, ticks);

@@ -5,7 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 class GrapplingHook {
-    static final byte[] secret = Tagger.generateSecret();
+    static final String IDENTIFIER = Tagger.getIdentifier("grappling-hook");
 
     static ItemStack getHook() {
         var hook = new ItemStack(Material.FISHING_ROD);
@@ -13,7 +13,7 @@ class GrapplingHook {
         meta.setDisplayName("Grappling hook");
         meta.setUnbreakable(true);
         hook.setItemMeta(meta);
-        Tagger.tagItem(hook, secret);
+        Tagger.tagItem(hook, IDENTIFIER);
 
         return hook;
     }

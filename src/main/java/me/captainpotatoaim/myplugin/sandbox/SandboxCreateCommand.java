@@ -1,29 +1,17 @@
 package me.captainpotatoaim.myplugin.sandbox;
 
-import com.mojang.brigadier.CommandDispatcher;
 import me.captainpotatoaim.myplugin.Initializer;
 import org.bukkit.*;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabExecutor;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.util.StringUtil;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-
-import static com.mojang.brigadier.arguments.IntegerArgumentType.getInteger;
-import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
-import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
-import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 
 public class SandboxCreateCommand {
 
-    public static HashMap<Integer, World> worlds = new HashMap<>();
-    public static long previousCreationTime = 0;
-    public static int maxSandboxes = JavaPlugin.getPlugin(Initializer.class).getConfig().getInt("max-sandboxes", 10);
+    static HashMap<Integer, World> worlds = new HashMap<>();
+    private static long previousCreationTime = 0;
+    private static final int maxSandboxes = Initializer.plugin.getConfig().getInt("max-sandboxes", 10);
 
     public static boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
@@ -104,12 +92,12 @@ public class SandboxCreateCommand {
     }
 
     public static int addSandbox(WorldCreator creator, CommandSender sender) {
-
         for (int i = 1; i <= maxSandboxes; i++) {
             if (!worlds.containsKey(i)) {
                 previousCreationTime = System.currentTimeMillis();
                 int slot = i;
-                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(JavaPlugin.getPlugin(Initializer.class), () -> {
+
+                Runnable runnable = () -> {
                     World world = creator.createWorld();
                     world.setTime(1000);
                     world.setGameRule(GameRule.KEEP_INVENTORY, true);
@@ -117,7 +105,9 @@ public class SandboxCreateCommand {
                     world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
                     worlds.put(slot, world);
                     sender.sendMessage(ChatColor.GREEN + worlds.get(slot).getName() + " created in slot " + slot);
-                }, 1);
+                };
+
+                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Initializer.plugin, runnable, 1);
                 return slot;
             }
         }

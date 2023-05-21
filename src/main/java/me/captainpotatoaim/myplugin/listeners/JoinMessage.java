@@ -1,14 +1,11 @@
 package me.captainpotatoaim.myplugin.listeners;
 
-import me.captainpotatoaim.myplugin.Initializer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.permissions.PermissionAttachment;
-import org.bukkit.plugin.java.JavaPlugin;
 
-import java.security.Permission;
 import java.util.HashMap;
 import java.util.UUID;
 

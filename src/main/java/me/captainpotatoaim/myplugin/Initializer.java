@@ -8,11 +8,10 @@ import me.captainpotatoaim.myplugin.grappling_hook.GiveGrapplingHook;
 import me.captainpotatoaim.myplugin.grappling_hook.GrapplingHookListener;
 import me.captainpotatoaim.myplugin.grenade.GiveGrenade;
 import me.captainpotatoaim.myplugin.grenade.ThrownGrenade;
-import me.captainpotatoaim.myplugin.railgun.GiveRailGun;
+import me.captainpotatoaim.myplugin.railgun.GiveRailgun;
 import me.captainpotatoaim.myplugin.railgun.TridentListener;
 import me.captainpotatoaim.myplugin.random_commands.*;
 import me.captainpotatoaim.myplugin.listeners.*;
-import me.captainpotatoaim.myplugin.rapid_fire_bow.Bow;
 import me.captainpotatoaim.myplugin.rapid_fire_bow.BowListener;
 import me.captainpotatoaim.myplugin.rapid_fire_bow.GiveBow;
 import me.captainpotatoaim.myplugin.sandbox.Inventory;
@@ -28,6 +27,7 @@ import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
@@ -35,6 +35,7 @@ import java.util.List;
 
 public final class Initializer extends JavaPlugin {
 
+    public static JavaPlugin plugin = getPlugin(Initializer.class);
     public static List<World> defaultWorlds = null;
 
     @Override
@@ -61,7 +62,7 @@ public final class Initializer extends JavaPlugin {
         getCommand("god").setExecutor(new GodMode());
         getCommand("enchantanything").setExecutor(new EnchantAnything());
         getCommand("sandbox").setExecutor(new SandboxMainCommand());
-        getCommand("giverailgun").setExecutor(new GiveRailGun());
+        getCommand("giverailgun").setExecutor(new GiveRailgun());
         getCommand("giveteleportarrow").setExecutor(new GiveTeleportArrow());
         getCommand("creep").setExecutor(new CreeperPrank());
         getCommand("creep2").setExecutor(new CreeperPrankWithTp());
@@ -70,18 +71,19 @@ public final class Initializer extends JavaPlugin {
         getCommand("grappling-hook").setExecutor(new GiveGrapplingHook());
         getCommand("rapid-bow").setExecutor(new GiveBow());
 
-        getServer().getPluginManager().registerEvents(new DeathMessages(), this);
-        getServer().getPluginManager().registerEvents(new JoinMessage(), this);
-        getServer().getPluginManager().registerEvents(new BedMessage(), this);
-        getServer().getPluginManager().registerEvents(new Moving(), this);
-        getServer().getPluginManager().registerEvents(new ThrownGrenade(), this);
-        getServer().getPluginManager().registerEvents(new ExplosiveArrowLand(), this);
-        getServer().getPluginManager().registerEvents(new Inventory(), this);
-        getServer().getPluginManager().registerEvents(new TridentListener(), this);
-        getServer().getPluginManager().registerEvents(new TpArrowLand(), this);
-        getServer().getPluginManager().registerEvents(new DuctTapeListener(), this);
-        getServer().getPluginManager().registerEvents(new GrapplingHookListener(), this);
-        getServer().getPluginManager().registerEvents(new BowListener(), this);
+        PluginManager pluginManager = getServer().getPluginManager();
+        pluginManager.registerEvents(new DeathMessages(), this);
+        pluginManager.registerEvents(new JoinMessage(), this);
+        pluginManager.registerEvents(new BedMessage(), this);
+        pluginManager.registerEvents(new Moving(), this);
+        pluginManager.registerEvents(new ThrownGrenade(), this);
+        pluginManager.registerEvents(new ExplosiveArrowLand(), this);
+        pluginManager.registerEvents(new Inventory(), this);
+        pluginManager.registerEvents(new TridentListener(), this);
+        pluginManager.registerEvents(new TpArrowLand(), this);
+        pluginManager.registerEvents(new DuctTapeListener(), this);
+        pluginManager.registerEvents(new GrapplingHookListener(), this);
+        pluginManager.registerEvents(new BowListener(), this);
     }
 
     @Override

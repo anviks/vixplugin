@@ -11,25 +11,18 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
 
-import java.security.Permissions;
 import java.util.List;
 
 public class GivePermission implements CommandExecutor, TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
         if (sender.isOp() && args.length > 1) {
             Player player = sender.getServer().getPlayerExact(args[1]);
 
             if (player != null) {
-
-                Plugin plugin = JavaPlugin.getPlugin(Initializer.class);
-
-                List<String> perms = plugin.getDescription()
+                List<String> perms = Initializer.plugin.getDescription()
                         .getPermissions()
                         .stream()
                         .map(Permission::getName)
@@ -87,9 +80,7 @@ public class GivePermission implements CommandExecutor, TabExecutor {
                         .toList();
             }
             case 3 -> {
-                Plugin plugin = JavaPlugin.getPlugin(Initializer.class);
-
-                return plugin.getDescription()
+                return Initializer.plugin.getDescription()
                         .getPermissions()
                         .stream()
                         .map(Permission::getName)

@@ -2,14 +2,10 @@ package me.captainpotatoaim.myplugin.sandbox;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.UUID;
 
 public class SandboxPlayerData {
 

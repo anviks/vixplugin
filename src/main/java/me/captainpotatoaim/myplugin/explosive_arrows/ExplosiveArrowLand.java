@@ -33,10 +33,10 @@ public class ExplosiveArrowLand implements Listener {
 
         if (shooter instanceof Player player) {
             if (Inventory.isShootableArrow(ExplosiveArrow.getExplosiveArrow(1), player)) {
-                Tagger.tagEntity(projectile, ExplosiveArrow.secret);
+                Tagger.tagEntity(projectile, ExplosiveArrow.identifier);
             }
         } else if (shooter instanceof BlockProjectileSource && dispenserShotExplosiveArrow) {
-            Tagger.tagEntity(projectile, ExplosiveArrow.secret);
+            Tagger.tagEntity(projectile, ExplosiveArrow.identifier);
             dispenserShotExplosiveArrow = false;
         }
 

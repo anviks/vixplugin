@@ -7,14 +7,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class GiveRailGun implements CommandExecutor {
+public class GiveRailgun implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (sender.isOp()) {
             if (args.length == 0) {
                 if (sender instanceof Player player) {
-                    player.getInventory().addItem(RailGunItem.create());
+                    player.getInventory().addItem(Railgun.getRailgun());
                 } else {
                     sender.sendMessage(ChatColor.RED + "Bro where is the railgun supposed to be put? "
                             + sender.getName() + " doesn't have an inventory.");
@@ -22,7 +22,7 @@ public class GiveRailGun implements CommandExecutor {
             } else {
                 Player player = sender.getServer().getPlayerExact(args[0]);
                 if (player != null) {
-                    player.getInventory().addItem(RailGunItem.create());
+                    player.getInventory().addItem(Railgun.getRailgun());
                 } else {
                     sender.sendMessage(ChatColor.RED + "Enter a valid name, plz bro.");
                 }

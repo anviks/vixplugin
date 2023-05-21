@@ -5,7 +5,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.*;
 import org.bukkit.entity.*;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 public class DogCommand implements CommandExecutor {
@@ -31,13 +30,7 @@ public class DogCommand implements CommandExecutor {
                     Wolf dog = (Wolf) wolf;
                     dog.setCustomName("Doggo");
                     dog.setOwner(target);
-                    server.getScheduler().scheduleSyncDelayedTask(JavaPlugin.getPlugin(Initializer.class), new Runnable() {
-                        @Override
-                        public void run() {
-                            dog.damage(50, target);
-                        }
-                    }, 400);
-
+                    server.getScheduler().scheduleSyncDelayedTask(Initializer.plugin, () -> dog.damage(50, target), 400);
                 }
             } else {
                 sender.sendMessage("That player is not online or doesn't exist.");
