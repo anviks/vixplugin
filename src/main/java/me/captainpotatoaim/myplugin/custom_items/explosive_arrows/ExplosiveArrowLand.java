@@ -1,4 +1,4 @@
-package me.captainpotatoaim.myplugin.explosive_arrows;
+package me.captainpotatoaim.myplugin.custom_items.explosive_arrows;
 
 import me.captainpotatoaim.myplugin.util.Inventory;
 import me.captainpotatoaim.myplugin.util.Tagger;
@@ -39,9 +39,7 @@ public class ExplosiveArrowLand implements Listener {
             Tagger.tagEntity(projectile, ExplosiveArrow.identifier);
             dispenserShotExplosiveArrow = false;
         }
-
     }
-
 
     @EventHandler
     public void onArrowLand(ProjectileHitEvent event) {
@@ -49,10 +47,9 @@ public class ExplosiveArrowLand implements Listener {
             var itemContainer = arrow.getPersistentDataContainer();
             var entityContainer = ExplosiveArrow.getExplosiveArrow(1).getItemMeta().getPersistentDataContainer();
             if (itemContainer.equals(entityContainer)) {
-                arrow.getWorld().createExplosion(arrow.getLocation(), 7);
+                arrow.getWorld().createExplosion(arrow.getLocation(), 7, false, true, arrow);
                 arrow.remove();
             }
         }
-
     }
 }
