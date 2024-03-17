@@ -1,6 +1,6 @@
 # User-specific stuff
 .idea/
-src/main/java/me/captainpotatoaim/myplugin/rapid_fire_bow/Test.kt
+src/main/java/me/captainpotatoaim/myplugin/custom_items/rapid_fire_bow/Test.kt
 
 *.iml
 *.ipr
