@@ -1,4 +1,4 @@
-package me.captainpotatoaim.myplugin.grappling_hook;
+package me.captainpotatoaim.myplugin.custom_items.grappling_hook;
 
 import me.captainpotatoaim.myplugin.util.Tagger;
 import org.bukkit.Material;

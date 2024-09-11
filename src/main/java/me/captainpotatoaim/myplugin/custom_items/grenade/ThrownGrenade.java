@@ -1,11 +1,13 @@
-package me.captainpotatoaim.myplugin.grenade;
+package me.captainpotatoaim.myplugin.custom_items.grenade;
 
 import me.captainpotatoaim.myplugin.Initializer;
+import me.captainpotatoaim.myplugin.util.Tagger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Item;
 import org.bukkit.event.*;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -30,11 +32,17 @@ public class ThrownGrenade implements Listener {
     public void onItemDropped(PlayerDropItemEvent event) {
         Item itemDrop = event.getItemDrop();
 
-        if (itemDrop.getItemStack().isSimilar(GrenadeItem.grenadeItem(1))) {
+        String droppedId = itemDrop.getItemStack()
+                .getItemMeta()
+                .getPersistentDataContainer()
+                .get(Tagger.KEY, PersistentDataType.STRING);
+
+        if (GrenadeItem.IDENTIFIER.equals(droppedId)) {
             Runnable task = () -> event.getPlayer().getWorld().createExplosion(itemDrop.getLocation(), 10);
             UUID uuid = itemDrop.getUniqueId();
             int taskId = Bukkit.getScheduler()
-                    .runTaskLater(Initializer.plugin, task, 100).getTaskId();
+                    .runTaskLater(Initializer.plugin, task, 100)
+                    .getTaskId();
 
             liveGrenades.put(uuid, taskId);
         }
@@ -43,7 +51,12 @@ public class ThrownGrenade implements Listener {
     @EventHandler
     public void onItemPicked(EntityPickupItemEvent event) {
         Item item = event.getItem();
-        if (item.getItemStack().isSimilar(GrenadeItem.grenadeItem(1))) {
+        String pickedId = item.getItemStack()
+                .getItemMeta()
+                .getPersistentDataContainer()
+                .get(Tagger.KEY, PersistentDataType.STRING);
+
+        if (GrenadeItem.IDENTIFIER.equals(pickedId)) {
             Bukkit.getScheduler().cancelTask(liveGrenades.get(item.getUniqueId()));
         }
     }

@@ -12,7 +12,6 @@ public class GodMode implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (sender.isOp()) {
-
             Player target;
 
             if (sender instanceof Player && args.length == 0) {
@@ -43,16 +42,10 @@ public class GodMode implements CommandExecutor {
                     sender.sendMessage(ChatColor.GREEN + target.getDisplayName() + " is no longer in god mode.");
                 }
             }
-
-
         } else {
-
             sender.sendMessage(ChatColor.RED + "You lack the divinity to use this command.");
             return true;
-
         }
-
-
 
         return true;
     }

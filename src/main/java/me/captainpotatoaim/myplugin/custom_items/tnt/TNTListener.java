@@ -20,7 +20,6 @@ import java.util.*;
 
 public class TNTListener implements Listener {
     Map<Location, Integer> placedTNTs = new HashMap<>();
-    Set<UUID> activeTNTs = new HashSet<>();
 
     @EventHandler
     public void onTNTPlace(BlockPlaceEvent event) {
@@ -66,6 +65,25 @@ public class TNTListener implements Listener {
                 tnt.setFuseTicks(placedTNTs.get(litLocation));
                 placedTNTs.remove(litLocation);
 
+//                BukkitRunnable runnable = new BukkitRunnable() {
+//                    @Override
+//                    public void run() {
+//                        if (tnt.isInWater()) {
+//                            Location tntLocation = tnt.getLocation();
+//                            Block blockAt = tnt.getWorld().getBlockAt(tntLocation);
+//                            if (blockAt.getType() == Material.TNT) {
+//                                blockAt.setType(Material.AIR);
+//                            } else {
+//                                blockAt.setType(Material.TNT);
+//                            }
+//                            placedTNTs.add(tntLocation);
+//                            tnt.remove();
+//                            cancel();
+//                        }
+//                    }
+//                };
+//
+//                runnable.runTaskTimer(Initializer.plugin, 0, 1);
             }
         }
     }

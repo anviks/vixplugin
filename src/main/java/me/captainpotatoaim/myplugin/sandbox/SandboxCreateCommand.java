@@ -25,7 +25,6 @@ public class SandboxCreateCommand {
         int slot;
 
         switch (args.length) {
-
             case 1 -> {
                 WorldCreator creator = new WorldCreator("sandbox-" + (int) (Math.random() * 1_000_000_000));
                 creator.environment(World.Environment.NORMAL);
@@ -107,7 +106,7 @@ public class SandboxCreateCommand {
                     sender.sendMessage(ChatColor.GREEN + worlds.get(slot).getName() + " created in slot " + slot);
                 };
 
-                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Initializer.plugin, runnable, 1);
+                Bukkit.getScheduler().scheduleSyncDelayedTask(Initializer.plugin, runnable, 1);
                 return slot;
             }
         }

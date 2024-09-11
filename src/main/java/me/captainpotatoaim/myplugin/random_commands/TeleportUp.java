@@ -24,9 +24,6 @@ public class TeleportUp implements CommandExecutor {
         double maxHeight = 319;
         double destinationHeight = Math.random() * (maxHeight - height);
         playerLocation.setY(height + destinationHeight);
-        System.out.println(player.getLocation());
-        System.out.println(destinationHeight);
-        System.out.println(playerLocation);
 
         return playerLocation;
     }

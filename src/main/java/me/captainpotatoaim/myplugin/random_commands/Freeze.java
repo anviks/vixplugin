@@ -1,6 +1,7 @@
 package me.captainpotatoaim.myplugin.random_commands;
 
 import me.captainpotatoaim.myplugin.Initializer;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -36,7 +37,6 @@ public class Freeze implements CommandExecutor {
         }
 
         if (sender.hasPermission("vix.moderate")) {
-
             if (args.length == 1) {
                 PermissionAttachment attachment = JoinMessage.permissions.get(target.getUniqueId());
                 attachment.setPermission("vix.move", false);
@@ -79,19 +79,15 @@ public class Freeze implements CommandExecutor {
             sender.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + target.getDisplayName() + " has been frozen.");
             target.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "You have been frozen.");
 
-            int unfreezeTask = sender.getServer()
-                    .getScheduler()
+            int unfreezeTask = Bukkit.getScheduler()
                     .scheduleSyncDelayedTask(Initializer.plugin, () -> {
                         attachment.setPermission("vix.move", true);
                         target.setFreezeTicks(100);
                     }, ticks);
 
         } else {
-
             sender.sendMessage(ChatColor.RED + "You don't have permission to use this command.");
-
         }
-
 
         return true;
     }

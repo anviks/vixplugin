@@ -11,15 +11,11 @@ public class SomeEntityCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
         if (sender instanceof Player player) {
             Giant entity = (Giant) player.getWorld().spawnEntity(player.getLocation(), EntityType.GIANT);
 
             entity.setAI(true);
         }
-
-
-
 
         return true;
     }

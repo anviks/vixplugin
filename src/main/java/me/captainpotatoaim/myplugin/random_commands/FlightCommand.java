@@ -10,24 +10,17 @@ import org.jetbrains.annotations.NotNull;
 public class FlightCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-
         if (sender.isOp()) {
-
             Player target = null;
 
             if (sender instanceof Player && args.length == 0) {
-
                 target = (Player) sender;
                 target.setAllowFlight(!target.getAllowFlight());
                 target.setFlying(target.getAllowFlight());
-
             } else if (args.length == 0) {
-
                 sender.sendMessage(ChatColor.RED + "You need to specify a player.");
                 return true;
-
             } else {
-
                 target = sender.getServer().getPlayerExact(args[0]);
                 if (target != null) {
                     target.setAllowFlight(!target.getAllowFlight());
@@ -36,7 +29,6 @@ public class FlightCommand implements CommandExecutor {
                     sender.sendMessage(ChatColor.RED + "No such player found.");
                     return true;
                 }
-
             }
 
             if (target.getAllowFlight()) {
@@ -51,14 +43,10 @@ public class FlightCommand implements CommandExecutor {
                 }
             }
 
-
         } else {
-
             sender.sendMessage(ChatColor.RED + "YOU are only allowed to fly with elytra.");
             return true;
-
         }
-
 
         return true;
     }

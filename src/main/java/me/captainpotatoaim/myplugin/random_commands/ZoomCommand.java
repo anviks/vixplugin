@@ -1,6 +1,7 @@
 package me.captainpotatoaim.myplugin.random_commands;
 
 import me.captainpotatoaim.myplugin.Initializer;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
@@ -35,7 +36,7 @@ public class ZoomCommand implements CommandExecutor {
             player.setVelocity(player.getEyeLocation().getDirection().multiply(100));
             player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 10, 1);
 
-            BukkitScheduler scheduler = sender.getServer().getScheduler();
+            BukkitScheduler scheduler = Bukkit.getScheduler();
             scheduler.scheduleSyncDelayedTask(Initializer.plugin, () -> player.setGameMode(GameMode.SPECTATOR), 1);
             scheduler.scheduleSyncDelayedTask(Initializer.plugin, () -> player.setGameMode(startMode), 20);
         }

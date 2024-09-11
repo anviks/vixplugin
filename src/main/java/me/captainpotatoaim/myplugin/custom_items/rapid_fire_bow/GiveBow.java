@@ -1,4 +1,4 @@
-package me.captainpotatoaim.myplugin.rapid_fire_bow;
+package me.captainpotatoaim.myplugin.custom_items.rapid_fire_bow;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

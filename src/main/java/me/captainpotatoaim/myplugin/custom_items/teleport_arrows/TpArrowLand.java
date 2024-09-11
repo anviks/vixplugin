@@ -1,4 +1,4 @@
-package me.captainpotatoaim.myplugin.teleport_arrows;
+package me.captainpotatoaim.myplugin.custom_items.teleport_arrows;
 
 import me.captainpotatoaim.myplugin.util.Tagger;
 import org.bukkit.entity.Arrow;
@@ -25,6 +25,7 @@ public class TpArrowLand implements Listener {
         }
 
         if (arrow.getPersistentDataContainer().equals(TeleportArrow.tpArrow(1).getItemMeta().getPersistentDataContainer())) {
+            event.setCancelled(true);
             Player player = (Player) arrow.getShooter();
             assert player != null;
             Vector direction = player.getEyeLocation().getDirection();

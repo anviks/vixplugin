@@ -1,4 +1,4 @@
-package me.captainpotatoaim.myplugin.grenade;
+package me.captainpotatoaim.myplugin.custom_items.grenade;
 
 import me.captainpotatoaim.myplugin.util.Tagger;
 import org.bukkit.ChatColor;

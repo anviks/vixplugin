@@ -1,4 +1,4 @@
-package me.captainpotatoaim.myplugin.rapid_fire_bow;
+package me.captainpotatoaim.myplugin.custom_items.rapid_fire_bow;
 
 import me.captainpotatoaim.myplugin.util.Tagger;
 import org.bukkit.Material;
@@ -11,6 +11,7 @@ public class Bow {
         ItemStack bow = new ItemStack(Material.BOW);
         var meta = bow.getItemMeta();
         bow.setItemMeta(meta);
+        // TODO: Customise item
         Tagger.tagItem(bow, IDENTIFIER);
 
         return bow;

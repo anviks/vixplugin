@@ -12,7 +12,21 @@ import java.security.SecureRandom;
 
 public class Tagger {
     public static final NamespacedKey KEY = new NamespacedKey(Initializer.plugin,
-            "ecb0fceb1a8f8f9b449c5ae7cdaee0216988dbf6f3f5d76743f98e73d52cdc21");
+            "custom-item");
+
+    public static boolean hasIdentifier(ItemStack item, String identifier) {
+        var meta = item.getItemMeta();
+        assert meta != null;
+        var container = meta.getPersistentDataContainer();
+        var itemIdentifier = container.get(KEY, PersistentDataType.STRING);
+        return itemIdentifier != null && itemIdentifier.equals(identifier);
+    }
+
+    public static boolean hasIdentifier(Entity entity, String identifier) {
+        var container = entity.getPersistentDataContainer();
+        var itemIdentifier = container.get(KEY, PersistentDataType.STRING);
+        return itemIdentifier != null && itemIdentifier.equals(identifier);
+    }
 
     public static void tagItem(ItemStack item, String identifier) {
         var meta = item.getItemMeta();
@@ -40,7 +54,7 @@ public class Tagger {
         String identifier = config.getString("identifiers." + item);
 
         if (identifier == null || identifier.length() != 64) {
-            identifier = Tagger.generateIdentifier();
+            identifier = generateIdentifier();
             config.set("identifiers." + item, identifier);
             Initializer.plugin.saveConfig();
         }

@@ -12,5 +12,4 @@ public class Moving implements Listener {
             event.setCancelled(true);
         }
     }
-
 }

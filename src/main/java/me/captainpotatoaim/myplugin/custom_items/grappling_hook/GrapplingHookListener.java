@@ -1,4 +1,4 @@
-package me.captainpotatoaim.myplugin.grappling_hook;
+package me.captainpotatoaim.myplugin.custom_items.grappling_hook;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;

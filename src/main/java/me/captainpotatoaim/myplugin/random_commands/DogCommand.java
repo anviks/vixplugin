@@ -10,9 +10,10 @@ import org.jetbrains.annotations.NotNull;
 public class DogCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (sender instanceof Player && sender.isOp()||
-                sender instanceof ConsoleCommandSender && args.length > 0 ||
-                sender instanceof BlockCommandSender && args.length > 0) {
+        if (sender instanceof Player && sender.isOp()
+                || args.length > 0 &&
+                (sender instanceof ConsoleCommandSender ||
+                sender instanceof BlockCommandSender)) {
 
             Server server = sender.getServer();
 
@@ -35,7 +36,6 @@ public class DogCommand implements CommandExecutor {
             } else {
                 sender.sendMessage("That player is not online or doesn't exist.");
             }
-
         } else {
             sender.sendMessage("That didn't work.");
         }

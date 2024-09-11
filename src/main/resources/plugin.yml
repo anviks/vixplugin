@@ -85,6 +85,26 @@ commands:
     description: Give grappling hook.
   rapid-bow:
     description: Give bow that rapid fires.
+  vanish:
+    description: Vanish.
+    aliases:
+      - v
+  enchantitem:
+    description: N
+  ender-toggle:
+    description: G
+  protect:
+    description: Protect an area.
+    usage: /protect <from> <to> as <area-name>
+  unprotect:
+    description: Unprotect an area.
+    usage: /unprotect <area-name>
+  give-multi-tool:
+    description: Give multi tool.
+  give-custom-fuse-tnt:
+    description: Give long fuse tnt.
+  world:
+    description: Change world.
 
 permissions:
   vix.move:

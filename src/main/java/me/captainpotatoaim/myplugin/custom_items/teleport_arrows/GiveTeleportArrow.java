@@ -1,4 +1,4 @@
-package me.captainpotatoaim.myplugin.teleport_arrows;
+package me.captainpotatoaim.myplugin.custom_items.teleport_arrows;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;

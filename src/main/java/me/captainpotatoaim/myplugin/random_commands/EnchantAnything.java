@@ -17,9 +17,10 @@ public class EnchantAnything implements CommandExecutor, TabExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        Enchantment enchantment = null;
+        Enchantment enchantment;
 
         switch (args[0]) {
+            // <editor-fold defaultstate="collapsed" desc="enchantments">
             case "aqua_affinity" -> enchantment = Enchantment.WATER_WORKER;
             case "bane_of_arthropods" -> enchantment = Enchantment.DAMAGE_ARTHROPODS;
             case "binding_curse" -> enchantment = Enchantment.BINDING_CURSE;
@@ -59,18 +60,25 @@ public class EnchantAnything implements CommandExecutor, TabExecutor {
             case "thorns" -> enchantment = Enchantment.THORNS;
             case "unbreaking" -> enchantment = Enchantment.DURABILITY;
             case "vanishing_curse" -> enchantment = Enchantment.VANISHING_CURSE;
+            default -> throw new IllegalStateException("Unexpected value: " + args[0]);
+            // </editor-fold>
         }
 
-        if (sender.isOp() &&
-                sender instanceof Player player &&
-                enchantment != null &&
-                player.getInventory().getItemInMainHand().getItemMeta() != null) {
-
+        if (sender.isOp()
+                && sender instanceof Player player
+                && player.getInventory().getItemInMainHand().getItemMeta() != null) {
             ItemStack item = player.getInventory().getItemInMainHand();
             ItemMeta itemMeta = item.getItemMeta();
-            itemMeta.addEnchant(enchantment, Integer.parseInt(args[1]), true);
+            int level;
+            try {
+                level = args.length > 1
+                        ? Integer.parseInt(args[1])
+                        : 1;
+            } catch (NumberFormatException e) {
+                level = 1;
+            }
+            itemMeta.addEnchant(enchantment, level, true);
             item.setItemMeta(itemMeta);
-
         } else {
             sender.sendMessage(ChatColor.RED + "fuck you");
         }
@@ -79,10 +87,8 @@ public class EnchantAnything implements CommandExecutor, TabExecutor {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull [] args) {
         switch (args.length) {
-
             case 1 -> {
                 return List.of("aqua_affinity", "bane_of_arthropods", "binding_curse",
                         "blast_protection", "channeling", "depth_strider", "efficiency",
@@ -102,9 +108,6 @@ public class EnchantAnything implements CommandExecutor, TabExecutor {
             default -> {
                 return List.of();
             }
-
         }
-
     }
-
 }

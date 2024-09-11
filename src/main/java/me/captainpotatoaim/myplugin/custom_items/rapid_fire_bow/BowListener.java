@@ -1,4 +1,4 @@
-package me.captainpotatoaim.myplugin.rapid_fire_bow;
+package me.captainpotatoaim.myplugin.custom_items.rapid_fire_bow;
 
 import me.captainpotatoaim.myplugin.Initializer;
 import me.captainpotatoaim.myplugin.util.Tagger;
@@ -8,7 +8,6 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
@@ -52,16 +51,9 @@ public class BowListener implements Listener {
     @EventHandler
     void onClick(PlayerInteractEvent event) {
         Action action = event.getAction();
-        Bukkit.broadcastMessage(action.toString());
         if (!action.equals(Action.PHYSICAL)) {
-            Bukkit.broadcastMessage(action.toString());
             stopShooting(event.getPlayer().getUniqueId());
         }
-    }
-
-    @EventHandler
-    void onClick2(EntityDamageByEntityEvent event) {
-        Bukkit.broadcastMessage(event.getEntity().toString());
     }
 
     @EventHandler
@@ -109,6 +101,7 @@ public class BowListener implements Listener {
         Runnable shoot = () -> shootArrowTask(player, arrowDirection, bow, singleArrow, identifier, arrowClass);
         Bukkit.broadcastMessage(bow.getItemMeta().getPersistentDataContainer().getKeys().toString());
 
+        // TODO: Change to runTaskLater when each shot begins to call bow event
         BukkitTask task = Bukkit.getScheduler().runTaskTimer(Initializer.plugin, shoot, 0, 1);
         shootingPlayers.put(player.getUniqueId(), task.getTaskId());
     }
@@ -155,6 +148,7 @@ public class BowListener implements Listener {
             damageBow(player, bow);
         }
 
+        // TODO: add EntityShootBowEvent call here and modify runnable
         PlayerItemDamageEvent event = new PlayerItemDamageEvent(player, bow, damage);
         Bukkit.getPluginManager().callEvent(event);
     }
