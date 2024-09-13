@@ -1,19 +1,18 @@
 package me.captainpotatoaim.myplugin.custom_items.grappling_hook;
 
-import me.captainpotatoaim.myplugin.util.Tagger;
+import me.captainpotatoaim.myplugin.custom_items.CustomItem;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 class GrapplingHook {
-    static final String IDENTIFIER = Tagger.getIdentifier("grappling-hook");
-
     static ItemStack getHook() {
         var hook = new ItemStack(Material.FISHING_ROD);
         var meta = hook.getItemMeta();
+        assert meta != null;
         meta.setDisplayName("Grappling hook");
         meta.setUnbreakable(true);
         hook.setItemMeta(meta);
-        Tagger.tagItem(hook, IDENTIFIER);
+        CustomItem.setType(hook, GrapplingHook.class);
 
         return hook;
     }

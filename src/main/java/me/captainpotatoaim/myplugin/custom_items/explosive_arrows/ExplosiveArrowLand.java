@@ -1,24 +1,36 @@
 package me.captainpotatoaim.myplugin.custom_items.explosive_arrows;
 
-import me.captainpotatoaim.myplugin.util.Inventory;
+import me.captainpotatoaim.myplugin.custom_items.CustomItem;
 import me.captainpotatoaim.myplugin.util.Tagger;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDispenseEvent;
+import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.BlockProjectileSource;
 import org.bukkit.projectiles.ProjectileSource;
 
 public class ExplosiveArrowLand implements Listener {
-
-    private static boolean dispenserShotExplosiveArrow = false;
+    private boolean dispenserShotExplosiveArrow = false;
 
     @EventHandler
     public void onDispenserPowered(BlockDispenseEvent event) {
-        if (event.getItem().isSimilar(ExplosiveArrow.getExplosiveArrow(1))) {
+        if (CustomItem.isOfType(event.getItem(), ExplosiveArrow.class)) {
             dispenserShotExplosiveArrow = true;
+        }
+    }
+
+    @EventHandler
+    public void onBowArrowShot(EntityShootBowEvent event) {
+        ItemStack consumable = event.getConsumable();
+        Entity projectile = event.getProjectile();
+
+        if (consumable != null && CustomItem.isOfType(consumable, ExplosiveArrow.class)) {
+            CustomItem.setType(projectile, ExplosiveArrow.class);
         }
     }
 
@@ -27,29 +39,18 @@ public class ExplosiveArrowLand implements Listener {
         Projectile projectile = event.getEntity();
         ProjectileSource shooter = projectile.getShooter();
 
-        if (projectile.getType() != EntityType.SPECTRAL_ARROW) {
-            return;
-        }
-
-        if (shooter instanceof Player player) {
-            if (Inventory.isShootableArrow(ExplosiveArrow.getExplosiveArrow(1), player)) {
-                Tagger.tagEntity(projectile, ExplosiveArrow.identifier);
-            }
-        } else if (shooter instanceof BlockProjectileSource && dispenserShotExplosiveArrow) {
-            Tagger.tagEntity(projectile, ExplosiveArrow.identifier);
+        if (dispenserShotExplosiveArrow && shooter instanceof BlockProjectileSource) {
             dispenserShotExplosiveArrow = false;
+            CustomItem.setType(projectile, ExplosiveArrow.class);
         }
     }
 
     @EventHandler
     public void onArrowLand(ProjectileHitEvent event) {
-        if (event.getEntity() instanceof SpectralArrow arrow) {
-            var itemContainer = arrow.getPersistentDataContainer();
-            var entityContainer = ExplosiveArrow.getExplosiveArrow(1).getItemMeta().getPersistentDataContainer();
-            if (itemContainer.equals(entityContainer)) {
-                arrow.getWorld().createExplosion(arrow.getLocation(), 7, false, true, arrow);
-                arrow.remove();
-            }
+        Projectile projectile = event.getEntity();
+        if (CustomItem.isOfType(projectile, ExplosiveArrow.class)) {
+            projectile.getWorld().createExplosion(projectile.getLocation(), 7, false, true, projectile);
+            projectile.remove();
         }
     }
 }

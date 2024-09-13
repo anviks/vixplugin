@@ -1,38 +1,37 @@
 package me.captainpotatoaim.myplugin.custom_items.explosive_arrows;
 
-import me.captainpotatoaim.myplugin.Initializer;
-import me.captainpotatoaim.myplugin.util.Tagger;
-import org.bukkit.Bukkit;
+import me.captainpotatoaim.myplugin.custom_items.CustomItem;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
-import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.KnowledgeBookMeta;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 
 public class ExplosiveArrow {
-    static final String identifier = Tagger.getIdentifier("explosive-arrow");
+    private final Plugin plugin;
 
-    public static ItemStack getExplosiveArrow(int count) {
+    public ExplosiveArrow(Plugin plugin) {
+        this.plugin = plugin;
+    }
+
+    public static ItemStack getItem(int count) {
         ItemStack arrows = new ItemStack(Material.SPECTRAL_ARROW, count);
         ItemMeta arrowMeta = arrows.getItemMeta();
+        assert arrowMeta != null;
         arrowMeta.setDisplayName(ChatColor.YELLOW + "Explosive Arrow");
         arrowMeta.addEnchant(Enchantment.ARROW_INFINITE, 1, false);
         arrows.setItemMeta(arrowMeta);
-        Tagger.tagItem(arrows, identifier);
+        CustomItem.setType(arrows, ExplosiveArrow.class);
 
         return arrows;
     }
 
-    public static ShapedRecipe getRecipe() {
-        ItemStack arrow = getExplosiveArrow(1);
-        NamespacedKey key = new NamespacedKey(Initializer.plugin, "explosive-arrow");
+    public ShapedRecipe getRecipe() {
+        ItemStack arrow = getItem(1);
+        NamespacedKey key = new NamespacedKey(this.plugin, "explosive_arrow");
         ShapedRecipe recipe = new ShapedRecipe(key, arrow);
         recipe.shape("GGG", "GAG", "GGG");
         recipe.setIngredient('G', Material.GUNPOWDER);

@@ -41,7 +41,7 @@ public class GiveExplosiveArrow implements CommandExecutor {
         }
 
         if (sender.isOp() && sender instanceof Player player) {
-            ItemStack arrows = ExplosiveArrow.getExplosiveArrow(amount);
+            ItemStack arrows = ExplosiveArrow.getItem(amount);
             player.getInventory().addItem(arrows);
         }
 
