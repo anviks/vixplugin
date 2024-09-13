@@ -1,6 +1,6 @@
 package me.captainpotatoaim.myplugin.custom_items.teleport_arrows;
 
-import me.captainpotatoaim.myplugin.util.Tagger;
+import me.captainpotatoaim.myplugin.custom_items.CustomItem;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -9,12 +9,12 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.util.Vector;
 
-public class TpArrowLand implements Listener {
+public class TeleportArrowLand implements Listener {
 
     @EventHandler
     public void onArrowShot(EntityShootBowEvent event) {
         if (TeleportArrow.tpArrow(1).isSimilar(event.getConsumable())) {
-            Tagger.tagEntity(event.getProjectile(), TeleportArrow.IDENTIFIER);
+            CustomItem.setType(event.getProjectile(), TeleportArrow.class);
         }
     }
 

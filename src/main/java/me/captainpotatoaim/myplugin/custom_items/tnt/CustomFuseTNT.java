@@ -1,21 +1,19 @@
 package me.captainpotatoaim.myplugin.custom_items.tnt;
 
-import me.captainpotatoaim.myplugin.util.Tagger;
+import me.captainpotatoaim.myplugin.custom_items.CustomItem;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
 public class CustomFuseTNT {
-    static String IDENTIFIER = Tagger.getIdentifier("custom-fuse-tnt");
-
     static ItemStack create(int amount, double fuseSeconds) {
         ItemStack item = new ItemStack(Material.TNT, amount);
         var meta = item.getItemMeta();
+        assert meta != null;
         meta.setLore(List.of("Fuse time: " + fuseSeconds + " seconds"));
         item.setItemMeta(meta);
-        Tagger.tagItem(item, IDENTIFIER);
+        CustomItem.setType(item, CustomFuseTNT.class);
 
         return item;
     }
