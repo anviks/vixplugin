@@ -12,6 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
@@ -23,12 +24,12 @@ import org.bukkit.util.Vector;
 import java.util.*;
 
 public class RapidFireBowListener implements Listener {
-    private final HashMap<UUID, Integer> shootingPlayers = new HashMap<>();
+    private final Map<UUID, Integer> shootingPlayers = new HashMap<>();
 
     @EventHandler
     void onBowShoot(EntityShootBowEvent event) {
         if (CustomItem.isOfType(event.getBow(), RapidFireBow.class) && event.getEntity() instanceof Player player) {
-            shootArrows(player, event.getProjectile().getVelocity(), event);
+            shootArrows(player, event);
         }
     }
 
@@ -62,7 +63,7 @@ public class RapidFireBowListener implements Listener {
         }
     }
 
-    private void shootArrows(Player player, Vector arrowDirection, EntityShootBowEvent event) {
+    private void shootArrows(Player player, EntityShootBowEvent event) {
         ItemStack itemArrow = event.getConsumable();
 
         if (itemArrow == null) {
@@ -83,12 +84,11 @@ public class RapidFireBowListener implements Listener {
 
         PersistentDataContainer persistentDataContainer = itemArrow.getItemMeta().getPersistentDataContainer();
         String identifier = persistentDataContainer.get(Tagger.CUSTOM_ITEM_KEY, PersistentDataType.STRING);
-        ItemStack singleArrow = itemArrow.clone();
-        singleArrow.setAmount(1);
         ItemStack bow = event.getBow();
         assert bow != null;
 
-        Runnable shoot = () -> shootArrowTask(player, arrowDirection, bow, singleArrow, identifier, arrowClass);
+        Vector arrowDirection = event.getProjectile().getVelocity();
+        Runnable shoot = () -> shootArrowTask(player, arrowDirection, bow, itemArrow, identifier, arrowClass);
 
         // TODO: Change to runTaskLater when each shot begins to call bow event
         BukkitTask task = Bukkit.getScheduler().runTaskTimer(Initializer.plugin, shoot, 0, 1);
@@ -99,11 +99,11 @@ public class RapidFireBowListener implements Listener {
             Player player,
             Vector arrowDirection,
             ItemStack bow,
-            ItemStack singleArrow,
+            ItemStack arrows,
             String identifier,
             Class<? extends Projectile> arrowClass
     ) {
-        if (!player.getInventory().containsAtLeast(singleArrow, 1)) {
+        if (!player.getInventory().containsAtLeast(arrows, 1)) {
             stopShooting(player.getUniqueId());
             return;
         }
@@ -125,8 +125,7 @@ public class RapidFireBowListener implements Listener {
         }
 
         if (bow.getEnchantmentLevel(Enchantment.ARROW_INFINITE) == 0) {
-            player.getInventory().removeItem(singleArrow);
-            player.updateInventory();
+            arrows.setAmount(arrows.getAmount() - 1);
         } else {
             abstractArrow.setPickupStatus(AbstractArrow.PickupStatus.CREATIVE_ONLY);
         }
@@ -139,7 +138,6 @@ public class RapidFireBowListener implements Listener {
             damageBow(player, bow);
         }
 
-        // TODO: add EntityShootBowEvent call here and modify runnable
         PlayerItemDamageEvent event = new PlayerItemDamageEvent(player, bow, damage);
         Bukkit.getPluginManager().callEvent(event);
     }
