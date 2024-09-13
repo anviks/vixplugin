@@ -90,12 +90,6 @@ public class RapidFireBowListener implements Listener {
         shootingPlayers.put(player.getUniqueId(), task);
     }
 
-    @EventHandler
-    public void dmg(PlayerItemDamageEvent event) {
-        Bukkit.broadcast(Component.text(event.getDamage()));
-        Bukkit.broadcast(Component.text(event.getOriginalDamage()));
-    }
-
     private void shootArrowTask(
             Player player,
             Vector arrowDirection,
