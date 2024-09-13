@@ -1,34 +1,32 @@
 package me.captainpotatoaim.myplugin.enderman;
 
+import me.captainpotatoaim.myplugin.custom_items.CustomItem;
 import me.captainpotatoaim.myplugin.custom_items.teleport_arrows.TeleportArrow;
-import org.bukkit.*;
+import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Waterlogged;
-import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
 
 public class ArrowListener implements Listener {
 
     @EventHandler
     void onArrowHit(ProjectileHitEvent event) {
         Projectile projectile = event.getEntity();
-
-        if (!(projectile instanceof AbstractArrow)) return;
-
-        if (projectile.getPersistentDataContainer()
-                .equals(TeleportArrow.tpArrow(1)
-                        .getItemMeta()
-                        .getPersistentDataContainer())) return;
+        if (!CustomItem.isOfType(projectile, TeleportArrow.class)) return;
 
         Entity hitEntity = event.getHitEntity();
-
         if (hitEntity == null) return;
 
         if (BecomeEnderman.endermenPlayers.contains(hitEntity.getUniqueId())) {
