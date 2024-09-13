@@ -1,6 +1,7 @@
 package me.captainpotatoaim.myplugin.custom_items.teleport_arrows;
 
 import me.captainpotatoaim.myplugin.custom_items.CustomItem;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,7 +14,7 @@ public class TeleportArrowLand implements Listener {
 
     @EventHandler
     public void onArrowShot(EntityShootBowEvent event) {
-        if (TeleportArrow.getItem(1).isSimilar(event.getConsumable())) {
+        if (CustomItem.isOfType(event.getConsumable(), TeleportArrow.class)) {
             CustomItem.setType(event.getProjectile(), TeleportArrow.class);
         }
     }
@@ -24,7 +25,7 @@ public class TeleportArrowLand implements Listener {
             return;
         }
 
-        if (arrow.getPersistentDataContainer().equals(TeleportArrow.getItem(1).getItemMeta().getPersistentDataContainer())) {
+        if (CustomItem.isOfType(arrow, TeleportArrow.class)) {
             event.setCancelled(true);
             Player player = (Player) arrow.getShooter();
             assert player != null;

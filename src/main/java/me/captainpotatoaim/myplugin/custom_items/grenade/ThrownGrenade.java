@@ -11,12 +11,13 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.ExpBottleEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
 import java.util.UUID;
 
 public class ThrownGrenade implements Listener {
-    public HashMap<UUID, Integer> liveGrenades = new HashMap<>();
+    private final HashMap<UUID, BukkitTask> liveGrenades = new HashMap<>();
 
 //    public ThrownGrenade() {
 //        RegisteredListener registeredListener = new RegisteredListener(this, (listener, event) -> onEvent(event), EventPriority.NORMAL, JavaPlugin.getPlugin(Initializer.class), false);
@@ -38,11 +39,10 @@ public class ThrownGrenade implements Listener {
         if (CustomItem.isOfType(itemDrop.getItemStack(), Grenade.class)) {
             Runnable task = () -> event.getPlayer().getWorld().createExplosion(itemDrop.getLocation(), 10);
             UUID uuid = itemDrop.getUniqueId();
-            int taskId = Bukkit.getScheduler()
-                    .runTaskLater(Initializer.plugin, task, 100)
-                    .getTaskId();
+            BukkitTask bukkitTask = Bukkit.getScheduler()
+                    .runTaskLater(Initializer.plugin, task, 100);
 
-            liveGrenades.put(uuid, taskId);
+            liveGrenades.put(uuid, bukkitTask);
         }
     }
 
@@ -80,9 +80,9 @@ public class ThrownGrenade implements Listener {
 
     private void tryCancelGrenadeExplosion(Item item) {
         UUID itemId = item.getUniqueId();
-        if (liveGrenades.containsKey(itemId)) {
-            Bukkit.getScheduler().cancelTask(liveGrenades.get(itemId));
-            liveGrenades.remove(itemId);
+        BukkitTask task = liveGrenades.remove(itemId);
+        if (task != null) {
+            task.cancel();
         }
     }
 }
