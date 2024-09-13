@@ -10,7 +10,7 @@ public class GiveMultiTool implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (sender.isOp() && sender instanceof Player player) {
-            player.getInventory().addItem(MultiTool.getMultiTool());
+            player.getInventory().addItem(MultiTool.getItem());
         }
 
         return true;
