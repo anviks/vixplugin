@@ -1,6 +1,8 @@
 package me.captainpotatoaim.myplugin.custom_items.rapid_fire_bow;
 
+import com.google.gson.Gson;
 import me.captainpotatoaim.myplugin.Initializer;
+import me.captainpotatoaim.myplugin.custom_items.CustomItem;
 import me.captainpotatoaim.myplugin.util.Tagger;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
@@ -13,34 +15,21 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class BowListener implements Listener {
+public class RapidFireBowListener implements Listener {
     private final HashMap<UUID, Integer> shootingPlayers = new HashMap<>();
 
     @EventHandler
     void onBowShoot(EntityShootBowEvent event) {
-        if (!(event.getEntity() instanceof Player player)) {
-            return;
+        if (CustomItem.isOfType(event.getBow(), RapidFireBow.class) && event.getEntity() instanceof Player player) {
+            shootArrows(player, event.getProjectile().getVelocity(), event);
         }
-
-        ItemStack heldItem = event.getBow();
-        Damageable heldBowMeta = (Damageable) heldItem.getItemMeta();
-        ItemStack bow = Bow.getBow();
-        Damageable bowMeta = (Damageable) bow.getItemMeta();
-        bowMeta.setDamage(heldBowMeta.getDamage());
-        heldBowMeta.getEnchants().forEach((enchantment, level) -> bowMeta.addEnchant(enchantment, level, true));
-        bow.setItemMeta(bowMeta);
-
-        if (!heldItem.isSimilar(bow)) {
-            return;
-        }
-
-        shootArrows(player, event.getProjectile().getVelocity(), event);
     }
 
     @EventHandler
@@ -92,26 +81,28 @@ public class BowListener implements Listener {
             }
         }
 
-        String identifier = itemArrow.getItemMeta().getPersistentDataContainer().get(Tagger.KEY, PersistentDataType.STRING);
+        PersistentDataContainer persistentDataContainer = itemArrow.getItemMeta().getPersistentDataContainer();
+        String identifier = persistentDataContainer.get(Tagger.CUSTOM_ITEM_KEY, PersistentDataType.STRING);
         ItemStack singleArrow = itemArrow.clone();
         singleArrow.setAmount(1);
         ItemStack bow = event.getBow();
         assert bow != null;
 
         Runnable shoot = () -> shootArrowTask(player, arrowDirection, bow, singleArrow, identifier, arrowClass);
-        Bukkit.broadcastMessage(bow.getItemMeta().getPersistentDataContainer().getKeys().toString());
 
         // TODO: Change to runTaskLater when each shot begins to call bow event
         BukkitTask task = Bukkit.getScheduler().runTaskTimer(Initializer.plugin, shoot, 0, 1);
         shootingPlayers.put(player.getUniqueId(), task.getTaskId());
     }
 
-    private void shootArrowTask(Player player,
-                                Vector arrowDirection,
-                                ItemStack bow,
-                                ItemStack singleArrow,
-                                String identifier,
-                                Class<? extends Projectile> arrowClass) {
+    private void shootArrowTask(
+            Player player,
+            Vector arrowDirection,
+            ItemStack bow,
+            ItemStack singleArrow,
+            String identifier,
+            Class<? extends Projectile> arrowClass
+    ) {
         if (!player.getInventory().containsAtLeast(singleArrow, 1)) {
             stopShooting(player.getUniqueId());
             return;
@@ -123,7 +114,7 @@ public class BowListener implements Listener {
         arrow.setVelocity(arrowDirection);
 
         if (identifier != null) {
-            Tagger.tagEntity(arrow, identifier);
+            Tagger.addIdentifier(arrow, identifier);
         }
 
         AbstractArrow abstractArrow = (AbstractArrow) arrow;
