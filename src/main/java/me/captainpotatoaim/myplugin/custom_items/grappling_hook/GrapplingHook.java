@@ -5,7 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 class GrapplingHook {
-    static ItemStack getHook() {
+    static ItemStack getItem() {
         var hook = new ItemStack(Material.FISHING_ROD);
         var meta = hook.getItemMeta();
         assert meta != null;

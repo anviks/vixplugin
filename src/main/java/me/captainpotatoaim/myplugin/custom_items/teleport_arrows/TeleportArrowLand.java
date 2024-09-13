@@ -13,7 +13,7 @@ public class TeleportArrowLand implements Listener {
 
     @EventHandler
     public void onArrowShot(EntityShootBowEvent event) {
-        if (TeleportArrow.tpArrow(1).isSimilar(event.getConsumable())) {
+        if (TeleportArrow.getItem(1).isSimilar(event.getConsumable())) {
             CustomItem.setType(event.getProjectile(), TeleportArrow.class);
         }
     }
@@ -24,7 +24,7 @@ public class TeleportArrowLand implements Listener {
             return;
         }
 
-        if (arrow.getPersistentDataContainer().equals(TeleportArrow.tpArrow(1).getItemMeta().getPersistentDataContainer())) {
+        if (arrow.getPersistentDataContainer().equals(TeleportArrow.getItem(1).getItemMeta().getPersistentDataContainer())) {
             event.setCancelled(true);
             Player player = (Player) arrow.getShooter();
             assert player != null;

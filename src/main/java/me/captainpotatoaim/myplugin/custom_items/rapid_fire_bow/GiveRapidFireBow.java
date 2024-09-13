@@ -10,7 +10,7 @@ public class GiveRapidFireBow implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (sender.isOp() && sender instanceof Player player) {
-            player.getInventory().addItem(RapidFireBow.getBow());
+            player.getInventory().addItem(RapidFireBow.getItem());
         }
 
         return true;

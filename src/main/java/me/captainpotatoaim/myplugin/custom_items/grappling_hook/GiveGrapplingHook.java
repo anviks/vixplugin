@@ -10,7 +10,7 @@ public class GiveGrapplingHook implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (sender instanceof Player player) {
-            player.getInventory().addItem(GrapplingHook.getHook());
+            player.getInventory().addItem(GrapplingHook.getItem());
         }
 
         return true;

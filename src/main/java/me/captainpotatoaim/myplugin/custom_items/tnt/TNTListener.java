@@ -48,7 +48,7 @@ public class TNTListener implements Listener {
 
         event.setDropItems(false);
         double fuseSeconds = placedTNTs.get(blockLocation) / 20.0;
-        ItemStack drop = CustomFuseTNT.create(1, fuseSeconds);
+        ItemStack drop = CustomFuseTNT.getItem(1, fuseSeconds);
         blockLocation.getWorld().dropItemNaturally(blockLocation, drop);
 
         placedTNTs.remove(blockLocation);

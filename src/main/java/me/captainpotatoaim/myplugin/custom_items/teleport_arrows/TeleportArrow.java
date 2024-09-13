@@ -8,7 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class TeleportArrow {
-    public static ItemStack tpArrow(int count) {
+    public static ItemStack getItem(int count) {
         ItemStack tpArrow = new ItemStack(Material.ARROW, count);
         ItemMeta tpArrowMeta = tpArrow.getItemMeta();
         assert tpArrowMeta != null;

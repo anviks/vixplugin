@@ -22,7 +22,7 @@ public class GrapplingHookListener implements Listener {
         if (!player.getInventory()
                 .getItemInMainHand()
                 .getItemMeta()
-                .equals(GrapplingHook.getHook().getItemMeta())) {
+                .equals(GrapplingHook.getItem().getItemMeta())) {
             return;
         }
 

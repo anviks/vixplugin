@@ -5,7 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public class RapidFireBow {
-    static ItemStack getBow() {
+    static ItemStack getItem() {
         ItemStack bow = new ItemStack(Material.BOW);
         var meta = bow.getItemMeta();
         assert meta != null;

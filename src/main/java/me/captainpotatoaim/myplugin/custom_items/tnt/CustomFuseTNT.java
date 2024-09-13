@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 
 public class CustomFuseTNT {
-    static ItemStack create(int amount, double fuseSeconds) {
+    static ItemStack getItem(int amount, double fuseSeconds) {
         ItemStack item = new ItemStack(Material.TNT, amount);
         var meta = item.getItemMeta();
         assert meta != null;
@@ -18,7 +18,7 @@ public class CustomFuseTNT {
         return item;
     }
 
-    static ItemStack create(double fuseSeconds) {
-        return create(1, fuseSeconds);
+    static ItemStack getItem(double fuseSeconds) {
+        return getItem(1, fuseSeconds);
     }
 }

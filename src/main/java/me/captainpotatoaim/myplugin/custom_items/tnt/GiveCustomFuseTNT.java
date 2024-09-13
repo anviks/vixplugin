@@ -33,7 +33,7 @@ public class GiveCustomFuseTNT implements CommandExecutor {
         }
 
         seconds = Math.round(seconds * 20) / 20.0;
-        ItemStack itemStack = amount > -1 ? CustomFuseTNT.create(amount, seconds) : CustomFuseTNT.create(seconds);
+        ItemStack itemStack = amount > -1 ? CustomFuseTNT.getItem(amount, seconds) : CustomFuseTNT.getItem(seconds);
         player.getInventory().addItem(itemStack);
 
         return true;

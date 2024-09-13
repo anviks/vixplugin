@@ -30,7 +30,7 @@ public class GiveTeleportArrow implements CommandExecutor {
         }
 
         try {
-            player.getInventory().addItem(TeleportArrow.tpArrow(Integer.parseInt(args[0])));
+            player.getInventory().addItem(TeleportArrow.getItem(Integer.parseInt(args[0])));
         } catch (NumberFormatException e) {
             sender.sendMessage(ChatColor.RED + "Enter a fucking number plz.");
         }
