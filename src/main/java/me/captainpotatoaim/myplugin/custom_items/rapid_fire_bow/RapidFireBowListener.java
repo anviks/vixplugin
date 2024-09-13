@@ -15,8 +15,11 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionType;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
@@ -28,8 +31,8 @@ public class RapidFireBowListener implements Listener {
     @EventHandler
     void onBowShoot(EntityShootBowEvent event) {
         if (CustomItem.isOfType(event.getBow(), RapidFireBow.class)
-                && event.getEntity() instanceof Player player
-                && !shootingPlayers.containsKey(player.getUniqueId())) {
+                && event.getEntity() instanceof Player player) {
+            event.setCancelled(true);
             shootArrows(player, event);
         }
     }
@@ -70,9 +73,8 @@ public class RapidFireBowListener implements Listener {
         Class<? extends AbstractArrow> arrowClass;
 
         switch (material) {
-            case ARROW -> arrowClass = Arrow.class;
+            case ARROW, TIPPED_ARROW -> arrowClass = Arrow.class;
             case SPECTRAL_ARROW -> arrowClass = SpectralArrow.class;
-            case TIPPED_ARROW -> arrowClass = TippedArrow.class;
             default -> {
                 return;
             }
@@ -84,9 +86,8 @@ public class RapidFireBowListener implements Listener {
         assert bow != null;
 
         Vector arrowDirection = event.getProjectile().getVelocity();
-        Runnable shoot = () -> shootArrowTask(player, arrowDirection, bow, itemArrow, identifier, arrowClass, event);
-
-        BukkitTask task = Bukkit.getScheduler().runTaskTimer(Initializer.plugin, shoot, 10, 10);
+        Runnable shoot = () -> shootArrowTask(player, arrowDirection, bow, itemArrow, identifier, arrowClass);
+        BukkitTask task = Bukkit.getScheduler().runTaskTimer(Initializer.plugin, shoot, 0, 10);
         shootingPlayers.put(player.getUniqueId(), task);
     }
 
@@ -94,48 +95,47 @@ public class RapidFireBowListener implements Listener {
             Player player,
             Vector arrowDirection,
             ItemStack bow,
-            ItemStack arrows,
+            ItemStack arrowItem,
             String identifier,
-            Class<? extends Projectile> arrowClass,
-            EntityShootBowEvent originalEvent
+            Class<? extends AbstractArrow> arrowClass
     ) {
-        if (!player.getInventory().containsAtLeast(arrows, 1)) {
+        if (!player.getInventory().containsAtLeast(arrowItem, 1)) {
             stopShooting(player);
             return;
         }
 
         changeArrowDirection(arrowDirection, player);
         applyRandomOffset(arrowDirection);
-        Projectile arrow = player.launchProjectile(arrowClass, arrowDirection);
+        AbstractArrow arrowEntity = player.launchProjectile(arrowClass, arrowDirection, (var arrow) -> {
+            if (arrowItem.getType() == Material.TIPPED_ARROW) {
+                var meta = (PotionMeta) arrowItem.getItemMeta();
+                PotionType basePotion = meta.getBasePotionType();
+                List<PotionEffect> potionEffects = meta.getCustomEffects();
+
+                var tippedArrowEntity = (Arrow) arrow;
+                tippedArrowEntity.setBasePotionType(basePotion);
+                for (PotionEffect effect : potionEffects) {
+                    tippedArrowEntity.addCustomEffect(effect, true);
+                }
+            }
+        });
+
+        double pitch = arrowDirection.length() / 10 + 0.8;
+        arrowEntity.getWorld().playSound(arrowEntity.getLocation(), Sound.ENTITY_ARROW_SHOOT, 1, (float) pitch);
 
         if (identifier != null) {
-            Tagger.addIdentifier(arrow, identifier);
+            Tagger.addIdentifier(arrowEntity, identifier);
         }
 
-        AbstractArrow abstractArrow = (AbstractArrow) arrow;
-
-        Bukkit.getScheduler().runTaskLater(Initializer.plugin, () -> {
-            EntityShootBowEvent event1 = new EntityShootBowEvent(
-                    player,
-                    bow,
-                    arrows,
-                    abstractArrow,
-                    originalEvent.getHand(),
-                    originalEvent.getForce(),
-                    originalEvent.shouldConsumeItem()
-            );
-            Bukkit.getPluginManager().callEvent(event1);
-        }, 1);
-
         if (player.getGameMode() == GameMode.CREATIVE) {
-            abstractArrow.setPickupStatus(AbstractArrow.PickupStatus.CREATIVE_ONLY);
+            arrowEntity.setPickupStatus(AbstractArrow.PickupStatus.CREATIVE_ONLY);
             return;
         }
 
         if (bow.getEnchantmentLevel(Enchantment.ARROW_INFINITE) == 0) {
-            arrows.setAmount(arrows.getAmount() - 1);
+            arrowItem.setAmount(arrowItem.getAmount() - 1);
         } else {
-            abstractArrow.setPickupStatus(AbstractArrow.PickupStatus.CREATIVE_ONLY);
+            arrowEntity.setPickupStatus(AbstractArrow.PickupStatus.CREATIVE_ONLY);
         }
 
         int unbreakingLevel = bow.getEnchantmentLevel(Enchantment.DURABILITY);
@@ -146,8 +146,8 @@ public class RapidFireBowListener implements Listener {
             damageBow(player, bow);
         }
 
-        PlayerItemDamageEvent event = new PlayerItemDamageEvent(player, bow, damage, 1);
-        Bukkit.getPluginManager().callEvent(event);
+        PlayerItemDamageEvent damageEvent = new PlayerItemDamageEvent(player, bow, damage, 1);
+        Bukkit.getPluginManager().callEvent(damageEvent);
     }
 
     private static void changeArrowDirection(Vector arrowDirection, Player player) {
