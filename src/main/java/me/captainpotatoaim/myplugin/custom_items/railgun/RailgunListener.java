@@ -1,6 +1,6 @@
 package me.captainpotatoaim.myplugin.custom_items.railgun;
 
-import me.captainpotatoaim.myplugin.util.Tagger;
+import me.captainpotatoaim.myplugin.custom_items.CustomItem;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -10,10 +10,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 
-public class TridentListener implements Listener {
+public class RailgunListener implements Listener {
 
     @EventHandler
     public void onTridentThrown(ProjectileLaunchEvent event) {
@@ -37,8 +36,7 @@ public class TridentListener implements Listener {
             return;
         }
 
-        String shotTridentIdentifier = shotTrident.getItemMeta().getPersistentDataContainer().get(Tagger.KEY, PersistentDataType.STRING);
-        if (!Railgun.IDENTIFIER.equals(shotTridentIdentifier)) {
+        if (!CustomItem.isOfType(shotTrident, Railgun.class)) {
             return;
         }
 
@@ -47,7 +45,7 @@ public class TridentListener implements Listener {
         Location explosion = shooter.getLocation();
 
         explosion = explosion.add(shot.multiply(1.8)).add(0, 2, 0);
-        for (int i = 0; i < 400; i++) {
+        for (int i = 0; i < 150; i++) {
             explosion = explosion.add(shot);
             shooter.getWorld().createExplosion(explosion, 2.6f, true, true, shooter);
         }

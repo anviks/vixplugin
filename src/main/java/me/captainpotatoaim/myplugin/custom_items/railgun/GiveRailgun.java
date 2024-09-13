@@ -18,7 +18,7 @@ public class GiveRailgun implements CommandExecutor {
 
         if (args.length == 0) {
             if (sender instanceof Player player) {
-                player.getInventory().addItem(Railgun.getRailgun());
+                player.getInventory().addItem(Railgun.getItem());
             } else {
                 sender.sendMessage(ChatColor.RED + "Where is the railgun supposed to be placed? "
                         + sender.getName() + " doesn't have an inventory.");
@@ -26,7 +26,7 @@ public class GiveRailgun implements CommandExecutor {
         } else {
             Player player = sender.getServer().getPlayerExact(args[0]);
             if (player != null) {
-                player.getInventory().addItem(Railgun.getRailgun());
+                player.getInventory().addItem(Railgun.getItem());
             } else {
                 sender.sendMessage(ChatColor.RED + "Enter a valid name please.");
             }
