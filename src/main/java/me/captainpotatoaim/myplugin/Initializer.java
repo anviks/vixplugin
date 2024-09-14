@@ -65,7 +65,7 @@ public final class Initializer extends JavaPlugin {
 
         plugin = getPlugin(Initializer.class);
         defaultWorlds = getServer().getWorlds();
-        ProtectedAreas.loadAreas();
+//        ProtectedAreas.loadAreas();
 
         registerCommands();
         registerEvents();
@@ -90,7 +90,7 @@ public final class Initializer extends JavaPlugin {
             put("giveexplosivearrow", new GiveExplosiveArrow());
             put("god", new GodMode());
             put("enchantanything", new EnchantAnything());
-            put("sandbox", new SandboxMainCommand());
+//            put("sandbox", new SandboxMainCommand());
             put("giverailgun", new GiveRailgun());
             put("giveteleportarrow", new GiveTeleportArrow());
             put("creep", new CreeperPrank());
@@ -101,8 +101,8 @@ public final class Initializer extends JavaPlugin {
             put("rapid-bow", new GiveRapidFireBow());
             put("vanish", new Vanish());
             put("ender-toggle", new BecomeEnderman());
-            put("protect", new ProtectArea());
-            put("unprotect", new UnprotectArea());
+//            put("protect", new ProtectArea());
+//            put("unprotect", new UnprotectArea());
             put("give-multi-tool", new GiveMultiTool());
             put("give-custom-fuse-tnt", new GiveCustomFuseTNT());
             put("world", new ChangeWorlds());
@@ -157,24 +157,24 @@ public final class Initializer extends JavaPlugin {
     @Override
     public void onDisable() {
         Bukkit.broadcastMessage("Disabling...");
-        ProtectedAreas.saveAreas();
+//        ProtectedAreas.saveAreas();
 
-        for (Player player : getServer().getOnlinePlayers()) {
-            if (!defaultWorlds.contains(player.getWorld())) {
-                SandboxJoinCommand.sandboxedPlayers.get(player.getUniqueId()).revertPlayerState();
-            }
-        }
+//        for (Player player : getServer().getOnlinePlayers()) {
+//            if (!defaultWorlds.contains(player.getWorld())) {
+//                SandboxJoinCommand.sandboxedPlayers.get(player.getUniqueId()).revertPlayerState();
+//            }
+//        }
 
-        for (World world : getServer().getWorlds()) {
-            if (!defaultWorlds.contains(world)) {
-                Bukkit.unloadWorld(world, false);
-                try {
-                    FileUtils.deleteDirectory(world.getWorldFolder());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
+//        for (World world : getServer().getWorlds()) {
+//            if (!defaultWorlds.contains(world)) {
+//                Bukkit.unloadWorld(world, false);
+//                try {
+//                    FileUtils.deleteDirectory(world.getWorldFolder());
+//                } catch (IOException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }
+//        }
 
     }
 }

@@ -33,9 +33,9 @@ public class BlockListener implements Listener {
 
         for (Block b : blocksClone) {
             Location location = b.getLocation();
-            if (ProtectedAreas.isProtected(location)) {
-                blocks.remove(b);
-            }
+//            if (ProtectedAreas.isProtected(location)) {
+//                blocks.remove(b);
+//            }
         }
     }
 
@@ -50,10 +50,10 @@ public class BlockListener implements Listener {
     }
 
     private static <T extends BlockEvent & Cancellable> void cancelIfProtected(T event) {
-        Location location = event.getBlock().getLocation();
-
-        if (ProtectedAreas.isProtected(location)) {
-            event.setCancelled(true);
-        }
+//        Location location = event.getBlock().getLocation();
+//
+//        if (ProtectedAreas.isProtected(location)) {
+//            event.setCancelled(true);
+//        }
     }
 }

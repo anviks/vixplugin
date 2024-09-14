@@ -3,27 +3,33 @@ package me.captainpotatoaim.myplugin.custom_items.rapid_fire_bow;
 import me.captainpotatoaim.myplugin.Initializer;
 import me.captainpotatoaim.myplugin.custom_items.CustomItem;
 import me.captainpotatoaim.myplugin.util.Tagger;
-import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.*;
+import org.bukkit.entity.AbstractArrow;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.SpectralArrow;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemDamageEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class RapidFireBowListener implements Listener {
     private final Map<UUID, BukkitTask> shootingPlayers = new HashMap<>();
@@ -110,13 +116,9 @@ public class RapidFireBowListener implements Listener {
             if (arrowItem.getType() == Material.TIPPED_ARROW) {
                 var meta = (PotionMeta) arrowItem.getItemMeta();
                 PotionType basePotion = meta.getBasePotionType();
-                List<PotionEffect> potionEffects = meta.getCustomEffects();
 
                 var tippedArrowEntity = (Arrow) arrow;
                 tippedArrowEntity.setBasePotionType(basePotion);
-                for (PotionEffect effect : potionEffects) {
-                    tippedArrowEntity.addCustomEffect(effect, true);
-                }
             }
         });
 
