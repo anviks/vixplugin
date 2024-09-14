@@ -134,13 +134,13 @@ public class RapidFireBowListener implements Listener {
             return;
         }
 
-        if (bow.getEnchantmentLevel(Enchantment.ARROW_INFINITE) == 0) {
+        if (bow.getEnchantmentLevel(Enchantment.INFINITY) == 0) {
             arrowItem.setAmount(arrowItem.getAmount() - 1);
         } else {
             arrowEntity.setPickupStatus(AbstractArrow.PickupStatus.CREATIVE_ONLY);
         }
 
-        int unbreakingLevel = bow.getEnchantmentLevel(Enchantment.DURABILITY);
+        int unbreakingLevel = bow.getEnchantmentLevel(Enchantment.UNBREAKING);
         boolean shouldDamage = Math.random() < 1.0 / (unbreakingLevel + 1);
         int damage = shouldDamage ? 1 : 0;
 
@@ -185,7 +185,7 @@ public class RapidFireBowListener implements Listener {
             player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1, pitch);
             Location eyes = player.getEyeLocation();
             Vector direction = eyes.getDirection();
-            player.spawnParticle(Particle.ITEM_CRACK,
+            player.spawnParticle(Particle.ITEM,
                     eyes.add(direction.multiply(0.5)),
                     5,
                     0.1,

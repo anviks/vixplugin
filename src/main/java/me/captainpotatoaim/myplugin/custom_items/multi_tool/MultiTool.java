@@ -15,9 +15,9 @@ public class MultiTool {
         assert meta != null;
         meta.setDisplayName("Multi-tool");
         meta.setLore(List.of("One tool to fit all your needs."));
-        meta.addEnchant(Enchantment.DIG_SPEED, 5, false);
+        meta.addEnchant(Enchantment.EFFICIENCY, 5, false);
         meta.addEnchant(Enchantment.MENDING, 1, false);
-        meta.addEnchant(Enchantment.DURABILITY, 3, false);
+        meta.addEnchant(Enchantment.UNBREAKING, 3, false);
         tool.setItemMeta(meta);
         CustomItem.setType(tool, MultiTool.class);
 

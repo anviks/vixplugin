@@ -40,7 +40,7 @@ public class Freeze implements CommandExecutor {
             if (args.length == 1) {
                 PermissionAttachment attachment = JoinMessage.permissions.get(target.getUniqueId());
                 attachment.setPermission("vix.move", false);
-                target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 1_892_160_000, 0));
+                target.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 1_892_160_000, 0));
                 target.setFreezeTicks(Integer.MAX_VALUE);
                 sender.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + target.getDisplayName() + " has been frozen.");
                 target.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "You have been frozen.");
@@ -74,7 +74,7 @@ public class Freeze implements CommandExecutor {
 
             PermissionAttachment attachment = JoinMessage.permissions.get(target.getUniqueId());
             attachment.setPermission("vix.move", false);
-            target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, ticks, 0));
+            target.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, ticks, 0));
             target.setFreezeTicks(Integer.MAX_VALUE);
             sender.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + target.getDisplayName() + " has been frozen.");
             target.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "You have been frozen.");

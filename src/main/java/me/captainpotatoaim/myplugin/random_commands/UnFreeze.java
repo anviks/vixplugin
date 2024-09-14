@@ -41,7 +41,7 @@ public class UnFreeze implements CommandExecutor {
 
         PermissionAttachment attachment = JoinMessage.permissions.get(target.getUniqueId());
         attachment.setPermission("vix.move", true);
-        target.removePotionEffect(PotionEffectType.SLOW);
+        target.removePotionEffect(PotionEffectType.SLOWNESS);
         target.setFreezeTicks(100);
         target.getServer().getScheduler().cancelTask(1);
 

@@ -56,7 +56,7 @@ public class TNTListener implements Listener {
 
     @EventHandler
     public void onTNTLight(EntitySpawnEvent event) {
-        if (event.getEntity().getType() == EntityType.PRIMED_TNT) {
+        if (event.getEntity().getType() == EntityType.TNT) {
             Location litLocation = event.getLocation().subtract(0.5, 0, 0.5);
             if (placedTNTs.containsKey(litLocation)) {
                 TNTPrimed tnt = (TNTPrimed) event.getEntity();

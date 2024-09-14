@@ -31,18 +31,6 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <artifactSet>
-                                <includes>
-                                    <include>me.lucko:commodore</include>
-                                </includes>
-                            </artifactSet>
-                            <!--                            <relocations>-->
-                            <!--                                <relocation>-->
-                            <!--                                    <pattern>me.lucko.commodore</pattern>-->
-                            <!--                                    &lt;!&ndash; vvv Replace with the package of your plugin vvv &ndash;&gt;-->
-                            <!--                                    <shadedPattern>me.captainpotatoaim.myplugin</shadedPattern>-->
-                            <!--                                </relocation>-->
-                            <!--                            </relocations>-->
                         </configuration>
                     </execution>
                 </executions>
@@ -52,7 +40,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.3.1</version>
                 <configuration>
-                    <outputDirectory>C:\Users\Andreas Viks\Desktop\MC Servers\Paper 1.20.4\plugins</outputDirectory>
+                    <outputDirectory>C:\Users\Andreas Viks\Desktop\MC Servers\Paper 1.21.1\plugins</outputDirectory>
                 </configuration>
             </plugin>
             <plugin>
@@ -113,7 +101,7 @@
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.20.4-R0.1-SNAPSHOT</version>
+            <version>1.21.1-R0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.mojang</groupId>
@@ -125,12 +113,6 @@
             <artifactId>commons-io</artifactId>
             <version>2.11.0</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.jetbrains.kotlin</groupId>-->
-<!--            <artifactId>kotlin-test-junit</artifactId>-->
-<!--            <version>1.6.20</version>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
@@ -151,11 +133,6 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
             <version>2.14.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>webjars-locator-core</artifactId>
-            <version>0.52</version>
         </dependency>
     </dependencies>
 </project>

@@ -14,7 +14,7 @@ public class Railgun {
         ItemMeta railGunMeta = railGun.getItemMeta();
         assert railGunMeta != null;
         railGunMeta.setDisplayName(GRAY + "R" + YELLOW + "A" + GRAY + "I" + YELLOW + "L" + GRAY + "G" + YELLOW + "U" + GRAY + "N");
-        railGunMeta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+        railGunMeta.addEnchant(Enchantment.INFINITY, 1, true);
         railGun.setItemMeta(railGunMeta);
         CustomItem.setType(railGun, Railgun.class);
 

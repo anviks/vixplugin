@@ -12,7 +12,7 @@ public class TeleportArrow {
         ItemStack tpArrow = new ItemStack(Material.ARROW, count);
         ItemMeta tpArrowMeta = tpArrow.getItemMeta();
         assert tpArrowMeta != null;
-        tpArrowMeta.addEnchant(Enchantment.LUCK, 1, true);
+        tpArrowMeta.addEnchant(Enchantment.LUCK_OF_THE_SEA, 1, true);
         tpArrowMeta.setDisplayName(ChatColor.DARK_AQUA + "Teleport arrow");
         tpArrow.setItemMeta(tpArrowMeta);
         CustomItem.setType(tpArrow, TeleportArrow.class);

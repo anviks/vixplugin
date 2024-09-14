@@ -22,7 +22,7 @@ public class ExplosiveArrow {
         ItemMeta arrowMeta = arrows.getItemMeta();
         assert arrowMeta != null;
         arrowMeta.setDisplayName(ChatColor.YELLOW + "Explosive Arrow");
-        arrowMeta.addEnchant(Enchantment.ARROW_INFINITE, 1, false);
+        arrowMeta.addEnchant(Enchantment.INFINITY, 1, false);
         arrows.setItemMeta(arrowMeta);
         CustomItem.setType(arrows, ExplosiveArrow.class);
 
