@@ -12,7 +12,7 @@
     <name>Vixplugin</name>
 
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>21</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kotlin.version>1.8.21</kotlin.version>
     </properties>
@@ -52,7 +52,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.3.1</version>
                 <configuration>
-                    <outputDirectory>C:\Users\Andreas Viks\Desktop\MC Servers\Spigot 1.19.4\plugins</outputDirectory>
+                    <outputDirectory>C:\Users\Andreas Viks\Desktop\MC Servers\Paper 1.20.4\plugins</outputDirectory>
                 </configuration>
             </plugin>
             <plugin>
@@ -76,8 +76,8 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <source>16</source>
-                    <target>16</target>
+                    <source>21</source>
+                    <target>21</target>
                 </configuration>
             </plugin>
         </plugins>
@@ -90,13 +90,9 @@
     </build>
 
     <repositories>
-<!--        <repository>-->
-<!--            <id>papermc-repo</id>-->
-<!--            <url>https://repo.papermc.io/repository/maven-public/</url>-->
-<!--        </repository>-->
         <repository>
-            <id>spigotmc-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+            <id>papermc-repo</id>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
         <repository>
             <id>sonatype</id>
@@ -114,22 +110,10 @@
     </repositories>
 
     <dependencies>
-<!--        <dependency>-->
-<!--            <groupId>io.papermc.paper</groupId>-->
-<!--            <artifactId>paper-api</artifactId>-->
-<!--            <version>1.21.1-R0.1-SNAPSHOT</version>-->
-<!--        </dependency>-->
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.19.4-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot</artifactId>
-            <version>1.19.4-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
+            <groupId>io.papermc.paper</groupId>
+            <artifactId>paper-api</artifactId>
+            <version>1.20.4-R0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.mojang</groupId>
