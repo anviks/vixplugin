@@ -1,0 +1,46 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm' version '1.8.21'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+}
+
+group = 'me.captainpotatoaim'
+version = '1.0'
+archivesBaseName = 'vixplugin'
+
+sourceCompatibility = '21'
+targetCompatibility = '21'
+
+repositories {
+    maven {
+        url 'https://repo.papermc.io/repository/maven-public/'
+    }
+    maven {
+        url 'https://oss.sonatype.org/content/groups/public/'
+    }
+    maven {
+        url 'https://libraries.minecraft.net'
+    }
+}
+
+dependencies {
+    implementation 'io.papermc.paper:paper-api:1.21.1-R0.1-SNAPSHOT'
+    implementation 'com.mojang:brigadier:1.0.18'
+    implementation 'commons-io:commons-io:2.11.0'
+    implementation 'org.jetbrains:annotations:24.0.1'
+    implementation 'me.lucko:commodore:2.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.1'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.14.2'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+shadowJar {
+    archiveClassifier.set('')
+}
+
+jar {
+    destinationDirectory.set(file('C:/Users/Andreas Viks/Desktop/MC Servers/Paper 1.21.1/plugins'))
+}

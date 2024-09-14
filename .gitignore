@@ -1,6 +1,5 @@
 # User-specific stuff
 .idea/
-src/main/java/me/captainpotatoaim/myplugin/custom_items/rapid_fire_bow/Test.kt
 
 *.iml
 *.ipr
@@ -112,3 +111,9 @@ buildNumber.properties
 
 # Common working directory
 run/
+
+# Gradle
+.gradle/
+build/
+!gradle-wrapper.jar
+
