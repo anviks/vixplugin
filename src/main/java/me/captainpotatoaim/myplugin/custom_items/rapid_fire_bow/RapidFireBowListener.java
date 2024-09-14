@@ -20,12 +20,14 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionType;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,7 +40,7 @@ public class RapidFireBowListener implements Listener {
     void onBowShoot(EntityShootBowEvent event) {
         if (CustomItem.isOfType(event.getBow(), RapidFireBow.class)
                 && event.getEntity() instanceof Player player) {
-            event.setCancelled(true);
+//            event.setCancelled(true);  // BUG-ACCOMMODATION-11113: commented this line
             shootArrows(player, event);
         }
     }
@@ -72,10 +74,10 @@ public class RapidFireBowListener implements Listener {
     }
 
     private void shootArrows(Player player, EntityShootBowEvent event) {
-        ItemStack itemArrow = event.getConsumable();
-        if (itemArrow == null) return;
+        ItemStack arrowItem = event.getConsumable();
+        if (arrowItem == null) return;
 
-        Material material = itemArrow.getType();
+        Material material = arrowItem.getType();
         Class<? extends AbstractArrow> arrowClass;
 
         switch (material) {
@@ -86,35 +88,41 @@ public class RapidFireBowListener implements Listener {
             }
         }
 
-        PersistentDataContainer persistentDataContainer = itemArrow.getItemMeta().getPersistentDataContainer();
+        PersistentDataContainer persistentDataContainer = arrowItem.getItemMeta().getPersistentDataContainer();
         String identifier = persistentDataContainer.get(Tagger.CUSTOM_ITEM_KEY, PersistentDataType.STRING);
-        ItemStack bow = event.getBow();
-        assert bow != null;
 
-        Vector arrowDirection = event.getProjectile().getVelocity();
-        Runnable shoot = () -> shootArrowTask(player, arrowDirection, bow, itemArrow, identifier, arrowClass);
-        BukkitTask task = Bukkit.getScheduler().runTaskTimer(Initializer.plugin, shoot, 0, 10);
+        Runnable shoot = () -> shootArrowTask(event, player, arrowItem, identifier, arrowClass);
+        BukkitTask task = Bukkit.getScheduler()
+                .runTaskTimer(Initializer.plugin, shoot, 10, 10); // BUG-ACCOMMODATION-11113: changed delay from 0 to 10
         shootingPlayers.put(player.getUniqueId(), task);
     }
 
     private void shootArrowTask(
+            EntityShootBowEvent event,
             Player player,
-            Vector arrowDirection,
-            ItemStack bow,
             ItemStack arrowItem,
             String identifier,
             Class<? extends AbstractArrow> arrowClass
     ) {
+        if (player.getGameMode() == GameMode.CREATIVE) {
+            arrowItem = removeIntangibleProjectileTag(arrowItem);
+        }
+
         if (!player.getInventory().containsAtLeast(arrowItem, 1)) {
             stopShooting(player);
             return;
         }
 
+        Vector arrowDirection = event.getProjectile().getVelocity();
         changeArrowDirection(arrowDirection, player);
         applyRandomOffset(arrowDirection);
+
+        ItemStack finalArrowItem = arrowItem;
         AbstractArrow arrowEntity = player.launchProjectile(arrowClass, arrowDirection, (var arrow) -> {
-            if (arrowItem.getType() == Material.TIPPED_ARROW) {
-                var meta = (PotionMeta) arrowItem.getItemMeta();
+            if (finalArrowItem.getType() == Material.TIPPED_ARROW) {
+                arrow.setItemStack(finalArrowItem);
+
+                var meta = (PotionMeta) finalArrowItem.getItemMeta();
                 PotionType basePotion = meta.getBasePotionType();
 
                 var tippedArrowEntity = (Arrow) arrow;
@@ -134,8 +142,10 @@ public class RapidFireBowListener implements Listener {
             return;
         }
 
+        ItemStack bow = event.getBow();
+        assert bow != null;
         if (bow.getEnchantmentLevel(Enchantment.INFINITY) == 0) {
-            arrowItem.setAmount(arrowItem.getAmount() - 1);
+            player.getInventory().removeItem(arrowItem);
         } else {
             arrowEntity.setPickupStatus(AbstractArrow.PickupStatus.CREATIVE_ONLY);
         }
@@ -150,6 +160,27 @@ public class RapidFireBowListener implements Listener {
 
         PlayerItemDamageEvent damageEvent = new PlayerItemDamageEvent(player, bow, damage, 1);
         Bukkit.getPluginManager().callEvent(damageEvent);
+    }
+
+    /**
+     * MC 1.21 introduced a new tag for arrows shot in creative mode. That tag gets added at the moment of shooting
+     * the arrow, making comparisons with it fail. This method removes the tag from the item.
+     */
+    private static @NotNull ItemStack removeIntangibleProjectileTag(@NotNull ItemStack arrowItem) {
+        String unwantedTag = "minecraft:intangible_projectile=\\{}";
+        String replacementPattern = String.format("(?<=\\[)%s,?|,%s", unwantedTag, unwantedTag);
+        ItemMeta arrowMeta = arrowItem.getItemMeta();
+
+        // Example - [minecraft:enchantments={levels: {"minecraft:efficiency": 2}},minecraft:intangible_projectile={}]
+        String componentString = arrowMeta.getAsComponentString();
+        // Example - [minecraft:enchantments={levels: {"minecraft:efficiency": 2}}]
+        componentString = componentString.replaceFirst(replacementPattern, "");
+        // Example - minecraft:arrow
+        String itemTypeKey = arrowItem.getType().getKey().toString();
+        // Example - minecraft:arrow[minecraft:enchantments={levels: {"minecraft:efficiency": 2}}]
+        String itemAsString = itemTypeKey + componentString;
+
+        return Bukkit.getItemFactory().createItemStack(itemAsString);
     }
 
     private static void changeArrowDirection(Vector arrowDirection, Player player) {
