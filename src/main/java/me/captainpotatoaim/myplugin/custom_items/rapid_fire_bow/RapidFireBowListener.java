@@ -2,7 +2,6 @@ package me.captainpotatoaim.myplugin.custom_items.rapid_fire_bow;
 
 import me.captainpotatoaim.myplugin.Initializer;
 import me.captainpotatoaim.myplugin.custom_items.CustomItem;
-import me.captainpotatoaim.myplugin.util.Tagger;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.AbstractArrow;
@@ -22,8 +21,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionType;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
@@ -88,10 +85,7 @@ public class RapidFireBowListener implements Listener {
             }
         }
 
-        PersistentDataContainer persistentDataContainer = arrowItem.getItemMeta().getPersistentDataContainer();
-        String identifier = persistentDataContainer.get(Tagger.CUSTOM_ITEM_KEY, PersistentDataType.STRING);
-
-        Runnable shoot = () -> shootArrowTask(event, player, arrowItem, identifier, arrowClass);
+        Runnable shoot = () -> shootArrowTask(event, player, arrowItem, arrowClass);
         BukkitTask task = Bukkit.getScheduler()
                 .runTaskTimer(Initializer.plugin, shoot, 10, 10); // BUG-ACCOMMODATION-11113: changed delay from 0 to 10
         shootingPlayers.put(player.getUniqueId(), task);
@@ -101,7 +95,6 @@ public class RapidFireBowListener implements Listener {
             EntityShootBowEvent event,
             Player player,
             ItemStack arrowItem,
-            String identifier,
             Class<? extends AbstractArrow> arrowClass
     ) {
         if (player.getGameMode() == GameMode.CREATIVE) {
@@ -133,9 +126,7 @@ public class RapidFireBowListener implements Listener {
         double pitch = arrowDirection.length() / 10 + 0.8;
         arrowEntity.getWorld().playSound(arrowEntity.getLocation(), Sound.ENTITY_ARROW_SHOOT, 1, (float) pitch);
 
-        if (identifier != null) {
-            Tagger.addIdentifier(arrowEntity, identifier);
-        }
+        CustomItem.copyCustomData(arrowItem, arrowEntity);
 
         if (player.getGameMode() == GameMode.CREATIVE) {
             arrowEntity.setPickupStatus(AbstractArrow.PickupStatus.CREATIVE_ONLY);

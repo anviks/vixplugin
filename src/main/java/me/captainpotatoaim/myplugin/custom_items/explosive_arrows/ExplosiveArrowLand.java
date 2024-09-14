@@ -1,7 +1,6 @@
 package me.captainpotatoaim.myplugin.custom_items.explosive_arrows;
 
 import me.captainpotatoaim.myplugin.custom_items.CustomItem;
-import me.captainpotatoaim.myplugin.util.Tagger;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
