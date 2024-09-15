@@ -97,6 +97,8 @@ public class RapidFireBowListener implements Listener {
             ItemStack arrowItem,
             Class<? extends AbstractArrow> arrowClass
     ) {
+        float arrowForce = event.getForce();
+
         if (player.getGameMode() == GameMode.CREATIVE) {
             arrowItem = removeIntangibleProjectileTag(arrowItem);
         }
@@ -106,24 +108,31 @@ public class RapidFireBowListener implements Listener {
             return;
         }
 
-        Vector arrowDirection = event.getProjectile().getVelocity();
-        changeArrowDirection(arrowDirection, player);
-        applyRandomOffset(arrowDirection);
+        Location eyeLocation = player.getEyeLocation();
+        AbstractArrow arrowEntity = player.getWorld().spawnArrow(
+                eyeLocation,
+                eyeLocation.getDirection(),
+                arrowForce,
+                1,
+                arrowClass
+        );
 
-        ItemStack finalArrowItem = arrowItem;
-        AbstractArrow arrowEntity = player.launchProjectile(arrowClass, arrowDirection, (var arrow) -> {
-            if (finalArrowItem.getType() == Material.TIPPED_ARROW) {
-                arrow.setItemStack(finalArrowItem);
+        arrowEntity.setShooter(player);
+        arrowEntity.setItemStack(arrowItem);
 
-                var meta = (PotionMeta) finalArrowItem.getItemMeta();
-                PotionType basePotion = meta.getBasePotionType();
+        if (arrowItem.getType() == Material.TIPPED_ARROW) {
+            var meta = (PotionMeta) arrowItem.getItemMeta();
+            PotionType basePotion = meta.getBasePotionType();
 
-                var tippedArrowEntity = (Arrow) arrow;
-                tippedArrowEntity.setBasePotionType(basePotion);
-            }
-        });
+            var tippedArrowEntity = (Arrow) arrowEntity;
+            tippedArrowEntity.setBasePotionType(basePotion);
+        }
 
-        double pitch = arrowDirection.length() / 10 + 0.8;
+        if (arrowForce == 3.0) {
+            arrowEntity.setCritical(true);
+        }
+
+        double pitch = arrowForce / 10 + 0.8;
         arrowEntity.getWorld().playSound(arrowEntity.getLocation(), Sound.ENTITY_ARROW_SHOOT, 1, (float) pitch);
 
         CustomItem.copyCustomData(arrowItem, arrowEntity);
@@ -172,26 +181,6 @@ public class RapidFireBowListener implements Listener {
         String itemAsString = itemTypeKey + componentString;
 
         return Bukkit.getItemFactory().createItemStack(itemAsString);
-    }
-
-    private static void changeArrowDirection(Vector arrowDirection, Player player) {
-        Vector playerDirection = player.getEyeLocation().getDirection();
-        double length = arrowDirection.length();
-
-        arrowDirection.setX(playerDirection.getX());
-        arrowDirection.setY(playerDirection.getY());
-        arrowDirection.setZ(playerDirection.getZ());
-        arrowDirection.multiply(length);
-    }
-
-    private static void applyRandomOffset(Vector arrowDirection) {
-        double randomOffset = 0.1;
-        double offsetX = (Math.random() - 0.5) * randomOffset;
-        double offsetY = (Math.random() - 0.5) * randomOffset;
-        double offsetZ = (Math.random() - 0.5) * randomOffset;
-        arrowDirection.setX(arrowDirection.getX() + offsetX);
-        arrowDirection.setY(arrowDirection.getY() + offsetY);
-        arrowDirection.setZ(arrowDirection.getZ() + offsetZ);
     }
 
     private void damageBow(Player player, ItemStack bow) {
