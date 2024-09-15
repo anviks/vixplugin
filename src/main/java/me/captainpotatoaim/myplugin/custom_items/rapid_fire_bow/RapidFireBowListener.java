@@ -85,20 +85,31 @@ public class RapidFireBowListener implements Listener {
             }
         }
 
-        Runnable shoot = () -> shootArrowTask(event, player, arrowItem, arrowClass);
-        BukkitTask task = Bukkit.getScheduler()
-                .runTaskTimer(Initializer.getPlugin(), shoot, 10, 10); // BUG-ACCOMMODATION-11113: changed delay from 0 to 10
+        ItemStack bow = event.getBow();
+        assert bow != null;
+        int quickChargeLevel = bow.getEnchantmentLevel(Enchantment.QUICK_CHARGE);
+        int shotDelay = switch (quickChargeLevel) {
+            case 0 -> 10;
+            case 1 -> 5;
+            case 2 -> 3;
+            default -> 1;
+        };
+
+        BukkitTask task = Bukkit.getScheduler().runTaskTimer(
+                Initializer.getPlugin(),
+                () -> shootArrowTask(player, bow, arrowItem, event.getForce(), arrowClass),
+                shotDelay,  // BUG-ACCOMMODATION-11113: changed delay from 0 to shotDelay
+                shotDelay);
         shootingPlayers.put(player.getUniqueId(), task);
     }
 
     private void shootArrowTask(
-            EntityShootBowEvent event,
             Player player,
+            ItemStack bow,
             ItemStack arrowItem,
+            float arrowForce,
             Class<? extends AbstractArrow> arrowClass
     ) {
-        float arrowForce = event.getForce();
-
         if (player.getGameMode() == GameMode.CREATIVE) {
             arrowItem = removeIntangibleProjectileTag(arrowItem);
         }
@@ -109,6 +120,7 @@ public class RapidFireBowListener implements Listener {
         }
 
         Location eyeLocation = player.getEyeLocation();
+        eyeLocation.setY(eyeLocation.getY() - 0.1);
         AbstractArrow arrowEntity = player.getWorld().spawnArrow(
                 eyeLocation,
                 eyeLocation.getDirection(),
@@ -142,8 +154,6 @@ public class RapidFireBowListener implements Listener {
             return;
         }
 
-        ItemStack bow = event.getBow();
-        assert bow != null;
         if (bow.getEnchantmentLevel(Enchantment.INFINITY) == 0) {
             player.getInventory().removeItem(arrowItem);
         } else {

@@ -102,7 +102,10 @@ public class EnchantAnything implements CommandExecutor, TabExecutor {
             }
 
             case 2 -> {
-                return List.of("1", "2", "3");
+                if (!args[0].isEmpty()) {
+                    return List.of("1", "2", "3");
+                }
+                return List.of();
             }
 
             default -> {
