@@ -1,8 +1,8 @@
 package me.captainpotatoaim.myplugin.random_commands.protect_area;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -12,14 +12,10 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
-import java.nio.Buffer;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import static me.captainpotatoaim.myplugin.random_commands.protect_area.ProtectedAreas.FILE_PATH;
 import static me.captainpotatoaim.myplugin.random_commands.protect_area.ProtectedAreas.protectedAreas;
 import static org.bukkit.ChatColor.*;
 
@@ -40,10 +36,7 @@ public class ProtectArea implements CommandExecutor, TabExecutor {
             return true;
         }
 
-        Player player = null;
-        if (sender instanceof Player) {
-            player = (Player) sender;
-        }
+        Player player = sender instanceof Player ? (Player) sender : null;
 
         World world = player == null
                 ? sender.getServer().getWorld("world")
@@ -62,7 +55,8 @@ public class ProtectArea implements CommandExecutor, TabExecutor {
                         senderLocation.getBlockX(),
                         senderLocation.getBlockY(),
                         senderLocation.getBlockZ()
-                ));
+                )
+        );
 
         for (int i = 0; i < locationStrings.size(); i++) {
             String loc = locationStrings.get(i);
@@ -82,12 +76,12 @@ public class ProtectArea implements CommandExecutor, TabExecutor {
             coords.add(coordinate);
         }
 
-        Location from = new Location(world, coords.get(0), coords.get(1), coords.get(2));
-        Location to = new Location(world, coords.get(3), coords.get(4), coords.get(5));
+        var from = new SerializableLocation(world.getName(), coords.get(0), coords.get(1), coords.get(2));
+        var to = new SerializableLocation(world.getName(), coords.get(3), coords.get(4), coords.get(5));
 
         Area area = new Area(from, to);
         protectedAreas.put(args[7], area);
-        Bukkit.broadcastMessage(protectedAreas.toString());
+        sender.sendMessage(GREEN + "Successfully protected area " + args[7]);
 
         return true;
     }

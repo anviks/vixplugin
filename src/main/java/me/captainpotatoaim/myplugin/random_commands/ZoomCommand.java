@@ -37,8 +37,8 @@ public class ZoomCommand implements CommandExecutor {
             player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 10, 1);
 
             BukkitScheduler scheduler = Bukkit.getScheduler();
-            scheduler.scheduleSyncDelayedTask(Initializer.plugin, () -> player.setGameMode(GameMode.SPECTATOR), 1);
-            scheduler.scheduleSyncDelayedTask(Initializer.plugin, () -> player.setGameMode(startMode), 20);
+            scheduler.scheduleSyncDelayedTask(Initializer.getPlugin(), () -> player.setGameMode(GameMode.SPECTATOR), 1);
+            scheduler.scheduleSyncDelayedTask(Initializer.getPlugin(), () -> player.setGameMode(startMode), 20);
         }
         return true;
     }

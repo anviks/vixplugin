@@ -87,7 +87,7 @@ public class RapidFireBowListener implements Listener {
 
         Runnable shoot = () -> shootArrowTask(event, player, arrowItem, arrowClass);
         BukkitTask task = Bukkit.getScheduler()
-                .runTaskTimer(Initializer.plugin, shoot, 10, 10); // BUG-ACCOMMODATION-11113: changed delay from 0 to 10
+                .runTaskTimer(Initializer.getPlugin(), shoot, 10, 10); // BUG-ACCOMMODATION-11113: changed delay from 0 to 10
         shootingPlayers.put(player.getUniqueId(), task);
     }
 

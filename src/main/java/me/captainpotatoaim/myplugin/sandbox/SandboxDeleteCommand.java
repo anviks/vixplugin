@@ -76,7 +76,7 @@ public class SandboxDeleteCommand {
             }
         };
 
-        Bukkit.getScheduler().scheduleSyncDelayedTask(Initializer.plugin, runnable, 1);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(Initializer.getPlugin(), runnable, 1);
 
 
         return true;

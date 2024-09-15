@@ -1,6 +1,5 @@
 package me.captainpotatoaim.myplugin.random_commands.protect_area;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

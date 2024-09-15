@@ -8,7 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
 public class CustomItem {
-    public static final NamespacedKey CUSTOM_ITEM_KEY = new NamespacedKey(Initializer.plugin, "custom_item_type");
+    public static final NamespacedKey CUSTOM_ITEM_KEY = new NamespacedKey(Initializer.getPlugin(), "custom_item_type");
 
     public static boolean isOfType(ItemStack item, Class<?> clazz) {
         String identifier = classToIdentifier(clazz);

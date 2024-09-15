@@ -31,7 +31,7 @@ public class DogCommand implements CommandExecutor {
                     Wolf dog = (Wolf) wolf;
                     dog.setCustomName("Doggo");
                     dog.setOwner(target);
-                    server.getScheduler().scheduleSyncDelayedTask(Initializer.plugin, () -> dog.damage(50, target), 400);
+                    server.getScheduler().scheduleSyncDelayedTask(Initializer.getPlugin(), () -> dog.damage(50, target), 400);
                 }
             } else {
                 sender.sendMessage("That player is not online or doesn't exist.");

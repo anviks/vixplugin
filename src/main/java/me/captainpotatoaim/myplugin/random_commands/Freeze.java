@@ -80,7 +80,7 @@ public class Freeze implements CommandExecutor {
             target.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "You have been frozen.");
 
             int unfreezeTask = Bukkit.getScheduler()
-                    .scheduleSyncDelayedTask(Initializer.plugin, () -> {
+                    .scheduleSyncDelayedTask(Initializer.getPlugin(), () -> {
                         attachment.setPermission("vix.move", true);
                         target.setFreezeTicks(100);
                     }, ticks);

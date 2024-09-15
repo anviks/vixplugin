@@ -22,7 +22,7 @@ public class GivePermission implements CommandExecutor, TabExecutor {
             Player player = sender.getServer().getPlayerExact(args[1]);
 
             if (player != null) {
-                List<String> perms = Initializer.plugin.getDescription()
+                List<String> perms = Initializer.getPlugin().getDescription()
                         .getPermissions()
                         .stream()
                         .map(Permission::getName)
@@ -80,7 +80,7 @@ public class GivePermission implements CommandExecutor, TabExecutor {
                         .toList();
             }
             case 3 -> {
-                return Initializer.plugin.getDescription()
+                return Initializer.getPlugin().getDescription()
                         .getPermissions()
                         .stream()
                         .map(Permission::getName)

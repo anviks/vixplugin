@@ -1,25 +1,23 @@
 package me.captainpotatoaim.myplugin.random_commands.protect_area;
 
-
-import org.bukkit.Location;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public record Area(Location start, Location end) {
-    boolean contains(Location location) {
-        int startX = start.getBlockX();
-        int startY = start.getBlockY();
-        int startZ = start.getBlockZ();
+public record Area(SerializableLocation start, SerializableLocation end) {
+    boolean contains(SerializableLocation location) {
+        int startX = start.getX();
+        int startY = start.getY();
+        int startZ = start.getZ();
 
-        int endX = end.getBlockX();
-        int endY = end.getBlockY();
-        int endZ = end.getBlockZ();
+        int endX = end.getX();
+        int endY = end.getY();
+        int endZ = end.getZ();
 
-        int x = location.getBlockX();
-        int y = location.getBlockY();
-        int z = location.getBlockZ();
+        int x = location.getX();
+        int y = location.getY();
+        int z = location.getZ();
 
         return ((startX <= x && x <= endX) || (startX >= x && x >= endX))
                 && ((startY <= y && y <= endY) || (startY >= y && y >= endY))

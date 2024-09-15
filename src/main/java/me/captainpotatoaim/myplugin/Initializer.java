@@ -31,41 +31,38 @@ import me.captainpotatoaim.myplugin.random_commands.protect_area.ProtectArea;
 import me.captainpotatoaim.myplugin.random_commands.protect_area.ProtectedAreas;
 import me.captainpotatoaim.myplugin.random_commands.protect_area.UnprotectArea;
 import me.captainpotatoaim.myplugin.sandbox.Inventory;
-import me.captainpotatoaim.myplugin.sandbox.SandboxJoinCommand;
-import me.captainpotatoaim.myplugin.sandbox.SandboxMainCommand;
 import me.captainpotatoaim.myplugin.unfinished_commands.CreeperPrank;
 import me.captainpotatoaim.myplugin.unfinished_commands.CreeperPrankWithTp;
 import me.captainpotatoaim.myplugin.unfinished_commands.GigaChest;
 import me.captainpotatoaim.myplugin.unfinished_commands.UnBreakableCommand;
 import me.captainpotatoaim.myplugin.vanish.Vanish;
-import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
 public final class Initializer extends JavaPlugin {
 
-    public static JavaPlugin plugin;
+    private static JavaPlugin plugin;
     public static List<World> defaultWorlds = null;
+
+    public static Plugin getPlugin() {
+        return plugin;
+    }
 
     @Override
     public void onEnable() {
-        // Plugin startup logic
-        System.out.println("VIXPlugin has started. Enjoy!");
-
         plugin = getPlugin(Initializer.class);
         defaultWorlds = getServer().getWorlds();
-//        ProtectedAreas.loadAreas();
+        ProtectedAreas.loadAreas();
 
         registerCommands();
         registerEvents();
@@ -101,8 +98,8 @@ public final class Initializer extends JavaPlugin {
             put("rapid-bow", new GiveRapidFireBow());
             put("vanish", new Vanish());
             put("ender-toggle", new BecomeEnderman());
-//            put("protect", new ProtectArea());
-//            put("unprotect", new UnprotectArea());
+            put("protect", new ProtectArea());
+            put("unprotect", new UnprotectArea());
             put("give-multi-tool", new GiveMultiTool());
             put("give-custom-fuse-tnt", new GiveCustomFuseTNT());
             put("world", new ChangeWorlds());
@@ -156,8 +153,7 @@ public final class Initializer extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        Bukkit.broadcastMessage("Disabling...");
-//        ProtectedAreas.saveAreas();
+        ProtectedAreas.saveAreas();
 
 //        for (Player player : getServer().getOnlinePlayers()) {
 //            if (!defaultWorlds.contains(player.getWorld())) {

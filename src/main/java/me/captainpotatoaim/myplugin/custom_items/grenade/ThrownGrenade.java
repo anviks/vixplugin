@@ -40,7 +40,7 @@ public class ThrownGrenade implements Listener {
             Runnable task = () -> event.getPlayer().getWorld().createExplosion(itemDrop.getLocation(), 10);
             UUID uuid = itemDrop.getUniqueId();
             BukkitTask bukkitTask = Bukkit.getScheduler()
-                    .runTaskLater(Initializer.plugin, task, 100);
+                    .runTaskLater(Initializer.getPlugin(), task, 100);
 
             liveGrenades.put(uuid, bukkitTask);
         }
@@ -60,7 +60,7 @@ public class ThrownGrenade implements Listener {
         if (event.getEntity() instanceof Item item) {
             ItemStack itemStack = item.getItemStack();
             if (CustomItem.isOfType(itemStack, Grenade.class)) {
-                Bukkit.getScheduler().runTaskLater(Initializer.plugin, () -> {
+                Bukkit.getScheduler().runTaskLater(Initializer.getPlugin(), () -> {
                     if (item.isDead()) {
                         this.tryCancelGrenadeExplosion(item);
                     }

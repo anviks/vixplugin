@@ -1,5 +1,5 @@
 name: VixPlugin
-version: '${project.version}'
+version: 1.0
 main: me.captainpotatoaim.myplugin.Initializer
 api-version: 1.19
 commands:

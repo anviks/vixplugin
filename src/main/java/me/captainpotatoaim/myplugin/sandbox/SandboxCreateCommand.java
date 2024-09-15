@@ -11,7 +11,7 @@ public class SandboxCreateCommand {
 
     static HashMap<Integer, World> worlds = new HashMap<>();
     private static long previousCreationTime = 0;
-    private static final int maxSandboxes = Initializer.plugin.getConfig().getInt("max-sandboxes", 10);
+    private static final int maxSandboxes = Initializer.getPlugin().getConfig().getInt("max-sandboxes", 10);
 
     public static boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
@@ -106,7 +106,7 @@ public class SandboxCreateCommand {
                     sender.sendMessage(ChatColor.GREEN + worlds.get(slot).getName() + " created in slot " + slot);
                 };
 
-                Bukkit.getScheduler().scheduleSyncDelayedTask(Initializer.plugin, runnable, 1);
+                Bukkit.getScheduler().scheduleSyncDelayedTask(Initializer.getPlugin(), runnable, 1);
                 return slot;
             }
         }
