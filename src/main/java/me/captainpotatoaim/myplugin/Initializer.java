@@ -1,21 +1,22 @@
 package me.captainpotatoaim.myplugin;
 
+import me.captainpotatoaim.myplugin.custom_items.CustomItem;
+import me.captainpotatoaim.myplugin.custom_items.GiveCustomItem;
 import me.captainpotatoaim.myplugin.custom_items.explosive_arrows.ExplosiveArrow;
 import me.captainpotatoaim.myplugin.custom_items.explosive_arrows.ExplosiveArrowLand;
-import me.captainpotatoaim.myplugin.custom_items.explosive_arrows.GiveExplosiveArrow;
-import me.captainpotatoaim.myplugin.custom_items.grappling_hook.GiveGrapplingHook;
+import me.captainpotatoaim.myplugin.custom_items.grappling_hook.GrapplingHook;
 import me.captainpotatoaim.myplugin.custom_items.grappling_hook.GrapplingHookListener;
-import me.captainpotatoaim.myplugin.custom_items.grenade.GiveGrenade;
+import me.captainpotatoaim.myplugin.custom_items.grenade.Grenade;
 import me.captainpotatoaim.myplugin.custom_items.grenade.ThrownGrenade;
-import me.captainpotatoaim.myplugin.custom_items.multi_tool.GiveMultiTool;
+import me.captainpotatoaim.myplugin.custom_items.multi_tool.MultiTool;
 import me.captainpotatoaim.myplugin.custom_items.multi_tool.MultiToolListener;
-import me.captainpotatoaim.myplugin.custom_items.railgun.GiveRailgun;
+import me.captainpotatoaim.myplugin.custom_items.railgun.Railgun;
 import me.captainpotatoaim.myplugin.custom_items.railgun.RailgunListener;
-import me.captainpotatoaim.myplugin.custom_items.rapid_fire_bow.GiveRapidFireBow;
+import me.captainpotatoaim.myplugin.custom_items.rapid_fire_bow.RapidFireBow;
 import me.captainpotatoaim.myplugin.custom_items.rapid_fire_bow.RapidFireBowListener;
-import me.captainpotatoaim.myplugin.custom_items.teleport_arrows.GiveTeleportArrow;
+import me.captainpotatoaim.myplugin.custom_items.teleport_arrows.TeleportArrow;
 import me.captainpotatoaim.myplugin.custom_items.teleport_arrows.TeleportArrowLand;
-import me.captainpotatoaim.myplugin.custom_items.tnt.GiveCustomFuseTNT;
+import me.captainpotatoaim.myplugin.custom_items.tnt.CustomFuseTNT;
 import me.captainpotatoaim.myplugin.custom_items.tnt.TNTListener;
 import me.captainpotatoaim.myplugin.duct_tape.DuctTape;
 import me.captainpotatoaim.myplugin.duct_tape.DuctTapeListener;
@@ -42,7 +43,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ShapedRecipe;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -54,7 +54,7 @@ public final class Initializer extends JavaPlugin {
     private static JavaPlugin plugin;
     public static List<World> defaultWorlds = null;
 
-    public static Plugin getPlugin() {
+    public static JavaPlugin getPlugin() {
         return plugin;
     }
 
@@ -83,27 +83,33 @@ public final class Initializer extends JavaPlugin {
             put("freeze", new Freeze());
             put("unfreeze", new UnFreeze());
             put("gigachest", new GigaChest());
-            put("givegrenade", new GiveGrenade());
-            put("giveexplosivearrow", new GiveExplosiveArrow());
             put("god", new GodMode());
             put("enchantanything", new EnchantAnything());
 //            put("sandbox", new SandboxMainCommand());
-            put("giverailgun", new GiveRailgun());
-            put("giveteleportarrow", new GiveTeleportArrow());
             put("creep", new CreeperPrank());
             put("creep2", new CreeperPrankWithTp());
             put("tp-up", new TeleportUp());
             put("duct-tape", new DuctTape());
-            put("grappling-hook", new GiveGrapplingHook());
-            put("rapid-bow", new GiveRapidFireBow());
             put("vanish", new Vanish());
             put("ender-toggle", new BecomeEnderman());
             put("protect", new ProtectArea());
             put("unprotect", new UnprotectArea());
-            put("give-multi-tool", new GiveMultiTool());
-            put("give-custom-fuse-tnt", new GiveCustomFuseTNT());
             put("world", new ChangeWorlds());
         }};
+
+        CustomItem[] customItems = {
+                new ExplosiveArrow(this),
+                new GrapplingHook(),
+                new Grenade(),
+                new MultiTool(),
+                new Railgun(),
+                new RapidFireBow(),
+                new TeleportArrow(),
+                new CustomFuseTNT()
+        };
+
+        GiveCustomItem value = new GiveCustomItem(customItems);
+        value.registerCommand();
 
         for (var command : commands.entrySet()) {
             PluginCommand cmd = this.getCommand(command.getKey());

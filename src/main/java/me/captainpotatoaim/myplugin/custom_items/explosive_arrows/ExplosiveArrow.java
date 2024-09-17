@@ -10,14 +10,16 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
-public class ExplosiveArrow {
+public class ExplosiveArrow extends CustomItem {
+
     private final Plugin plugin;
 
     public ExplosiveArrow(Plugin plugin) {
         this.plugin = plugin;
     }
 
-    public static ItemStack getItem(int count) {
+    @Override
+    public ItemStack getItem(int count) {
         ItemStack arrows = new ItemStack(Material.SPECTRAL_ARROW, count);
         ItemMeta arrowMeta = arrows.getItemMeta();
         assert arrowMeta != null;

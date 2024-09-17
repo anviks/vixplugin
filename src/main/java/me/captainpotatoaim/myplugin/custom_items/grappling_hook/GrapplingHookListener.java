@@ -1,5 +1,6 @@
 package me.captainpotatoaim.myplugin.custom_items.grappling_hook;
 
+import me.captainpotatoaim.myplugin.custom_items.CustomItem;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -9,6 +10,7 @@ import static org.bukkit.event.player.PlayerFishEvent.State;
 import org.bukkit.util.Vector;
 
 public class GrapplingHookListener implements Listener {
+
     @EventHandler
     private void thrown(PlayerFishEvent event) {
         State state = event.getState();
@@ -19,10 +21,7 @@ public class GrapplingHookListener implements Listener {
 
         Player player = event.getPlayer();
 
-        if (!player.getInventory()
-                .getItemInMainHand()
-                .getItemMeta()
-                .equals(GrapplingHook.getItem().getItemMeta())) {
+        if (!CustomItem.isOfType(player.getInventory().getItemInMainHand(), GrapplingHook.class)) {
             return;
         }
 
@@ -32,5 +31,4 @@ public class GrapplingHookListener implements Listener {
         Vector launchDirection = (hookLocation.subtract(playerLocation)).toVector();
         player.setVelocity(launchDirection.multiply(0.5f));
     }
-
 }

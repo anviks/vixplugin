@@ -4,8 +4,10 @@ import me.captainpotatoaim.myplugin.custom_items.CustomItem;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-public class RapidFireBow {
-    static ItemStack getItem() {
+public class RapidFireBow extends CustomItem {
+
+    @Override
+    public ItemStack getItem(int count) {
         ItemStack bow = new ItemStack(Material.BOW);
         var meta = bow.getItemMeta();
         assert meta != null;

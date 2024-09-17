@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class RapidFireBowListener implements Listener {
+
     private final Map<UUID, BukkitTask> shootingPlayers = new HashMap<>();
 
     @EventHandler

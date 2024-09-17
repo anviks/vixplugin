@@ -7,8 +7,10 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class TeleportArrow {
-    public static ItemStack getItem(int count) {
+public class TeleportArrow extends CustomItem {
+
+    @Override
+    public ItemStack getItem(int count) {
         ItemStack tpArrow = new ItemStack(Material.ARROW, count);
         ItemMeta tpArrowMeta = tpArrow.getItemMeta();
         assert tpArrowMeta != null;

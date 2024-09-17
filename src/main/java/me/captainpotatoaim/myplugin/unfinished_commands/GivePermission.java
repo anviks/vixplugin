@@ -14,7 +14,7 @@ import org.bukkit.permissions.PermissionAttachment;
 
 import java.util.List;
 
-public class GivePermission implements CommandExecutor, TabExecutor {
+public class GivePermission implements TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {

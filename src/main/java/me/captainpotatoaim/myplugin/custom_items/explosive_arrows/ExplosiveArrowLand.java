@@ -14,6 +14,7 @@ import org.bukkit.projectiles.BlockProjectileSource;
 import org.bukkit.projectiles.ProjectileSource;
 
 public class ExplosiveArrowLand implements Listener {
+
     private boolean dispenserShotExplosiveArrow = false;
 
     @EventHandler

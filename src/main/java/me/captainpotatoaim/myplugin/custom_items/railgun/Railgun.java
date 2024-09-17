@@ -8,8 +8,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import static org.bukkit.ChatColor.*;
 
-public class Railgun {
-    public static ItemStack getItem() {
+public class Railgun extends CustomItem {
+
+    @Override
+    public ItemStack getItem(int count) {
         ItemStack railGun = new ItemStack(Material.TRIDENT, 1);
         ItemMeta railGunMeta = railGun.getItemMeta();
         assert railGunMeta != null;

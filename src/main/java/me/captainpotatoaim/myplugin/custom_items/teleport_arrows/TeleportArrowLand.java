@@ -1,7 +1,6 @@
 package me.captainpotatoaim.myplugin.custom_items.teleport_arrows;
 
 import me.captainpotatoaim.myplugin.custom_items.CustomItem;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

@@ -4,9 +4,11 @@ import me.captainpotatoaim.myplugin.custom_items.CustomItem;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-class GrapplingHook {
-    static ItemStack getItem() {
-        var hook = new ItemStack(Material.FISHING_ROD);
+public class GrapplingHook extends CustomItem {
+
+    @Override
+    public ItemStack getItem(int count) {
+        var hook = new ItemStack(Material.FISHING_ROD, count);
         var meta = hook.getItemMeta();
         assert meta != null;
         meta.setDisplayName("Grappling hook");

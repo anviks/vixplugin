@@ -8,8 +8,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 
-public class Grenade {
-    public static ItemStack getItem(int count) {
+public class Grenade extends CustomItem {
+
+    @Override
+    public ItemStack getItem(int count) {
         ItemStack grenade = new ItemStack(Material.EXPERIENCE_BOTTLE, count);
         ItemMeta grenadeMeta = grenade.getItemMeta();
         assert grenadeMeta != null;

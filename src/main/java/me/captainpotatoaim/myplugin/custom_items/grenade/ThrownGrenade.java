@@ -17,20 +17,8 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class ThrownGrenade implements Listener {
-    private final HashMap<UUID, BukkitTask> liveGrenades = new HashMap<>();
 
-//    public ThrownGrenade() {
-//        RegisteredListener registeredListener = new RegisteredListener(this, (listener, event) -> onEvent(event), EventPriority.NORMAL, JavaPlugin.getPlugin(Initializer.class), false);
-//        for (HandlerList handler : HandlerList.getHandlerLists())
-//            handler.register(registeredListener);
-//    }
-//
-//    public void onEvent(Event event) {
-//        if (event instanceof BroadcastMessageEvent || event instanceof GenericGameEvent || event instanceof StriderTemperatureChangeEvent) {
-//            return;
-//        }
-//        Bukkit.broadcastMessage(event.getEventName());
-//    }
+    private final HashMap<UUID, BukkitTask> liveGrenades = new HashMap<>();
 
     @EventHandler
     public void onItemDropped(PlayerDropItemEvent event) {

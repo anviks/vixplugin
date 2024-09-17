@@ -4,12 +4,13 @@ import me.captainpotatoaim.myplugin.custom_items.CustomItem;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class MultiTool {
-    public static @NotNull ItemStack getItem() {
+public class MultiTool extends CustomItem {
+
+    @Override
+    public ItemStack getItem(int count) {
         ItemStack tool = new ItemStack(Material.DIAMOND_PICKAXE);
         var meta = tool.getItemMeta();
         assert meta != null;

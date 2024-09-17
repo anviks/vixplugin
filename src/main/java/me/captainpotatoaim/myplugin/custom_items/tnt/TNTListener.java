@@ -2,9 +2,7 @@ package me.captainpotatoaim.myplugin.custom_items.tnt;
 
 import me.captainpotatoaim.myplugin.custom_items.CustomItem;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,12 +10,9 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.bukkit.persistence.PersistentDataType;
 
 public class TNTListener implements Listener {
-    Map<Location, Integer> placedTNTs = new HashMap<>();
 
     @EventHandler
     public void onTNTPlace(BlockPlaceEvent event) {
@@ -25,64 +20,29 @@ public class TNTListener implements Listener {
         Block blockPlaced = event.getBlockPlaced();
 
         if (CustomItem.isOfType(itemInHand, CustomFuseTNT.class)) {
-            double seconds = Double.parseDouble(itemInHand.getItemMeta()
-                    .getLore().get(0)
-                    .replaceFirst("Fuse time: ", "")
-                    .replaceFirst(" seconds", ""));
-            placedTNTs.put(blockPlaced.getLocation(), (int) Math.round(seconds * 20));
+            CustomItem.copyCustomData(itemInHand, blockPlaced);
         }
     }
 
     @EventHandler
     public void onTNTBreak(BlockBreakEvent event) {
         Block block = event.getBlock();
-
-        if (block.getType() != Material.TNT) {
-            return;
-        }
+        if (!CustomItem.isOfType(block, CustomFuseTNT.class)) return;
 
         Location blockLocation = block.getLocation();
-        if (!placedTNTs.containsKey(blockLocation)) {
-            return;
-        }
-
         event.setDropItems(false);
-        double fuseSeconds = placedTNTs.get(blockLocation) / 20.0;
+        float fuseSeconds = CustomItem.getData(block, "fuse_seconds", PersistentDataType.FLOAT);
         ItemStack drop = CustomFuseTNT.getItem(1, fuseSeconds);
         blockLocation.getWorld().dropItemNaturally(blockLocation, drop);
-
-        placedTNTs.remove(blockLocation);
     }
 
     @EventHandler
-    public void onTNTLight(EntitySpawnEvent event) {
-        if (event.getEntity().getType() == EntityType.TNT) {
-            Location litLocation = event.getLocation().subtract(0.5, 0, 0.5);
-            if (placedTNTs.containsKey(litLocation)) {
-                TNTPrimed tnt = (TNTPrimed) event.getEntity();
-                tnt.setFuseTicks(placedTNTs.get(litLocation));
-                placedTNTs.remove(litLocation);
+    public void onTntSpawn(EntitySpawnEvent event) {
+        if (!(event.getEntity() instanceof TNTPrimed tntEntity)) return;
+        Block block = tntEntity.getLocation().getBlock();
+        if (!CustomItem.isOfType(block, CustomFuseTNT.class)) return;
 
-//                BukkitRunnable runnable = new BukkitRunnable() {
-//                    @Override
-//                    public void run() {
-//                        if (tnt.isInWater()) {
-//                            Location tntLocation = tnt.getLocation();
-//                            Block blockAt = tnt.getWorld().getBlockAt(tntLocation);
-//                            if (blockAt.getType() == Material.TNT) {
-//                                blockAt.setType(Material.AIR);
-//                            } else {
-//                                blockAt.setType(Material.TNT);
-//                            }
-//                            placedTNTs.add(tntLocation);
-//                            tnt.remove();
-//                            cancel();
-//                        }
-//                    }
-//                };
-//
-//                runnable.runTaskTimer(Initializer.plugin, 0, 1);
-            }
-        }
+        float seconds = CustomItem.getData(block, "fuse_seconds", PersistentDataType.FLOAT);
+        tntEntity.setFuseTicks((int) Math.round(seconds * 20.0));
     }
 }

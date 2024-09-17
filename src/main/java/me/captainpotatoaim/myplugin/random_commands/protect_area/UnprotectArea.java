@@ -12,7 +12,7 @@ import java.util.List;
 import static me.captainpotatoaim.myplugin.random_commands.protect_area.ProtectedAreas.protectedAreas;
 import static org.bukkit.ChatColor.*;
 
-public class UnprotectArea implements CommandExecutor, TabExecutor {
+public class UnprotectArea implements TabExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!sender.isOp()) {

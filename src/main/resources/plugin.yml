@@ -1,7 +1,8 @@
 name: VixPlugin
 version: 1.0
 main: me.captainpotatoaim.myplugin.Initializer
-api-version: 1.19
+api-version: 1.21.1
+depend: [CommandAPI]
 commands:
   fishplz:
     description: You could solve world hunger with all that.
@@ -47,10 +48,6 @@ commands:
     usage: /unfreeze <player>
   gigachest:
     description: Open a gigachest.
-  givegrenade:
-    description: Give grenades.
-  giveexplosivearrow:
-    description: Give explosive arrows.
   god:
     description: Give god mode to yourself or to a player.
     usage: "/god\n/god <player>"
@@ -69,10 +66,6 @@ commands:
     /sandbox leave\n
     /sandbox leave <player>\n
     /sandbox delete <slot/world name>"
-  giverailgun:
-    description: Give railgun to yourself.
-  giveteleportarrow:
-    description: Give teleport arrows.
   creep:
     description: Idk
   creep2:
@@ -81,10 +74,6 @@ commands:
     description: Teleport up to a random height.
   duct-tape:
     description: Duct-tape someone.
-  grappling-hook:
-    description: Give grappling hook.
-  rapid-bow:
-    description: Give bow that rapid fires.
   vanish:
     description: Vanish.
     aliases:
@@ -99,12 +88,11 @@ commands:
   unprotect:
     description: Unprotect an area.
     usage: /unprotect <area-name>
-  give-multi-tool:
-    description: Give multi tool.
-  give-custom-fuse-tnt:
-    description: Give long fuse tnt.
   world:
     description: Change world.
+#  give-custom:
+#    description: Give custom item.
+#    usage: /give-custom <player> <item> <amount>
 
 permissions:
   vix.move:
