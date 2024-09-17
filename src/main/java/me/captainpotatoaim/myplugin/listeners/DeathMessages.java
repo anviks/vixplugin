@@ -1,7 +1,8 @@
 package me.captainpotatoaim.myplugin.listeners;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -15,15 +16,15 @@ import static org.bukkit.Bukkit.getServer;
 public class DeathMessages implements Listener {
 
     /**
-     * Replace almost all minecraft's default death messages with custom ones.
-     * <p>
+     * Replace almost all minecraft's default death messages with custom ones.<br><br>
      * Unchanged messages:
-     * <p>
-     * <player> was pummeled by <player/mob>
-     * <player> was pummeled by <player/mob> using <item>
-     * <player> was killed by [Intentional Game Design]
-     * death.fell.accident.water
-     * <player> went off with a bang due to a firework fired from <item> by <player/mob>
+     * <ul>
+     *     <li>&lt;player&gt; was pummeled by &lt;player/mob&gt;</li>
+     *     <li>&lt;player&gt; was pummeled by &lt;player/mob&gt; using &lt;item&gt;</li>
+     *     <li>&lt;player&gt; was killed by [Intentional Game Design]</li>
+     *     <li>death.fell.accident.water</li>
+     *     <li>&lt;player&gt; went off with a bang due to a firework fired from &lt;item&gt; by &lt;player/mob&gt;</li>
+     * </ul>
      *
      * @param event player's death event.
      */
@@ -91,9 +92,7 @@ public class DeathMessages implements Listener {
             case " was struck by lightning whilst fighting " -> struckByLightningByEntity(event, player, killer);
             case " discovered the floor was lava" -> magmaBlockDeath(event, player);
             case " walked into the danger zone due to " -> magmaBlockDeathByEntity(event, player, killer);
-            case " was killed by magic" -> {
-                event.setDeathMessage("%s stopped existing thanks to some wizardry");
-            }
+            case " was killed by magic" -> event.setDeathMessage("%s stopped existing thanks to some wizardry");
             default -> System.out.println("idk bro");
         }
     }

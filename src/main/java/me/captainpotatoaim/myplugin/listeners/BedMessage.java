@@ -1,5 +1,6 @@
 package me.captainpotatoaim.myplugin.listeners;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,7 +14,7 @@ public class BedMessage implements Listener {
         Player player = event.getPlayer();
         Server server = player.getServer();
         if (player.getPlayerTime() == 24000) {
-            server.broadcastMessage(String.format("%s slept through the night. Thanks!", player.getDisplayName()));
+            server.broadcast(Component.text(player.displayName() + " slept through the night. Thanks!"));
         } else {
             int random = (int) (Math.random() * 2);
             switch (random) {
@@ -22,5 +23,4 @@ public class BedMessage implements Listener {
             }
         }
     }
-
 }

@@ -1,11 +1,11 @@
 package me.captainpotatoaim.myplugin.listeners;
 
+import me.captainpotatoaim.myplugin.Initializer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.permissions.PermissionAttachment;
 
@@ -20,10 +20,10 @@ public class JoinMessage implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         event.setJoinMessage(player.getDisplayName() + " has joined the server. Tell them to fuck off!");
-//        if (!permissions.containsKey(player.getUniqueId())) {
-//            PermissionAttachment attachment = player.addAttachment(JavaPlugin.getPlugin(Initializer.class));
-//            permissions.put(player.getUniqueId(), attachment);
-//        }
+        if (!permissions.containsKey(player.getUniqueId())) {
+            PermissionAttachment attachment = player.addAttachment(Initializer.getPlugin());
+            permissions.put(player.getUniqueId(), attachment);
+        }
     }
 
     @EventHandler

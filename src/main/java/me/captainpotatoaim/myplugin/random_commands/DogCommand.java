@@ -1,6 +1,7 @@
 package me.captainpotatoaim.myplugin.random_commands;
 
 import me.captainpotatoaim.myplugin.Initializer;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.*;
@@ -29,7 +30,7 @@ public class DogCommand implements CommandExecutor {
                 for (int i = 0; i < number; i++) {
                     Entity wolf = target.getWorld().spawnEntity(target.getLocation(), EntityType.WOLF);
                     Wolf dog = (Wolf) wolf;
-                    dog.setCustomName("Doggo");
+                    dog.customName(Component.text("Doggo"));
                     dog.setOwner(target);
                     server.getScheduler().scheduleSyncDelayedTask(Initializer.getPlugin(), () -> dog.damage(50, target), 400);
                 }

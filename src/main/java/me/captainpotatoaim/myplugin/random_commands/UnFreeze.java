@@ -1,7 +1,6 @@
 package me.captainpotatoaim.myplugin.random_commands;
 
 import me.captainpotatoaim.myplugin.listeners.JoinMessage;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -13,12 +12,15 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.RED;
+
 public class UnFreeze implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!sender.hasPermission("vix.moderate")) {
-            sender.sendMessage(ChatColor.RED + "You don't have permission to use this command.");
+            sender.sendMessage(text("You don't have permission to use this command.", RED));
             return true;
         }
 
@@ -30,12 +32,12 @@ public class UnFreeze implements CommandExecutor {
                         .toArray();
 
         if (offlinePlayer.length > 0 && target == null) {
-            sender.sendMessage(ChatColor.RED + offlinePlayer[0].toString() + " isn't online at the moment.");
+            sender.sendMessage(text(offlinePlayer[0].toString() + " isn't online at the moment.", RED));
             return true;
         }
 
         if (target == null) {
-            sender.sendMessage(ChatColor.RED + "That player doesn't exist.");
+            sender.sendMessage(text("That player doesn't exist.", RED));
             return true;
         }
 

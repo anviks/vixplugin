@@ -1,6 +1,7 @@
 package me.captainpotatoaim.myplugin.custom_items.tnt;
 
 import me.captainpotatoaim.myplugin.custom_items.CustomItem;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
@@ -13,7 +14,7 @@ public class CustomFuseTNT extends CustomItem {
         ItemStack item = new ItemStack(Material.TNT, count);
         var meta = item.getItemMeta();
         assert meta != null;
-        meta.setLore(List.of("Fuse time: " + fuseSeconds + " seconds"));
+        meta.lore(List.of(Component.text("Fuse time: " + fuseSeconds + " seconds")));
         item.setItemMeta(meta);
         CustomItem.setType(item, CustomFuseTNT.class);
         CustomItem.addData(item, "fuse_seconds", PersistentDataType.FLOAT, fuseSeconds);

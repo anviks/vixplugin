@@ -1,14 +1,13 @@
 package me.captainpotatoaim.myplugin.random_commands;
 
 import me.captainpotatoaim.myplugin.Initializer;
+import me.captainpotatoaim.myplugin.listeners.JoinMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import me.captainpotatoaim.myplugin.listeners.JoinMessage;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -17,9 +16,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.UUID;
 
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.AQUA;
+import static net.kyori.adventure.text.format.NamedTextColor.RED;
+import static net.kyori.adventure.text.format.TextDecoration.BOLD;
+
 public class Freeze implements CommandExecutor {
 
-    // Stores players that have been frozen and the scheduled task id, that
     public static HashMap<UUID, Integer> frozenPlayers = new HashMap<>();
 
     @Override
@@ -42,13 +45,14 @@ public class Freeze implements CommandExecutor {
                 attachment.setPermission("vix.move", false);
                 target.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 1_892_160_000, 0));
                 target.setFreezeTicks(Integer.MAX_VALUE);
-                sender.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + target.getDisplayName() + " has been frozen.");
-                target.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "You have been frozen.");
+                sender.sendMessage(target.displayName().append(text(" has been frozen.")).color(AQUA).decorate(BOLD));
+                target.sendMessage(text("You have been frozen.", AQUA, BOLD));
                 return true;
             }
 
             if (!target.hasPermission("vix.move")) {
-                sender.sendMessage(ChatColor.RED + "That player is already frozen.");
+                sender.sendMessage(target.displayName().append(text(" is already frozen.")).color(RED));
+                return true;
             }
 
             int duration = 0;
@@ -65,19 +69,24 @@ public class Freeze implements CommandExecutor {
             int ticks = duration;
 
             switch (unit) {
-                case "s": ticks *= 20;
-                case "m": ticks *= 60;
-                case "h": ticks *= 60;
-                case "d": ticks *= 24;
-                case "mo": ticks *= 30;
+                case "s":
+                    ticks *= 20;
+                case "m":
+                    ticks *= 60;
+                case "h":
+                    ticks *= 60;
+                case "d":
+                    ticks *= 24;
+                case "mo":
+                    ticks *= 30;
             }
 
             PermissionAttachment attachment = JoinMessage.permissions.get(target.getUniqueId());
             attachment.setPermission("vix.move", false);
             target.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, ticks, 0));
             target.setFreezeTicks(Integer.MAX_VALUE);
-            sender.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + target.getDisplayName() + " has been frozen.");
-            target.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "You have been frozen.");
+            sender.sendMessage(target.displayName().append(text(" has been frozen.")).color(AQUA).decorate(BOLD));
+            target.sendMessage(text("You have been frozen.", AQUA, BOLD));
 
             int unfreezeTask = Bukkit.getScheduler()
                     .scheduleSyncDelayedTask(Initializer.getPlugin(), () -> {
@@ -86,7 +95,7 @@ public class Freeze implements CommandExecutor {
                     }, ticks);
 
         } else {
-            sender.sendMessage(ChatColor.RED + "You don't have permission to use this command.");
+            sender.sendMessage(text("You don't have permission to use this command.", RED));
         }
 
         return true;

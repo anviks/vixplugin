@@ -32,13 +32,20 @@ public class ZoomCommand implements CommandExecutor {
 
             // No cooldown found or cooldown has expired, save new cooldown
             cooldowns.put(player.getUniqueId(), System.currentTimeMillis());
-            GameMode startMode = player.getGameMode();
+            GameMode previousGameMode = player.getPreviousGameMode();
+            GameMode currentGameMode = player.getGameMode();
             player.setVelocity(player.getEyeLocation().getDirection().multiply(100));
             player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 10, 1);
 
             BukkitScheduler scheduler = Bukkit.getScheduler();
             scheduler.scheduleSyncDelayedTask(Initializer.getPlugin(), () -> player.setGameMode(GameMode.SPECTATOR), 1);
-            scheduler.scheduleSyncDelayedTask(Initializer.getPlugin(), () -> player.setGameMode(startMode), 20);
+            scheduler.scheduleSyncDelayedTask(Initializer.getPlugin(), () -> {
+                if (previousGameMode != null) {
+                    // Restore game mode history
+                    player.setGameMode(previousGameMode);
+                }
+                player.setGameMode(currentGameMode);
+            }, 20);
         }
         return true;
     }

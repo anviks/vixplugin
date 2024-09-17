@@ -1,24 +1,27 @@
 package me.captainpotatoaim.myplugin.random_commands;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
+import static net.kyori.adventure.text.format.NamedTextColor.RED;
+
 public class FlightCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (sender.isOp()) {
-            Player target = null;
+            Player target;
 
             if (sender instanceof Player && args.length == 0) {
                 target = (Player) sender;
                 target.setAllowFlight(!target.getAllowFlight());
                 target.setFlying(target.getAllowFlight());
             } else if (args.length == 0) {
-                sender.sendMessage(ChatColor.RED + "You need to specify a player.");
+                sender.sendMessage(text("You need to specify a player.", RED));
                 return true;
             } else {
                 target = sender.getServer().getPlayerExact(args[0]);
@@ -26,25 +29,35 @@ public class FlightCommand implements CommandExecutor {
                     target.setAllowFlight(!target.getAllowFlight());
                     target.setFlying(target.getAllowFlight());
                 } else {
-                    sender.sendMessage(ChatColor.RED + "No such player found.");
+                    sender.sendMessage(text("No such player found.", RED));
                     return true;
                 }
             }
 
             if (target.getAllowFlight()) {
-                target.sendMessage(ChatColor.GREEN + "Flying enabled.");
+                target.sendMessage(text("Flying enabled.", GREEN));
                 if (target != sender) {
-                    sender.sendMessage(ChatColor.GREEN + "Enabled flying for " + target.getDisplayName() + ".");
+                    sender.sendMessage(
+                            text("Enabled flying for ")
+                                    .append(target.displayName())
+                                    .append(text("."))
+                                    .color(GREEN)
+                    );
                 }
             } else {
-                target.sendMessage(ChatColor.GREEN + "Flying disabled.");
+                target.sendMessage(text("Flying disabled.", GREEN));
                 if (target != sender) {
-                    sender.sendMessage(ChatColor.GREEN + "Disabled flying for " + target.getDisplayName() + ".");
+                    sender.sendMessage(
+                            text("Disabled flying for ")
+                                    .append(target.displayName())
+                                    .append(text("."))
+                                    .color(GREEN)
+                    );
                 }
             }
 
         } else {
-            sender.sendMessage(ChatColor.RED + "YOU are only allowed to fly with elytra.");
+            sender.sendMessage(text("YOU are only allowed to fly with elytra.", RED));
             return true;
         }
 

@@ -1,8 +1,10 @@
 package me.captainpotatoaim.myplugin.duct_tape;
 
+import io.papermc.paper.event.player.AsyncChatEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.util.Random;
 
@@ -11,9 +13,9 @@ public class DuctTapeListener implements Listener {
     final Random randomizer = new Random();
 
     @EventHandler
-    public void onChatUse(AsyncPlayerChatEvent event) {
+    public void onChatUse(AsyncChatEvent event) {
         if (DuctTape.tapedPlayers.contains(event.getPlayer().getUniqueId())) {
-            String message = event.getMessage();
+            String message = ((TextComponent) event.message()).content();
             StringBuilder newMessage = new StringBuilder();
 
             for (char letter : message.toCharArray()) {
@@ -24,7 +26,7 @@ public class DuctTapeListener implements Listener {
                 }
             }
 
-            event.setMessage(newMessage.toString());
+            event.message(Component.text(newMessage.toString()));
         }
     }
 }

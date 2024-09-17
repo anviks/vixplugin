@@ -1,11 +1,14 @@
 package me.captainpotatoaim.myplugin.random_commands;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
+import static net.kyori.adventure.text.format.NamedTextColor.RED;
 
 public class GodMode implements CommandExecutor {
 
@@ -19,31 +22,31 @@ public class GodMode implements CommandExecutor {
                 target.setInvulnerable(!target.isInvulnerable());
 
             } else if (args.length == 0) {
-                sender.sendMessage(ChatColor.RED + "You need to specify a player.");
+                sender.sendMessage(text("You need to specify a player.", RED));
                 return true;
             } else {
                 target = sender.getServer().getPlayerExact(args[0]);
                 if (target != null) {
                     target.setInvulnerable(!target.isInvulnerable());
                 } else {
-                    sender.sendMessage(ChatColor.RED + "No such player found.");
+                    sender.sendMessage(text("No such player found.", RED));
                     return true;
                 }
             }
 
             if (target.isInvulnerable()) {
-                target.sendMessage(ChatColor.GREEN + "You are now in god mode.");
+                target.sendMessage(text("You are now in god mode.", GREEN));
                 if (target != sender) {
-                    sender.sendMessage(ChatColor.GREEN + target.getDisplayName() + " is now in god mode.");
+                    sender.sendMessage(target.displayName().append(text(" is now in god mode.")).color(GREEN));
                 }
             } else {
-                target.sendMessage(ChatColor.GREEN + "You are no longer in god mode.");
+                target.sendMessage(text("You are no longer in god mode.", GREEN));
                 if (target != sender) {
-                    sender.sendMessage(ChatColor.GREEN + target.getDisplayName() + " is no longer in god mode.");
+                    sender.sendMessage(target.displayName().append(text(" is no longer in god mode.")).color(GREEN));
                 }
             }
         } else {
-            sender.sendMessage(ChatColor.RED + "You lack the divinity to use this command.");
+            sender.sendMessage(text("You lack the divinity to use this command.", RED));
             return true;
         }
 

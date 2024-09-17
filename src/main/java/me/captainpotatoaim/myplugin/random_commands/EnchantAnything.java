@@ -1,8 +1,6 @@
 package me.captainpotatoaim.myplugin.random_commands;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.enchantments.Enchantment;
@@ -12,6 +10,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.RED;
 
 public class EnchantAnything implements TabExecutor {
 
@@ -80,7 +81,7 @@ public class EnchantAnything implements TabExecutor {
             itemMeta.addEnchant(enchantment, level, true);
             item.setItemMeta(itemMeta);
         } else {
-            sender.sendMessage(ChatColor.RED + "fuck you");
+            sender.sendMessage(text("fuck you", RED));
         }
 
         return true;

@@ -1,11 +1,9 @@
 package me.captainpotatoaim.myplugin.random_commands.protect_area;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
@@ -17,7 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static me.captainpotatoaim.myplugin.random_commands.protect_area.ProtectedAreas.protectedAreas;
-import static org.bukkit.ChatColor.*;
+import static net.kyori.adventure.text.format.NamedTextColor.*;
 
 public class ProtectArea implements TabExecutor {
     @Override
