@@ -4,7 +4,7 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.CommandPermission;
 import dev.jorel.commandapi.arguments.*;
 import me.captainpotatoaim.myplugin.Initializer;
-import me.captainpotatoaim.myplugin.custom_items.tnt.CustomFuseTNT;
+import me.captainpotatoaim.myplugin.custom_items.custom_fuse_tnt.CustomFuseTNT;
 import me.captainpotatoaim.myplugin.util.StringHelper;
 import org.bukkit.entity.Player;
 

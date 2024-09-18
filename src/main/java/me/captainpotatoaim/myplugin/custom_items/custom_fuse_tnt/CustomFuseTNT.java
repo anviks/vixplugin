@@ -1,4 +1,4 @@
-package me.captainpotatoaim.myplugin.custom_items.tnt;
+package me.captainpotatoaim.myplugin.custom_items.custom_fuse_tnt;
 
 import me.captainpotatoaim.myplugin.custom_items.CustomItem;
 import net.kyori.adventure.text.Component;

@@ -1,6 +1,7 @@
-package me.captainpotatoaim.myplugin.custom_items.tnt;
+package me.captainpotatoaim.myplugin.custom_items.custom_fuse_tnt;
 
 import me.captainpotatoaim.myplugin.custom_items.CustomItem;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.TNTPrimed;
@@ -32,6 +33,8 @@ public class TNTListener implements Listener {
         Location blockLocation = block.getLocation();
         event.setDropItems(false);
         float fuseSeconds = CustomItem.getData(block, "fuse_seconds", PersistentDataType.FLOAT);
+
+        if (event.getPlayer().getGameMode() == GameMode.CREATIVE) return;
         ItemStack drop = CustomFuseTNT.getItem(1, fuseSeconds);
         blockLocation.getWorld().dropItemNaturally(blockLocation, drop);
     }
