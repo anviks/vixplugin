@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'com.gradleup.shadow' version '8.3.1'
 }
 
 def targetJavaVersion = 21
@@ -60,8 +60,8 @@ tasks.withType(JavaCompile).configureEach {
 shadowJar {
     archiveClassifier.set('')
     archiveVersion.set('1.0')
-//    relocate 'com.jeff_media.customblockdata', 'me.captainpotatoaim.customblockdata'
-    destinationDirectory.set(file('C:/Users/Andreas Viks/Desktop/MC Servers/Paper 1.21.1/plugins'))
+    relocate "com.jeff_media.customblockdata", "me.captainpotatoaim.customblockdata"
+    destinationDirectory.set(file("C:/Users/Andreas Viks/Desktop/MC Servers/Paper 1.21.1/plugins"))
 }
 
 build.dependsOn(shadowJar)
