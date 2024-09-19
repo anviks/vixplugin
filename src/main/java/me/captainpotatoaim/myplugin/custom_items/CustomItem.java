@@ -11,8 +11,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.Optional;
+
 
 public abstract class CustomItem {
+
     private static final NamespacedKey CUSTOM_ITEM_KEY = new NamespacedKey(Initializer.getPlugin(), "custom_item_type");
 
     public abstract ItemStack getItem(int count);
@@ -58,7 +61,7 @@ public abstract class CustomItem {
         container.set(CUSTOM_ITEM_KEY, PersistentDataType.STRING, identifier);
     }
 
-    public static <P, C> void addData(ItemStack itemStack, String key, PersistentDataType<P, C> dataType, C data) {
+    public static <P, C> void setData(ItemStack itemStack, String key, PersistentDataType<P, C> dataType, C data) {
         NamespacedKey namespacedKey = new NamespacedKey(Initializer.getPlugin(), key);
         var meta = itemStack.getItemMeta();
         assert meta != null;
@@ -67,20 +70,33 @@ public abstract class CustomItem {
         itemStack.setItemMeta(meta);
     }
 
-    public static <P, C> C getData(ItemStack itemStack, String key, PersistentDataType<P, C> dataType) {
+    public static <P, C> void setData(Entity entity, String key, PersistentDataType<P, C> dataType, C data) {
+        NamespacedKey namespacedKey = new NamespacedKey(Initializer.getPlugin(), key);
+        var container = entity.getPersistentDataContainer();
+        container.set(namespacedKey, dataType, data);
+    }
+
+    public static <P, C> Optional<C> getData(ItemStack itemStack, String key, PersistentDataType<P, C> dataType) {
         NamespacedKey namespacedKey = new NamespacedKey(Initializer.getPlugin(), key);
         var meta = itemStack.getItemMeta();
         assert meta != null;
         var container = meta.getPersistentDataContainer();
 
-        return container.get(namespacedKey, dataType);
+        return Optional.ofNullable(container.get(namespacedKey, dataType));
     }
 
-    public static <P, C> C getData(Block block, String key, PersistentDataType<P, C> dataType) {
+    public static <P, C> Optional<C> getData(Entity entity, String key, PersistentDataType<P, C> dataType) {
+        NamespacedKey namespacedKey = new NamespacedKey(Initializer.getPlugin(), key);
+        var container = entity.getPersistentDataContainer();
+
+        return Optional.ofNullable(container.get(namespacedKey, dataType));
+    }
+
+    public static <P, C> Optional<C> getData(Block block, String key, PersistentDataType<P, C> dataType) {
         NamespacedKey namespacedKey = new NamespacedKey(Initializer.getPlugin(), key);
         var container = new CustomBlockData(block, Initializer.getPlugin());
 
-        return container.get(namespacedKey, dataType);
+        return Optional.ofNullable(container.get(namespacedKey, dataType));
     }
 
     public static void copyCustomData(ItemStack from, Entity to) {

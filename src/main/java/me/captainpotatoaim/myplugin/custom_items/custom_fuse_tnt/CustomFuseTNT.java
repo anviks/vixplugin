@@ -17,7 +17,7 @@ public class CustomFuseTNT extends CustomItem {
         meta.lore(List.of(Component.text("Fuse time: " + fuseSeconds + " seconds")));
         item.setItemMeta(meta);
         CustomItem.setType(item, CustomFuseTNT.class);
-        CustomItem.addData(item, "fuse_seconds", PersistentDataType.FLOAT, fuseSeconds);
+        CustomItem.setData(item, "fuse_seconds", PersistentDataType.FLOAT, fuseSeconds);
 
         return item;
     }

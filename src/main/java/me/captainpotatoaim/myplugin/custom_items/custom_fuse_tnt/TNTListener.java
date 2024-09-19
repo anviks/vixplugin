@@ -32,7 +32,7 @@ public class TNTListener implements Listener {
 
         Location blockLocation = block.getLocation();
         event.setDropItems(false);
-        float fuseSeconds = CustomItem.getData(block, "fuse_seconds", PersistentDataType.FLOAT);
+        float fuseSeconds = CustomItem.getData(block, "fuse_seconds", PersistentDataType.FLOAT).orElseThrow();
 
         if (event.getPlayer().getGameMode() == GameMode.CREATIVE) return;
         ItemStack drop = CustomFuseTNT.getItem(1, fuseSeconds);
@@ -45,7 +45,7 @@ public class TNTListener implements Listener {
         Block block = tntEntity.getLocation().getBlock();
         if (!CustomItem.isOfType(block, CustomFuseTNT.class)) return;
 
-        float seconds = CustomItem.getData(block, "fuse_seconds", PersistentDataType.FLOAT);
+        float seconds = CustomItem.getData(block, "fuse_seconds", PersistentDataType.FLOAT).orElseThrow();
         tntEntity.setFuseTicks((int) Math.round(seconds * 20.0));
     }
 }

@@ -90,7 +90,6 @@ public final class Initializer extends JavaPlugin {
             put("creep2", new CreeperPrankWithTp());
             put("tp-up", new TeleportUp());
             put("duct-tape", new DuctTape());
-            put("vanish", new Vanish());
             put("ender-toggle", new BecomeEnderman());
             put("protect", new ProtectArea());
             put("unprotect", new UnprotectArea());
@@ -108,9 +107,6 @@ public final class Initializer extends JavaPlugin {
                 new CustomFuseTNT()
         };
 
-        GiveCustomItem value = new GiveCustomItem(customItems);
-        value.registerCommand();
-
         for (var command : commands.entrySet()) {
             PluginCommand cmd = this.getCommand(command.getKey());
             if (cmd == null) {
@@ -118,6 +114,12 @@ public final class Initializer extends JavaPlugin {
             }
             cmd.setExecutor(command.getValue());
         }
+
+        GiveCustomItem giveCustomItem = new GiveCustomItem(customItems);
+        Vanish vanish = new Vanish();
+
+        giveCustomItem.registerCommand();
+        vanish.registerCommand();
     }
 
     private void registerEvents() {

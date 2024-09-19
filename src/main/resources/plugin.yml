@@ -74,10 +74,6 @@ commands:
     description: Teleport up to a random height.
   duct-tape:
     description: Duct-tape someone.
-  vanish:
-    description: Vanish.
-    aliases:
-      - v
   enchantitem:
     description: N
   ender-toggle:
