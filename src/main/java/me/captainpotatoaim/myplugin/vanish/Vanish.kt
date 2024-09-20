@@ -6,6 +6,8 @@ import dev.jorel.commandapi.executors.CommandArguments
 import me.captainpotatoaim.myplugin.CustomCommand
 import me.captainpotatoaim.myplugin.Initializer
 import me.captainpotatoaim.myplugin.util.PDCManager
+import net.kyori.adventure.text.Component.text
+import net.kyori.adventure.text.format.NamedTextColor
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoRemovePacket
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket
 import org.bukkit.Bukkit
@@ -16,6 +18,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
+import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.*
@@ -48,46 +51,70 @@ class Vanish : CustomCommand, Listener {
     }
 
     private fun run(player: Player, args: CommandArguments) {
-        val location = player.location
         val isVanished = PDCManager.getData(player, "vanished", PersistentDataType.BOOLEAN)
 
         if (isVanished.isPresent && isVanished.get()) {
-            val lightningLocations = ArrayList<Location>()
-
-            for (i in -1..1) {
-                for (j in -1..1) {
-                    val lightningLocation = location.clone()
-                    lightningLocation.y -= 1
-                    lightningLocation.x += i
-                    lightningLocation.z += j
-                    lightningLocations.add(lightningLocation)
-                }
-            }
-
-            var delay = 0
+            var delay = 0L
             val scheduler = Bukkit.getScheduler()
 
-            for (i in listOf(0, 1, 2, 5, 8, 7, 6, 3)) {
+            val neighbourOffsets = listOf(-1 to -1, -1 to 0, -1 to 1, 0 to 1, 1 to 1, 1 to 0, 1 to -1, 0 to -1)
+
+            for (offset in neighbourOffsets) {
                 scheduler.runTaskLater(
                     Initializer.getPlugin(),
-                    Runnable { player.world.strikeLightningEffect(lightningLocations[i]) }, delay.toLong()
+                    Runnable { spawnLightningWithOffset(player.location, offset) },
+                    delay
                 )
                 delay += 5
             }
 
-            delay += 15
+            delay += 20
 
             scheduler.runTaskLater(Initializer.getPlugin(), Runnable {
-                for (lightningLocation in lightningLocations) {
-                    player.world.strikeLightningEffect(lightningLocation)
+                for (offset in neighbourOffsets) {
+                    spawnLightningWithOffset(player.location, offset)
                 }
+
                 this.updatePlayerVisibilityForAll(player, true)
-            }, delay.toLong())
+                this.broadcastJoinEvent(player)
+            }, delay)
         } else {
+            this.broadcastQuitEvent(player)
             this.updatePlayerVisibilityForAll(player, false)
-            location.y += 1
-            player.world.spawnParticle(Particle.LARGE_SMOKE, location, 250, 0.5, 0.5, 0.5, 0.1)
+            this.spawnVanishSpecialEffects(player)
         }
+    }
+
+    private fun spawnLightningWithOffset(location: Location, offset: Pair<Int, Int>) {
+        location.y -= 1
+        location.x += offset.first
+        location.z += offset.second
+        location.world.strikeLightningEffect(location)
+    }
+
+    private fun spawnVanishSpecialEffects(player: Player) {
+        val location = player.location
+        location.y += 1
+        player.world.spawnParticle(Particle.LARGE_SMOKE, location, 250, 0.5, 0.5, 0.5, 0.1)
+    }
+
+    private fun broadcastJoinEvent(player: Player) {
+        val joinEvent = PlayerJoinEvent(
+            player,
+            player.displayName().append(text(" joined the game")).color(NamedTextColor.YELLOW)
+        )
+        Bukkit.getPluginManager().callEvent(joinEvent)
+        joinEvent.joinMessage()?.let { Bukkit.broadcast(it) }
+    }
+
+    private fun broadcastQuitEvent(player: Player) {
+        val quitEvent = PlayerQuitEvent(
+            player,
+            player.displayName().append(text(" left the game")).color(NamedTextColor.YELLOW),
+            PlayerQuitEvent.QuitReason.DISCONNECTED
+        )
+        Bukkit.getPluginManager().callEvent(quitEvent)
+        quitEvent.quitMessage()?.let { Bukkit.broadcast(it) }
     }
 
     private fun updatePlayerVisibilityForAll(player: Player, show: Boolean) {
