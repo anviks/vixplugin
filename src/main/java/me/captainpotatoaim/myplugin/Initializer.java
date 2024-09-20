@@ -84,7 +84,6 @@ public final class Initializer extends JavaPlugin {
             put("unfreeze", new UnFreeze());
             put("gigachest", new GigaChest());
             put("god", new GodMode());
-            put("enchantanything", new EnchantAnything());
 //            put("sandbox", new SandboxMainCommand());
             put("creep", new CreeperPrank());
             put("creep2", new CreeperPrankWithTp());
@@ -117,9 +116,11 @@ public final class Initializer extends JavaPlugin {
 
         GiveCustomItem giveCustomItem = new GiveCustomItem(customItems);
         Vanish vanish = new Vanish();
+        EnchantAnything enchantAnything = new EnchantAnything();
 
         giveCustomItem.registerCommand();
         vanish.registerCommand();
+        enchantAnything.registerCommand();
     }
 
     private void registerEvents() {

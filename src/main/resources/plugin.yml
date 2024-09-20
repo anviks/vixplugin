@@ -55,8 +55,6 @@ commands:
       - godmode
       - gm
       - god-mode
-  enchantanything:
-    description: Enchant anything with any level.
   sandbox:
     description: Create a sandbox world.
     usage: " /sandbox create\n
