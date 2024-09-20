@@ -1,0 +1,98 @@
+package me.captainpotatoaim.myplugin.util;
+
+import com.jeff_media.customblockdata.CustomBlockData;
+import me.captainpotatoaim.myplugin.Initializer;
+import org.bukkit.NamespacedKey;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
+
+import java.util.Optional;
+
+public class PDCManager {
+
+    public static <P, C> void setData(ItemStack itemStack, String key, PersistentDataType<P, C> dataType, C data) {
+        NamespacedKey namespacedKey = new NamespacedKey(Initializer.getPlugin(), key);
+        var meta = itemStack.getItemMeta();
+        assert meta != null;
+        var container = meta.getPersistentDataContainer();
+        container.set(namespacedKey, dataType, data);
+        itemStack.setItemMeta(meta);
+    }
+
+    public static <P, C> void setData(Entity entity, String key, PersistentDataType<P, C> dataType, C data) {
+        NamespacedKey namespacedKey = new NamespacedKey(Initializer.getPlugin(), key);
+        var container = entity.getPersistentDataContainer();
+        container.set(namespacedKey, dataType, data);
+    }
+
+    public static <P, C> Optional<C> getData(ItemStack itemStack, String key, PersistentDataType<P, C> dataType) {
+        NamespacedKey namespacedKey = new NamespacedKey(Initializer.getPlugin(), key);
+        var meta = itemStack.getItemMeta();
+        assert meta != null;
+        var container = meta.getPersistentDataContainer();
+
+        return Optional.ofNullable(container.get(namespacedKey, dataType));
+    }
+
+    public static <P, C> Optional<C> getData(Entity entity, String key, PersistentDataType<P, C> dataType) {
+        NamespacedKey namespacedKey = new NamespacedKey(Initializer.getPlugin(), key);
+        var container = entity.getPersistentDataContainer();
+
+        return Optional.ofNullable(container.get(namespacedKey, dataType));
+    }
+
+    public static <P, C> Optional<C> getData(Block block, String key, PersistentDataType<P, C> dataType) {
+        NamespacedKey namespacedKey = new NamespacedKey(Initializer.getPlugin(), key);
+        var container = new CustomBlockData(block, Initializer.getPlugin());
+
+        return Optional.ofNullable(container.get(namespacedKey, dataType));
+    }
+
+    public static void copyCustomData(ItemStack from, Entity to) {
+        var itemMeta = from.getItemMeta();
+        if (itemMeta == null) throw new IllegalArgumentException("ItemMeta is null");
+        var itemPDC = itemMeta.getPersistentDataContainer();
+        var entityPDC = to.getPersistentDataContainer();
+        itemPDC.copyTo(entityPDC, true);
+    }
+
+    public static void copyCustomData(ItemStack from, Block to) {
+        ItemMeta itemMeta = from.getItemMeta();
+        if (itemMeta == null) throw new IllegalArgumentException("ItemMeta is null");
+        PersistentDataContainer itemPDC = itemMeta.getPersistentDataContainer();
+        PersistentDataContainer blockPDC = new CustomBlockData(to, Initializer.getPlugin());
+        copyTo(itemPDC, blockPDC);
+    }
+
+    public static void copyCustomData(Block from, ItemStack to) {
+        ItemMeta itemMeta = to.getItemMeta();
+        if (itemMeta == null) throw new IllegalArgumentException("ItemMeta is null");
+        PersistentDataContainer itemPDC = itemMeta.getPersistentDataContainer();
+        PersistentDataContainer blockPDC = new CustomBlockData(from, Initializer.getPlugin());
+        copyTo(blockPDC, itemPDC);
+    }
+
+    private static void copyTo(PersistentDataContainer from, PersistentDataContainer to) {
+        from.getKeys().forEach((key) -> {
+            PersistentDataType<?, ?> dataType = CustomBlockData.getDataType(from, key);
+            if (dataType != null) {
+                copyPersistentData(from, to, key, dataType);
+            }
+        });
+    }
+
+    private static <T, Z> void copyPersistentData(
+            PersistentDataContainer from,
+            PersistentDataContainer to,
+            NamespacedKey key,
+            PersistentDataType<T, Z> dataType
+    ) {
+        Z value = from.get(key, dataType);
+        assert value != null;
+        to.set(key, dataType, value);
+    }
+}

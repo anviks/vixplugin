@@ -2,6 +2,7 @@ package me.captainpotatoaim.myplugin.custom_items.rapid_fire_bow;
 
 import me.captainpotatoaim.myplugin.Initializer;
 import me.captainpotatoaim.myplugin.custom_items.CustomItem;
+import me.captainpotatoaim.myplugin.util.PDCManager;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.AbstractArrow;
@@ -148,7 +149,7 @@ public class RapidFireBowListener implements Listener {
         double pitch = arrowForce / 10 + 0.8;
         arrowEntity.getWorld().playSound(arrowEntity.getLocation(), Sound.ENTITY_ARROW_SHOOT, 1, (float) pitch);
 
-        CustomItem.copyCustomData(arrowItem, arrowEntity);
+        PDCManager.copyCustomData(arrowItem, arrowEntity);
 
         if (player.getGameMode() == GameMode.CREATIVE) {
             arrowEntity.setPickupStatus(AbstractArrow.PickupStatus.CREATIVE_ONLY);

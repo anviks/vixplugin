@@ -1,6 +1,7 @@
 package me.captainpotatoaim.myplugin.custom_items.custom_fuse_tnt;
 
 import me.captainpotatoaim.myplugin.custom_items.CustomItem;
+import me.captainpotatoaim.myplugin.util.PDCManager;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -21,7 +22,7 @@ public class TNTListener implements Listener {
         Block blockPlaced = event.getBlockPlaced();
 
         if (CustomItem.isOfType(itemInHand, CustomFuseTNT.class)) {
-            CustomItem.copyCustomData(itemInHand, blockPlaced);
+            PDCManager.copyCustomData(itemInHand, blockPlaced);
         }
     }
 
@@ -32,7 +33,7 @@ public class TNTListener implements Listener {
 
         Location blockLocation = block.getLocation();
         event.setDropItems(false);
-        float fuseSeconds = CustomItem.getData(block, "fuse_seconds", PersistentDataType.FLOAT).orElseThrow();
+        float fuseSeconds = PDCManager.getData(block, "fuse_seconds", PersistentDataType.FLOAT).orElseThrow();
 
         if (event.getPlayer().getGameMode() == GameMode.CREATIVE) return;
         ItemStack drop = CustomFuseTNT.getItem(1, fuseSeconds);
@@ -45,7 +46,7 @@ public class TNTListener implements Listener {
         Block block = tntEntity.getLocation().getBlock();
         if (!CustomItem.isOfType(block, CustomFuseTNT.class)) return;
 
-        float seconds = CustomItem.getData(block, "fuse_seconds", PersistentDataType.FLOAT).orElseThrow();
+        float seconds = PDCManager.getData(block, "fuse_seconds", PersistentDataType.FLOAT).orElseThrow();
         tntEntity.setFuseTicks((int) Math.round(seconds * 20.0));
     }
 }
