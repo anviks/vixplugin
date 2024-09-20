@@ -34,8 +34,6 @@ import me.captainpotatoaim.myplugin.random_commands.protect_area.UnprotectArea;
 import me.captainpotatoaim.myplugin.sandbox.Inventory;
 import me.captainpotatoaim.myplugin.unfinished_commands.CreeperPrank;
 import me.captainpotatoaim.myplugin.unfinished_commands.CreeperPrankWithTp;
-import me.captainpotatoaim.myplugin.unfinished_commands.GigaChest;
-import me.captainpotatoaim.myplugin.unfinished_commands.UnBreakableCommand;
 import me.captainpotatoaim.myplugin.vanish.Vanish;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -71,7 +69,6 @@ public final class Initializer extends JavaPlugin {
 
     private void registerCommands() {
         var commands = new HashMap<String, CommandExecutor>() {{
-            put("fishplz", new SusCommand());
             put("loyalsquad", new DogCommand());
             put("slap", new SlapCommand());
             put("fly", new FlightCommand());
@@ -79,10 +76,8 @@ public final class Initializer extends JavaPlugin {
             put("echest", new EnderChestCommand());
             put("launch", new LaunchCommand());
             put("zoom", new ZoomCommand());
-            put("setunbreakable", new UnBreakableCommand());
             put("freeze", new Freeze());
             put("unfreeze", new UnFreeze());
-            put("gigachest", new GigaChest());
             put("god", new GodMode());
 //            put("sandbox", new SandboxMainCommand());
             put("creep", new CreeperPrank());

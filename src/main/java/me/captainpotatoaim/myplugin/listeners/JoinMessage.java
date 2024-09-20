@@ -30,9 +30,4 @@ public class JoinMessage implements Listener {
     void onPlayerLeave(PlayerQuitEvent event) {
         event.setQuitMessage("Good! " + event.getQuitMessage());
     }
-
-    @EventHandler
-    void oooo(AsyncPlayerPreLoginEvent event) {
-
-    }
 }

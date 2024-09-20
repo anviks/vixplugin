@@ -1,5 +1,6 @@
 package me.captainpotatoaim.myplugin.random_commands;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -21,7 +22,7 @@ public class TeleportUp implements CommandExecutor {
     private Location getRandomLocationAbove(Player player) {
         Location playerLocation = player.getLocation();
         double height = playerLocation.getY();
-        double maxHeight = 319;
+        double maxHeight = player.getWorld().getMaxHeight();
         double destinationHeight = Math.random() * (maxHeight - height);
         playerLocation.setY(height + destinationHeight);
 

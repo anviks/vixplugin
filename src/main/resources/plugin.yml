@@ -4,9 +4,6 @@ main: me.captainpotatoaim.myplugin.Initializer
 api-version: 1.21.1
 depend: [CommandAPI]
 commands:
-  fishplz:
-    description: You could solve world hunger with all that.
-    usage: /fishplz
   loyalsquad:
     description: Spawn a loyal army of puppers.
     usage: "/loyalsquad\n/loyalsquad <player>"
@@ -27,10 +24,6 @@ commands:
     usage: Launch someone.
   zoom:
     description: Zoom forward.
-  creeper:
-    description: Something.
-  setunbreakable:
-    description: Make a block unbreakable.
 #  permissions:
 #    description: Set, get or remove permissions.
 #    usage: "/permissions set <player> <permission> <true/false>\n
@@ -46,8 +39,6 @@ commands:
   unfreeze:
     description: Unfreeze a player.
     usage: /unfreeze <player>
-  gigachest:
-    description: Open a gigachest.
   god:
     description: Give god mode to yourself or to a player.
     usage: "/god\n/god <player>"
