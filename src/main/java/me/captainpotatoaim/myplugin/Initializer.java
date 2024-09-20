@@ -115,9 +115,9 @@ public final class Initializer extends JavaPlugin {
         Vanish vanish = new Vanish();
         EnchantAnything enchantAnything = new EnchantAnything();
 
-        giveCustomItem.registerCommand();
-        vanish.registerCommand();
-        enchantAnything.registerCommand();
+        giveCustomItem.register(this);
+        vanish.register(this);
+        enchantAnything.register(this);
 
         pluginManager.registerEvents(vanish, this);
     }

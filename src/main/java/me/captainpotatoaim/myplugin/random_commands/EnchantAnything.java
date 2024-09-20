@@ -5,17 +5,19 @@ import dev.jorel.commandapi.CommandPermission;
 import dev.jorel.commandapi.arguments.EnchantmentArgument;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.IntegerArgument;
-import me.captainpotatoaim.myplugin.Initializer;
+import me.captainpotatoaim.myplugin.CustomCommand;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Collection;
 
-public class EnchantAnything {
+public class EnchantAnything implements CustomCommand {
 
-    public void registerCommand() {
+    @Override
+    public void register(JavaPlugin plugin) {
         new CommandAPICommand("enchantanything")
                 .withPermission(CommandPermission.OP)
                 .withArguments(new EntitySelectorArgument.ManyPlayers("players"))
@@ -38,6 +40,6 @@ public class EnchantAnything {
                         itemInMainHand.setItemMeta(itemMeta);
                     }
                 })
-                .register(Initializer.getPlugin());
+                .register(plugin);
     }
 }

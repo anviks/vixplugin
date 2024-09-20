@@ -3,6 +3,7 @@ package me.captainpotatoaim.myplugin.vanish
 import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.CommandPermission
 import dev.jorel.commandapi.executors.CommandArguments
+import me.captainpotatoaim.myplugin.CustomCommand
 import me.captainpotatoaim.myplugin.Initializer
 import me.captainpotatoaim.myplugin.util.PDCManager
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoRemovePacket
@@ -16,9 +17,10 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.persistence.PersistentDataType
+import org.bukkit.plugin.java.JavaPlugin
 import java.util.*
 
-class Vanish : Listener {
+class Vanish : CustomCommand, Listener {
 
     @EventHandler
     fun onPlayerJoin(event: PlayerJoinEvent) {
@@ -38,11 +40,11 @@ class Vanish : Listener {
         }
     }
 
-    fun registerCommand() {
+    override fun register(plugin: JavaPlugin) {
         CommandAPICommand("vanish")
             .withPermission(CommandPermission.OP)
             .executesPlayer(this::run)
-            .register(Initializer.getPlugin())
+            .register(plugin)
     }
 
     private fun run(player: Player, args: CommandArguments) {

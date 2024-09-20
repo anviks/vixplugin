@@ -3,17 +3,20 @@ package me.captainpotatoaim.myplugin.custom_items;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.CommandPermission;
 import dev.jorel.commandapi.arguments.*;
+import me.captainpotatoaim.myplugin.CustomCommand;
 import me.captainpotatoaim.myplugin.Initializer;
 import me.captainpotatoaim.myplugin.custom_items.custom_fuse_tnt.CustomFuseTNT;
 import me.captainpotatoaim.myplugin.util.StringHelper;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-public class GiveCustomItem {
+public class GiveCustomItem implements CustomCommand {
 
     private final Map<String, CustomItem> customItems = new HashMap<>();
 
@@ -25,7 +28,8 @@ public class GiveCustomItem {
         }
     }
 
-    public void registerCommand() {
+    @Override
+    public void register(JavaPlugin plugin) {
         String targetsParam = "targets";
         String countParam = "count";
         String itemParam = "item";
@@ -54,7 +58,7 @@ public class GiveCustomItem {
                         target.getInventory().addItem(itemObj.getItem(count));
                     }
                 })
-                .register(Initializer.getPlugin());
+                .register(plugin);
 
         baseGiveCommand
                 .withArguments(new LiteralArgument(customFuseTntParam))
@@ -72,6 +76,6 @@ public class GiveCustomItem {
                         target.getInventory().addItem(CustomFuseTNT.getItem(count, fuseTime));
                     }
                 })
-                .register(Initializer.getPlugin());
+                .register(plugin);
     }
 }
