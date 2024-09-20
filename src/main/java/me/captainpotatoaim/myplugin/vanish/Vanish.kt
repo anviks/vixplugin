@@ -2,6 +2,7 @@ package me.captainpotatoaim.myplugin.vanish
 
 import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.CommandPermission
+import dev.jorel.commandapi.arguments.LiteralArgument
 import dev.jorel.commandapi.executors.CommandArguments
 import me.captainpotatoaim.myplugin.CustomCommand
 import me.captainpotatoaim.myplugin.Initializer
@@ -46,11 +47,30 @@ class Vanish : CustomCommand, Listener {
     override fun register(plugin: JavaPlugin) {
         CommandAPICommand("vanish")
             .withPermission(CommandPermission.OP)
-            .executesPlayer(this::run)
+            .withArguments(LiteralArgument("silently"))
+            .executesPlayer(this::runSilently)
+            .register(plugin)
+
+        CommandAPICommand("vanish")
+            .withPermission(CommandPermission.OP)
+            .withArguments(LiteralArgument("with-effects"))
+            .executesPlayer(this::runWithEffects)
             .register(plugin)
     }
 
-    private fun run(player: Player, args: CommandArguments) {
+    private fun runSilently(player: Player, args: CommandArguments) {
+        val isVanished = PDCManager.getData(player, "vanished", PersistentDataType.BOOLEAN)
+
+        if (isVanished.isPresent && isVanished.get()) {
+            this.updatePlayerVisibilityForAll(player, true)
+            this.broadcastJoinEvent(player)
+        } else {
+            this.broadcastQuitEvent(player)
+            this.updatePlayerVisibilityForAll(player, false)
+        }
+    }
+
+    private fun runWithEffects(player: Player, args: CommandArguments) {
         val isVanished = PDCManager.getData(player, "vanished", PersistentDataType.BOOLEAN)
 
         if (isVanished.isPresent && isVanished.get()) {
