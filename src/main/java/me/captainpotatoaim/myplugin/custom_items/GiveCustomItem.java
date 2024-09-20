@@ -23,7 +23,7 @@ public class GiveCustomItem implements CustomCommand {
     public GiveCustomItem(CustomItem[] customItems) {
         for (CustomItem item : customItems) {
             String className = item.getClass().getSimpleName();
-            String subCommand = StringHelper.camelCaseToKebabCase(className);
+            String subCommand = StringHelper.INSTANCE.camelCaseToKebabCase(className);
             this.customItems.put(subCommand, item);
         }
     }

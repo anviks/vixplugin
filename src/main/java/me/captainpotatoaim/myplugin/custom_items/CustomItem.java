@@ -52,6 +52,6 @@ public abstract class CustomItem {
     }
 
     private static String classToIdentifier(Class<?> clazz) {
-        return StringHelper.camelCaseToSnakeCase(clazz.getSimpleName());
+        return StringHelper.INSTANCE.camelCaseToSnakeCase(clazz.getSimpleName());
     }
 }
