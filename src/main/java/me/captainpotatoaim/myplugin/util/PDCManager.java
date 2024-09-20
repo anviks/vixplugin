@@ -1,12 +1,12 @@
 package me.captainpotatoaim.myplugin.util;
 
 import com.jeff_media.customblockdata.CustomBlockData;
+import io.papermc.paper.persistence.PersistentDataContainerView;
 import me.captainpotatoaim.myplugin.Initializer;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -15,67 +15,70 @@ import java.util.Optional;
 public class PDCManager {
 
     public static <P, C> void setData(ItemStack itemStack, String key, PersistentDataType<P, C> dataType, C data) {
-        NamespacedKey namespacedKey = new NamespacedKey(Initializer.getPlugin(), key);
         var meta = itemStack.getItemMeta();
         assert meta != null;
-        var container = meta.getPersistentDataContainer();
-        container.set(namespacedKey, dataType, data);
+        setData(meta.getPersistentDataContainer(), key, dataType, data);
         itemStack.setItemMeta(meta);
     }
 
     public static <P, C> void setData(Entity entity, String key, PersistentDataType<P, C> dataType, C data) {
-        NamespacedKey namespacedKey = new NamespacedKey(Initializer.getPlugin(), key);
-        var container = entity.getPersistentDataContainer();
-        container.set(namespacedKey, dataType, data);
+        setData(getContainer(entity), key, dataType, data);
+    }
+
+    private static <P, C> void setData(PersistentDataContainer container, String key, PersistentDataType<P, C> dataType, C data) {
+        container.set(createKey(key), dataType, data);
     }
 
     public static <P, C> Optional<C> getData(ItemStack itemStack, String key, PersistentDataType<P, C> dataType) {
-        NamespacedKey namespacedKey = new NamespacedKey(Initializer.getPlugin(), key);
-        var meta = itemStack.getItemMeta();
-        assert meta != null;
-        var container = meta.getPersistentDataContainer();
-
-        return Optional.ofNullable(container.get(namespacedKey, dataType));
+        return getData(getContainer(itemStack), key, dataType);
     }
 
     public static <P, C> Optional<C> getData(Entity entity, String key, PersistentDataType<P, C> dataType) {
-        NamespacedKey namespacedKey = new NamespacedKey(Initializer.getPlugin(), key);
-        var container = entity.getPersistentDataContainer();
-
-        return Optional.ofNullable(container.get(namespacedKey, dataType));
+        return getData(getContainer(entity), key, dataType);
     }
 
     public static <P, C> Optional<C> getData(Block block, String key, PersistentDataType<P, C> dataType) {
-        NamespacedKey namespacedKey = new NamespacedKey(Initializer.getPlugin(), key);
-        var container = new CustomBlockData(block, Initializer.getPlugin());
+        return getData(getContainer(block), key, dataType);
+    }
 
-        return Optional.ofNullable(container.get(namespacedKey, dataType));
+    private static <P, C> Optional<C> getData(PersistentDataContainer container, String key, PersistentDataType<P, C> dataType) {
+        return Optional.ofNullable(container.get(createKey(key), dataType));
     }
 
     public static void copyCustomData(ItemStack from, Entity to) {
-        var itemMeta = from.getItemMeta();
-        if (itemMeta == null) throw new IllegalArgumentException("ItemMeta is null");
-        var itemPDC = itemMeta.getPersistentDataContainer();
-        var entityPDC = to.getPersistentDataContainer();
-        itemPDC.copyTo(entityPDC, true);
+        getContainer(from).copyTo(getContainer(to), true);
     }
 
     public static void copyCustomData(ItemStack from, Block to) {
-        ItemMeta itemMeta = from.getItemMeta();
-        if (itemMeta == null) throw new IllegalArgumentException("ItemMeta is null");
-        PersistentDataContainer itemPDC = itemMeta.getPersistentDataContainer();
-        PersistentDataContainer blockPDC = new CustomBlockData(to, Initializer.getPlugin());
-        copyTo(itemPDC, blockPDC);
+        copyTo(getContainer(from), getContainer(to));
     }
 
     public static void copyCustomData(Block from, ItemStack to) {
-        ItemMeta itemMeta = to.getItemMeta();
-        if (itemMeta == null) throw new IllegalArgumentException("ItemMeta is null");
-        PersistentDataContainer itemPDC = itemMeta.getPersistentDataContainer();
-        PersistentDataContainer blockPDC = new CustomBlockData(from, Initializer.getPlugin());
-        copyTo(blockPDC, itemPDC);
+        copyTo(getContainer(from), getContainer(to));
     }
 
+    private static NamespacedKey createKey(String key) {
+        return new NamespacedKey(Initializer.getPlugin(), key);
+    }
+
+    private static PersistentDataContainer getContainer(ItemStack itemStack) {
+        var meta = itemStack.getItemMeta();
+        if (meta == null) throw new IllegalArgumentException("ItemMeta is null");
+        return meta.getPersistentDataContainer();
+    }
+
+    private static PersistentDataContainer getContainer(Entity entity) {
+        return entity.getPersistentDataContainer();
+    }
+
+    private static PersistentDataContainer getContainer(Block block) {
+        return new CustomBlockData(block, Initializer.getPlugin());
+    }
+
+    /**
+     * This method is needed, because {@link PersistentDataContainerView#copyTo(PersistentDataContainer, boolean)} doesn't work with
+     * containers of type {@link CustomBlockData}
+     */
     private static void copyTo(PersistentDataContainer from, PersistentDataContainer to) {
         from.getKeys().forEach((key) -> {
             PersistentDataType<?, ?> dataType = CustomBlockData.getDataType(from, key);

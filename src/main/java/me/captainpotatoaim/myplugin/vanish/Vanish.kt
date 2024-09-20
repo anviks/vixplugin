@@ -4,7 +4,7 @@ import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.CommandPermission
 import dev.jorel.commandapi.executors.CommandArguments
 import me.captainpotatoaim.myplugin.Initializer
-import me.captainpotatoaim.myplugin.custom_items.CustomItem
+import me.captainpotatoaim.myplugin.util.PDCManager
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoRemovePacket
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket
 import org.bukkit.Bukkit
@@ -23,14 +23,14 @@ class Vanish : Listener {
     @EventHandler
     fun onPlayerJoin(event: PlayerJoinEvent) {
         val player = event.player
-        val isVanished = CustomItem.getData(player, "vanished", PersistentDataType.BOOLEAN)
+        val isVanished = PDCManager.getData(player, "vanished", PersistentDataType.BOOLEAN)
 
         if (isVanished.isPresent && isVanished.get()) {
             this.updatePlayerVisibilityForAll(player, false)
         }
 
         for (onlinePlayer in Bukkit.getOnlinePlayers().minus(player)) {
-            val isSomeoneElseVanished = CustomItem.getData(onlinePlayer, "vanished", PersistentDataType.BOOLEAN)
+            val isSomeoneElseVanished = PDCManager.getData(onlinePlayer, "vanished", PersistentDataType.BOOLEAN)
 
             if (isSomeoneElseVanished.isPresent && isSomeoneElseVanished.get()) {
                 this.updatePlayerVisibility(onlinePlayer, player, false)
@@ -47,7 +47,7 @@ class Vanish : Listener {
 
     private fun run(player: Player, args: CommandArguments) {
         val location = player.location
-        val isVanished = CustomItem.getData(player, "vanished", PersistentDataType.BOOLEAN)
+        val isVanished = PDCManager.getData(player, "vanished", PersistentDataType.BOOLEAN)
 
         if (isVanished.isPresent && isVanished.get()) {
             val lightningLocations = ArrayList<Location>()
@@ -89,7 +89,7 @@ class Vanish : Listener {
     }
 
     private fun updatePlayerVisibilityForAll(player: Player, show: Boolean) {
-        CustomItem.setData(player, "vanished", PersistentDataType.BOOLEAN, !show)
+        PDCManager.setData(player, "vanished", PersistentDataType.BOOLEAN, !show)
 
         for (onlinePlayer in Bukkit.getOnlinePlayers().minus(player)) {
             updatePlayerVisibility(player, onlinePlayer, show)
