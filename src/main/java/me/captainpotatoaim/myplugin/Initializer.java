@@ -114,6 +114,8 @@ public final class Initializer extends JavaPlugin {
             cmd.setExecutor(command.getValue());
         }
 
+        PluginManager pluginManager = this.getServer().getPluginManager();
+
         GiveCustomItem giveCustomItem = new GiveCustomItem(customItems);
         Vanish vanish = new Vanish();
         EnchantAnything enchantAnything = new EnchantAnything();
@@ -121,6 +123,8 @@ public final class Initializer extends JavaPlugin {
         giveCustomItem.registerCommand();
         vanish.registerCommand();
         enchantAnything.registerCommand();
+
+        pluginManager.registerEvents(vanish, this);
     }
 
     private void registerEvents() {

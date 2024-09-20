@@ -5,42 +5,57 @@ import dev.jorel.commandapi.CommandPermission;
 import dev.jorel.commandapi.executors.CommandArguments;
 import me.captainpotatoaim.myplugin.Initializer;
 import me.captainpotatoaim.myplugin.custom_items.CustomItem;
+import me.captainpotatoaim.myplugin.util.CollectionsHelper;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoRemovePacket;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
-import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 
-public class Vanish {
+public class Vanish implements Listener {
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+        Optional<Boolean> isVanished = CustomItem.getData(player, "vanished", PersistentDataType.BOOLEAN);
+
+        if (isVanished.isPresent() && isVanished.get()) {
+            this.updatePlayerVisibilityForAll(player, false);
+        }
+
+        for (Player onlinePlayer : CollectionsHelper.allExcept(Bukkit.getOnlinePlayers(), player)) {
+            Optional<Boolean> isSomeoneElseVanished = CustomItem.getData(onlinePlayer, "vanished", PersistentDataType.BOOLEAN);
+
+            if (isSomeoneElseVanished.isPresent() && isSomeoneElseVanished.get()) {
+                this.updatePlayerVisibility(onlinePlayer, player, false);
+            }
+        }
+    }
 
     public void registerCommand() {
         new CommandAPICommand("vanish")
                 .withPermission(CommandPermission.OP)
-                .executes(this::run)
+                .executesPlayer(this::run)
                 .register(Initializer.getPlugin());
     }
 
-    private void removeFromPlayerList(Player player) {
-        var packet = new ClientboundPlayerInfoRemovePacket(List.of(player.getUniqueId()));
-
-        // Send the packet to all online players
-        for (Player onlinePlayer : player.getServer().getOnlinePlayers()) {
-            ((CraftPlayer) onlinePlayer).getHandle().connection.sendPacket(packet);
-        }
+    private ClientboundPlayerInfoRemovePacket getTabListRemovePacket(Player player) {
+        return new ClientboundPlayerInfoRemovePacket(List.of(player.getUniqueId()));
     }
 
-    private void addToPlayerList(Player player) {
+    private ClientboundPlayerInfoUpdatePacket getTabListAddPacket(Player player) {
         ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
 
         var actions = EnumSet.of(
@@ -52,31 +67,32 @@ public class Vanish {
                 ClientboundPlayerInfoUpdatePacket.Action.UPDATE_LISTED
         );
 
-        var packet = new ClientboundPlayerInfoUpdatePacket(actions, List.of(nmsPlayer));
+        return new ClientboundPlayerInfoUpdatePacket(actions, List.of(nmsPlayer));
+    }
 
-        // Send the packet to all online players
-        for (Player onlinePlayer : player.getServer().getOnlinePlayers()) {
-            ServerPlayer nmsTarget = ((CraftPlayer) onlinePlayer).getHandle();
-            nmsTarget.connection.sendPacket(packet);
+    private void updatePlayerVisibility(Player target, Player observer, boolean show) {
+        var plugin = Initializer.getPlugin();
+        var packet = show ? getTabListAddPacket(target) : getTabListRemovePacket(target);
+
+        ServerPlayer nmsObserver = ((CraftPlayer) observer).getHandle();
+        nmsObserver.connection.sendPacket(packet);
+
+        if (show) {
+            observer.showPlayer(plugin, target);
+        } else {
+            observer.hidePlayer(plugin, target);
         }
     }
 
-    private void changePlayerVisibility(Player player, boolean visible) {
-        JavaPlugin plugin = Initializer.getPlugin();
-        CustomItem.setData(player, "vanished", PersistentDataType.BOOLEAN, !visible);
+    private void updatePlayerVisibilityForAll(Player player, boolean show) {
+        CustomItem.setData(player, "vanished", PersistentDataType.BOOLEAN, !show);
 
-        if (visible) this.addToPlayerList(player);
-        else this.removeFromPlayerList(player);
-
-        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-            if (visible) onlinePlayer.showPlayer(plugin, player);
-            else onlinePlayer.hidePlayer(plugin, player);
+        for (Player onlinePlayer : CollectionsHelper.allExcept(Bukkit.getOnlinePlayers(), player)) {
+            updatePlayerVisibility(player, onlinePlayer, show);
         }
     }
 
-    private void run(CommandSender sender, CommandArguments args) {
-        if (!(sender instanceof Player player)) return;
-
+    private void run(Player player, CommandArguments args) {
         Location location = player.getLocation();
         Optional<Boolean> isVanished = CustomItem.getData(player, "vanished", PersistentDataType.BOOLEAN);
 
@@ -107,10 +123,10 @@ public class Vanish {
                 for (var lightningLocation : lightningLocations) {
                     player.getWorld().strikeLightningEffect(lightningLocation);
                 }
-                this.changePlayerVisibility(player, true);
+                this.updatePlayerVisibilityForAll(player, true);
             }, delay);
         } else {
-            this.changePlayerVisibility(player, false);
+            this.updatePlayerVisibilityForAll(player, false);
             location.setY(location.getY() + 1);
             player.getWorld().spawnParticle(Particle.LARGE_SMOKE, location, 250, 0.5, 0.5, 0.5, 0.1);
         }
