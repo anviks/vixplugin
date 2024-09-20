@@ -1,26 +1,22 @@
-package me.captainpotatoaim.myplugin.custom_items.teleport_arrows;
+package me.captainpotatoaim.myplugin.custom_items.teleport_arrows
 
-import me.captainpotatoaim.myplugin.custom_items.CustomItem;
-import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+import me.captainpotatoaim.myplugin.custom_items.CustomItem
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import org.bukkit.Material
+import org.bukkit.enchantments.Enchantment
+import org.bukkit.inventory.ItemStack
 
-import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.format.NamedTextColor.DARK_AQUA;
+class TeleportArrow : CustomItem() {
 
-public class TeleportArrow extends CustomItem {
+    override fun getItem(count: Int): ItemStack {
+        val tpArrow = ItemStack(Material.ARROW, count)
+        val tpArrowMeta = checkNotNull(tpArrow.itemMeta)
+        tpArrowMeta.addEnchant(Enchantment.LUCK_OF_THE_SEA, 1, true)
+        tpArrowMeta.displayName(Component.text("Teleport arrow", NamedTextColor.DARK_AQUA))
+        tpArrow.setItemMeta(tpArrowMeta)
+        setType(tpArrow, TeleportArrow::class.java)
 
-    @Override
-    public ItemStack getItem(int count) {
-        ItemStack tpArrow = new ItemStack(Material.ARROW, count);
-        ItemMeta tpArrowMeta = tpArrow.getItemMeta();
-        assert tpArrowMeta != null;
-        tpArrowMeta.addEnchant(Enchantment.LUCK_OF_THE_SEA, 1, true);
-        tpArrowMeta.displayName(text("Teleport arrow", DARK_AQUA));
-        tpArrow.setItemMeta(tpArrowMeta);
-        CustomItem.setType(tpArrow, TeleportArrow.class);
-
-        return tpArrow;
+        return tpArrow
     }
 }

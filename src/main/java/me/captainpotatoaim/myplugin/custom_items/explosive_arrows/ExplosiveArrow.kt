@@ -1,46 +1,36 @@
-package me.captainpotatoaim.myplugin.custom_items.explosive_arrows;
+package me.captainpotatoaim.myplugin.custom_items.explosive_arrows
 
-import me.captainpotatoaim.myplugin.custom_items.CustomItem;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.ShapedRecipe;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.Plugin;
+import me.captainpotatoaim.myplugin.custom_items.CustomItem
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import org.bukkit.Material
+import org.bukkit.NamespacedKey
+import org.bukkit.enchantments.Enchantment
+import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.ShapedRecipe
+import org.bukkit.plugin.Plugin
 
-import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.format.NamedTextColor.YELLOW;
+class ExplosiveArrow(private val plugin: Plugin) : CustomItem() {
 
-public class ExplosiveArrow extends CustomItem {
+    override fun getItem(count: Int): ItemStack {
+        val arrows = ItemStack(Material.SPECTRAL_ARROW, count)
+        val arrowMeta = checkNotNull(arrows.itemMeta)
+        arrowMeta.displayName(Component.text("Explosive Arrow", NamedTextColor.YELLOW))
+        arrowMeta.addEnchant(Enchantment.INFINITY, 1, false)
+        arrows.setItemMeta(arrowMeta)
+        setType(arrows, ExplosiveArrow::class.java)
 
-    private final Plugin plugin;
-
-    public ExplosiveArrow(Plugin plugin) {
-        this.plugin = plugin;
+        return arrows
     }
 
-    @Override
-    public ItemStack getItem(int count) {
-        ItemStack arrows = new ItemStack(Material.SPECTRAL_ARROW, count);
-        ItemMeta arrowMeta = arrows.getItemMeta();
-        assert arrowMeta != null;
-        arrowMeta.displayName(text("Explosive Arrow", YELLOW));
-        arrowMeta.addEnchant(Enchantment.INFINITY, 1, false);
-        arrows.setItemMeta(arrowMeta);
-        CustomItem.setType(arrows, ExplosiveArrow.class);
+    fun getRecipe(): ShapedRecipe {
+        val arrow = getItem(1)
+        val key = NamespacedKey(this.plugin, "explosive_arrow")
+        val recipe = ShapedRecipe(key, arrow)
+        recipe.shape("GGG", "GAG", "GGG")
+        recipe.setIngredient('G', Material.GUNPOWDER)
+        recipe.setIngredient('A', Material.ARROW)
 
-        return arrows;
-    }
-
-    public ShapedRecipe getRecipe() {
-        ItemStack arrow = getItem(1);
-        NamespacedKey key = new NamespacedKey(this.plugin, "explosive_arrow");
-        ShapedRecipe recipe = new ShapedRecipe(key, arrow);
-        recipe.shape("GGG", "GAG", "GGG");
-        recipe.setIngredient('G', Material.GUNPOWDER);
-        recipe.setIngredient('A', Material.ARROW);
-
-        return recipe;
+        return recipe
     }
 }

@@ -1,27 +1,21 @@
-package me.captainpotatoaim.myplugin.custom_items.grenade;
+package me.captainpotatoaim.myplugin.custom_items.grenade
 
-import me.captainpotatoaim.myplugin.custom_items.CustomItem;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+import me.captainpotatoaim.myplugin.custom_items.CustomItem
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import org.bukkit.Material
+import org.bukkit.inventory.ItemStack
 
-import java.util.List;
+class Grenade : CustomItem() {
 
-import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.format.NamedTextColor.RED;
+    override fun getItem(count: Int): ItemStack {
+        val grenade = ItemStack(Material.EXPERIENCE_BOTTLE, count)
+        val grenadeMeta = checkNotNull(grenade.itemMeta)
+        grenadeMeta.displayName(Component.text("GRENADE", NamedTextColor.RED))
+        grenadeMeta.lore(listOf(Component.text("Toss it at someone.")))
+        grenade.setItemMeta(grenadeMeta)
+        setType(grenade, Grenade::class.java)
 
-public class Grenade extends CustomItem {
-
-    @Override
-    public ItemStack getItem(int count) {
-        ItemStack grenade = new ItemStack(Material.EXPERIENCE_BOTTLE, count);
-        ItemMeta grenadeMeta = grenade.getItemMeta();
-        assert grenadeMeta != null;
-        grenadeMeta.displayName(text("GRENADE", RED));
-        grenadeMeta.lore(List.of(text("Toss it at someone.")));
-        grenade.setItemMeta(grenadeMeta);
-        CustomItem.setType(grenade, Grenade.class);
-
-        return grenade;
+        return grenade
     }
 }

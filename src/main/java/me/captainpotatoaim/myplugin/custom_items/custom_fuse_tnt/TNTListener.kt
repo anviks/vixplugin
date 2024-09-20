@@ -1,52 +1,50 @@
-package me.captainpotatoaim.myplugin.custom_items.custom_fuse_tnt;
+package me.captainpotatoaim.myplugin.custom_items.custom_fuse_tnt
 
-import me.captainpotatoaim.myplugin.custom_items.CustomItem;
-import me.captainpotatoaim.myplugin.util.PDCManager;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.block.Block;
-import org.bukkit.entity.TNTPrimed;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntitySpawnEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataType;
+import me.captainpotatoaim.myplugin.custom_items.CustomItem
+import me.captainpotatoaim.myplugin.util.PDCManager
+import org.bukkit.GameMode
+import org.bukkit.block.Block
+import org.bukkit.entity.TNTPrimed
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.event.block.BlockBreakEvent
+import org.bukkit.event.block.BlockPlaceEvent
+import org.bukkit.event.entity.EntitySpawnEvent
+import org.bukkit.persistence.PersistentDataType
 
-public class TNTListener implements Listener {
+class TNTListener : Listener {
 
     @EventHandler
-    public void onTNTPlace(BlockPlaceEvent event) {
-        ItemStack itemInHand = event.getItemInHand();
-        Block blockPlaced = event.getBlockPlaced();
+    fun onTNTPlace(event: BlockPlaceEvent) {
+        val itemInHand = event.itemInHand
+        val blockPlaced = event.blockPlaced
 
-        if (CustomItem.isOfType(itemInHand, CustomFuseTNT.class)) {
-            PDCManager.copyCustomData(itemInHand, blockPlaced);
+        if (CustomItem.isOfType(itemInHand, CustomFuseTNT::class.java)) {
+            PDCManager.copyCustomData(itemInHand, blockPlaced)
         }
     }
 
     @EventHandler
-    public void onTNTBreak(BlockBreakEvent event) {
-        Block block = event.getBlock();
-        if (!CustomItem.isOfType(block, CustomFuseTNT.class)) return;
+    fun onTNTBreak(event: BlockBreakEvent) {
+        val block = event.block
+        if (!CustomItem.isOfType(block, CustomFuseTNT::class.java)) return
 
-        Location blockLocation = block.getLocation();
-        event.setDropItems(false);
-        float fuseSeconds = PDCManager.getData(block, "fuse_seconds", PersistentDataType.FLOAT).orElseThrow();
+        val blockLocation = block.location
+        event.isDropItems = false
+        val fuseSeconds = PDCManager.getData(block, "fuse_seconds", PersistentDataType.FLOAT).orElseThrow()
 
-        if (event.getPlayer().getGameMode() == GameMode.CREATIVE) return;
-        ItemStack drop = CustomFuseTNT.getItem(1, fuseSeconds);
-        blockLocation.getWorld().dropItemNaturally(blockLocation, drop);
+        if (event.player.gameMode == GameMode.CREATIVE) return
+        val drop = CustomFuseTNT.getItem(1, fuseSeconds)
+        blockLocation.world.dropItemNaturally(blockLocation, drop)
     }
 
     @EventHandler
-    public void onTntSpawn(EntitySpawnEvent event) {
-        if (!(event.getEntity() instanceof TNTPrimed tntEntity)) return;
-        Block block = tntEntity.getLocation().getBlock();
-        if (!CustomItem.isOfType(block, CustomFuseTNT.class)) return;
+    fun onTntSpawn(event: EntitySpawnEvent) {
+        val tntEntity = event.entity as? TNTPrimed ?: return
+        val block: Block = tntEntity.location.block
+        if (!CustomItem.isOfType(block, CustomFuseTNT::class.java)) return
 
-        float seconds = PDCManager.getData(block, "fuse_seconds", PersistentDataType.FLOAT).orElseThrow();
-        tntEntity.setFuseTicks((int) Math.round(seconds * 20.0));
+        val seconds = PDCManager.getData(block, "fuse_seconds", PersistentDataType.FLOAT).orElseThrow()
+        tntEntity.fuseTicks = Math.round(seconds * 20.0).toInt()
     }
 }

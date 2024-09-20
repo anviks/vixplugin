@@ -1,60 +1,59 @@
-package me.captainpotatoaim.myplugin.custom_items.multi_tool;
+package me.captainpotatoaim.myplugin.custom_items.multi_tool
 
-import me.captainpotatoaim.myplugin.custom_items.CustomItem;
-import org.bukkit.Material;
-import org.bukkit.Tag;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
+import me.captainpotatoaim.myplugin.custom_items.CustomItem
+import org.bukkit.Material
+import org.bukkit.Tag
+import org.bukkit.block.Block
+import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.event.block.Action
+import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.inventory.ItemStack
 
-public class MultiToolListener implements Listener {
+class MultiToolListener : Listener {
 
     @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent event) {
-        ItemStack eventItem = event.getItem();
+    fun onPlayerInteract(event: PlayerInteractEvent) {
+        val eventItem = event.item ?: return
 
-        if (eventItem == null) return;
-        if (!CustomItem.isOfType(eventItem, MultiTool.class)) return;
+        if (!CustomItem.isOfType(eventItem, MultiTool::class.java)) return
 
-        Player player = event.getPlayer();
-        Block block = event.getClickedBlock();
+        val player = event.player
+        val block = event.clickedBlock
 
-        if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
-            assert block != null;
-            handleLeftClick(player, block, eventItem);
+        if (event.action == Action.LEFT_CLICK_BLOCK) {
+            checkNotNull(block)
+            handleLeftClick(player, block, eventItem)
         }
     }
 
-    private void handleLeftClick(Player player, Block clickedBlock, ItemStack tool) {
-        Material blockMaterial = clickedBlock.getType();
-        boolean isNetherite = tool.getType().toString().startsWith("NETHERITE_");
-        Material toolForBlock = getToolForBlock(blockMaterial, isNetherite);
-        ensureMaterial(player, tool, toolForBlock);
+    private fun handleLeftClick(player: Player, clickedBlock: Block, tool: ItemStack) {
+        val blockMaterial = clickedBlock.type
+        val isNetherite = tool.type.toString().startsWith("NETHERITE_")
+        val toolForBlock = getToolForBlock(blockMaterial, isNetherite)
+        ensureMaterial(player, tool, toolForBlock!!)
     }
 
-    private Material getToolForBlock(Material blockMaterial, boolean isNetherite) {
+    private fun getToolForBlock(blockMaterial: Material, isNetherite: Boolean): Material? {
         if (Tag.MINEABLE_AXE.isTagged(blockMaterial)) {
-            return isNetherite ? Material.NETHERITE_AXE : Material.DIAMOND_AXE;
+            return if (isNetherite) Material.NETHERITE_AXE else Material.DIAMOND_AXE
         } else if (Tag.MINEABLE_PICKAXE.isTagged(blockMaterial)) {
-            return isNetherite ? Material.NETHERITE_PICKAXE : Material.DIAMOND_PICKAXE;
+            return if (isNetherite) Material.NETHERITE_PICKAXE else Material.DIAMOND_PICKAXE
         } else if (Tag.MINEABLE_SHOVEL.isTagged(blockMaterial)) {
-            return isNetherite ? Material.NETHERITE_SHOVEL : Material.DIAMOND_SHOVEL;
+            return if (isNetherite) Material.NETHERITE_SHOVEL else Material.DIAMOND_SHOVEL
         } else if (Tag.MINEABLE_HOE.isTagged(blockMaterial)) {
-            return isNetherite ? Material.NETHERITE_HOE : Material.DIAMOND_HOE;
+            return if (isNetherite) Material.NETHERITE_HOE else Material.DIAMOND_HOE
         }
 
-        return null;
+        return null
     }
 
-    private void ensureMaterial(Player player, ItemStack tool, Material toolMaterial) {
-        if (tool.getType() != toolMaterial) {
-            ItemStack newTool = new ItemStack(toolMaterial);
-            newTool.setItemMeta(tool.getItemMeta());
-            player.getInventory().setItemInMainHand(newTool);
+    private fun ensureMaterial(player: Player, tool: ItemStack, toolMaterial: Material) {
+        if (tool.type != toolMaterial) {
+            val newTool = ItemStack.of(toolMaterial)
+            newTool.setItemMeta(tool.itemMeta)
+            player.inventory.setItemInMainHand(newTool)
         }
     }
 }

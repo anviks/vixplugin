@@ -1,36 +1,32 @@
-package me.captainpotatoaim.myplugin.custom_items.teleport_arrows;
+package me.captainpotatoaim.myplugin.custom_items.teleport_arrows
 
-import me.captainpotatoaim.myplugin.custom_items.CustomItem;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityShootBowEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.util.Vector;
+import me.captainpotatoaim.myplugin.custom_items.CustomItem
+import org.bukkit.entity.Arrow
+import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.event.entity.EntityShootBowEvent
+import org.bukkit.event.entity.ProjectileHitEvent
 
-public class TeleportArrowLand implements Listener {
+class TeleportArrowLand : Listener {
 
     @EventHandler
-    public void onArrowShot(EntityShootBowEvent event) {
-        if (CustomItem.isOfType(event.getConsumable(), TeleportArrow.class)) {
-            CustomItem.setType(event.getProjectile(), TeleportArrow.class);
+    fun onArrowShot(event: EntityShootBowEvent) {
+        if (CustomItem.isOfType(event.consumable, TeleportArrow::class.java)) {
+            CustomItem.setType(event.projectile, TeleportArrow::class.java)
         }
     }
 
     @EventHandler
-    public void onArrowLand(ProjectileHitEvent event) {
-        if (!(event.getEntity() instanceof Arrow arrow)) {
-            return;
-        }
+    fun onArrowLand(event: ProjectileHitEvent) {
+        val arrow = event.entity as? Arrow ?: return
 
-        if (CustomItem.isOfType(arrow, TeleportArrow.class)) {
-            event.setCancelled(true);
-            Player player = (Player) arrow.getShooter();
-            assert player != null;
-            Vector direction = player.getEyeLocation().getDirection();
-            player.teleport(event.getEntity().getLocation().setDirection(direction));
-            event.getEntity().remove();
+        if (CustomItem.isOfType(arrow, TeleportArrow::class.java)) {
+            event.isCancelled = true
+            val player = checkNotNull(arrow.shooter as Player)
+            val direction = player.eyeLocation.direction
+            player.teleport(event.entity.location.setDirection(direction))
+            event.entity.remove()
         }
     }
 }

@@ -73,7 +73,7 @@ public class GiveCustomItem implements CustomCommand {
                     assert fuseTime != null;
 
                     for (Player target : targets) {
-                        target.getInventory().addItem(CustomFuseTNT.getItem(count, fuseTime));
+                        target.getInventory().addItem(CustomFuseTNT.Companion.getItem(count, fuseTime));
                     }
                 })
                 .register(plugin);

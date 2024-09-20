@@ -1,221 +1,216 @@
-package me.captainpotatoaim.myplugin.custom_items.rapid_fire_bow;
+package me.captainpotatoaim.myplugin.custom_items.rapid_fire_bow
 
-import me.captainpotatoaim.myplugin.Initializer;
-import me.captainpotatoaim.myplugin.custom_items.CustomItem;
-import me.captainpotatoaim.myplugin.util.PDCManager;
-import org.bukkit.*;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.AbstractArrow;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.SpectralArrow;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityShootBowEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemDamageEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.PotionType;
-import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.util.Vector;
-import org.jetbrains.annotations.NotNull;
+import me.captainpotatoaim.myplugin.Initializer
+import me.captainpotatoaim.myplugin.custom_items.CustomItem
+import me.captainpotatoaim.myplugin.util.PDCManager
+import org.bukkit.*
+import org.bukkit.enchantments.Enchantment
+import org.bukkit.entity.AbstractArrow
+import org.bukkit.entity.Arrow
+import org.bukkit.entity.Player
+import org.bukkit.entity.SpectralArrow
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.event.block.Action
+import org.bukkit.event.entity.EntityShootBowEvent
+import org.bukkit.event.entity.PlayerDeathEvent
+import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.player.PlayerItemDamageEvent
+import org.bukkit.event.player.PlayerItemHeldEvent
+import org.bukkit.event.player.PlayerQuitEvent
+import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.Damageable
+import org.bukkit.inventory.meta.PotionMeta
+import org.bukkit.scheduler.BukkitTask
+import java.util.*
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+class RapidFireBowListener : Listener {
 
-public class RapidFireBowListener implements Listener {
-
-    private final Map<UUID, BukkitTask> shootingPlayers = new HashMap<>();
+    private val shootingPlayers: MutableMap<UUID, BukkitTask> = HashMap()
 
     @EventHandler
-    void onBowShoot(EntityShootBowEvent event) {
-        if (CustomItem.isOfType(event.getBow(), RapidFireBow.class)
-                && event.getEntity() instanceof Player player) {
+    fun onBowShoot(event: EntityShootBowEvent) {
+        val player = event.entity as? Player ?: return
+        if (CustomItem.isOfType(event.bow, RapidFireBow::class.java)) {
 //            event.setCancelled(true);  // BUG-ACCOMMODATION-11113: commented this line
-            shootArrows(player, event);
+            shootArrows(player, event)
         }
     }
 
     @EventHandler
-    void onPlayerLeave(PlayerQuitEvent event) {
-        stopShooting(event.getPlayer());
+    fun onPlayerLeave(event: PlayerQuitEvent) {
+        stopShooting(event.player)
     }
 
     @EventHandler
-    void onClick(PlayerInteractEvent event) {
-        Action action = event.getAction();
-        if (!action.equals(Action.PHYSICAL)) {
-            stopShooting(event.getPlayer());
+    fun onClick(event: PlayerInteractEvent) {
+        val action = event.action
+        if (action != Action.PHYSICAL) {
+            stopShooting(event.player)
         }
     }
 
     @EventHandler
-    void onPlayerDeath(PlayerDeathEvent event) {
-        stopShooting(event.getEntity());
+    fun onPlayerDeath(event: PlayerDeathEvent) {
+        stopShooting(event.entity)
     }
 
     @EventHandler
-    void onItemChange(PlayerItemHeldEvent event) {
-        stopShooting(event.getPlayer());
+    fun onItemChange(event: PlayerItemHeldEvent) {
+        stopShooting(event.player)
     }
 
-    private void stopShooting(Player player) {
-        var task = shootingPlayers.remove(player.getUniqueId());
-        if (task != null) task.cancel();
+    private fun stopShooting(player: Player) {
+        val task = shootingPlayers.remove(player.uniqueId)
+        task?.cancel()
     }
 
-    private void shootArrows(Player player, EntityShootBowEvent event) {
-        ItemStack arrowItem = event.getConsumable();
-        if (arrowItem == null) return;
+    private fun shootArrows(player: Player, event: EntityShootBowEvent) {
+        val arrowItem = event.consumable ?: return
+        val material = arrowItem.type
 
-        Material material = arrowItem.getType();
-        Class<? extends AbstractArrow> arrowClass;
-
-        switch (material) {
-            case ARROW, TIPPED_ARROW -> arrowClass = Arrow.class;
-            case SPECTRAL_ARROW -> arrowClass = SpectralArrow.class;
-            default -> {
-                return;
+        val arrowClass = when (material) {
+            Material.ARROW, Material.TIPPED_ARROW -> Arrow::class.java
+            Material.SPECTRAL_ARROW -> SpectralArrow::class.java
+            else -> {
+                return
             }
         }
 
-        ItemStack bow = event.getBow();
-        assert bow != null;
-        int quickChargeLevel = bow.getEnchantmentLevel(Enchantment.QUICK_CHARGE);
-        int shotDelay = switch (quickChargeLevel) {
-            case 0 -> 10;
-            case 1 -> 5;
-            case 2 -> 3;
-            default -> 1;
-        };
+        val bow = checkNotNull(event.bow)
+        val quickChargeLevel = bow.getEnchantmentLevel(Enchantment.QUICK_CHARGE)
+        val shotDelay = when (quickChargeLevel) {
+            0 -> 10L
+            1 -> 5L
+            2 -> 3L
+            else -> 1L
+        }
 
-        BukkitTask task = Bukkit.getScheduler().runTaskTimer(
-                Initializer.getPlugin(),
-                () -> shootArrowTask(player, bow, arrowItem, event.getForce(), arrowClass),
-                shotDelay,  // BUG-ACCOMMODATION-11113: changed delay from 0 to shotDelay
-                shotDelay);
-        shootingPlayers.put(player.getUniqueId(), task);
+        val task = Bukkit.getScheduler().runTaskTimer(
+            Initializer.getPlugin(),
+            Runnable { shootArrowTask(player, bow, arrowItem, event.force, arrowClass) },
+            shotDelay,  // BUG-ACCOMMODATION-11113: changed delay from 0 to shotDelay
+            shotDelay
+        )
+        shootingPlayers[player.uniqueId] = task
     }
 
-    private void shootArrowTask(
-            Player player,
-            ItemStack bow,
-            ItemStack arrowItem,
-            float arrowForce,
-            Class<? extends AbstractArrow> arrowClass
+    private fun shootArrowTask(
+        player: Player,
+        bow: ItemStack,
+        arrowItem: ItemStack,
+        arrowForce: Float,
+        arrowClass: Class<out AbstractArrow?>
     ) {
-        if (player.getGameMode() == GameMode.CREATIVE) {
-            arrowItem = removeIntangibleProjectileTag(arrowItem);
+        var arrowItem = arrowItem
+        if (player.gameMode == GameMode.CREATIVE) {
+            arrowItem = removeIntangibleProjectileTag(arrowItem)
         }
 
-        if (!player.getInventory().containsAtLeast(arrowItem, 1)) {
-            stopShooting(player);
-            return;
+        if (!player.inventory.containsAtLeast(arrowItem, 1)) {
+            stopShooting(player)
+            return
         }
 
-        Location eyeLocation = player.getEyeLocation();
-        eyeLocation.setY(eyeLocation.getY() - 0.1);
-        AbstractArrow arrowEntity = player.getWorld().spawnArrow(
-                eyeLocation,
-                eyeLocation.getDirection(),
-                arrowForce,
-                1,
-                arrowClass
-        );
+        val eyeLocation = player.eyeLocation
+        eyeLocation.y -= 0.1
+        val arrowEntity = player.world.spawnArrow(
+            eyeLocation,
+            eyeLocation.direction,
+            arrowForce,
+            1f,
+            arrowClass
+        )!!
 
-        arrowEntity.setShooter(player);
-        arrowEntity.setItemStack(arrowItem);
+        arrowEntity.shooter = player
+        arrowEntity.itemStack = arrowItem
 
-        if (arrowItem.getType() == Material.TIPPED_ARROW) {
-            var meta = (PotionMeta) arrowItem.getItemMeta();
-            PotionType basePotion = meta.getBasePotionType();
+        if (arrowItem.type == Material.TIPPED_ARROW) {
+            val meta = arrowItem.itemMeta as PotionMeta
+            val basePotion = meta.basePotionType
 
-            var tippedArrowEntity = (Arrow) arrowEntity;
-            tippedArrowEntity.setBasePotionType(basePotion);
+            val tippedArrowEntity = arrowEntity as Arrow
+            tippedArrowEntity.basePotionType = basePotion
         }
 
-        if (arrowForce == 3.0) {
-            arrowEntity.setCritical(true);
+        if (arrowForce.toDouble() == 3.0) {
+            arrowEntity.isCritical = true
         }
 
-        double pitch = arrowForce / 10 + 0.8;
-        arrowEntity.getWorld().playSound(arrowEntity.getLocation(), Sound.ENTITY_ARROW_SHOOT, 1, (float) pitch);
+        val pitch = arrowForce / 10 + 0.8
+        arrowEntity.world.playSound(arrowEntity.location, Sound.ENTITY_ARROW_SHOOT, 1f, pitch.toFloat())
 
-        PDCManager.copyCustomData(arrowItem, arrowEntity);
+        PDCManager.copyCustomData(arrowItem, arrowEntity)
 
-        if (player.getGameMode() == GameMode.CREATIVE) {
-            arrowEntity.setPickupStatus(AbstractArrow.PickupStatus.CREATIVE_ONLY);
-            return;
+        if (player.gameMode == GameMode.CREATIVE) {
+            arrowEntity.pickupStatus = AbstractArrow.PickupStatus.CREATIVE_ONLY
+            return
         }
 
         if (bow.getEnchantmentLevel(Enchantment.INFINITY) == 0) {
-            player.getInventory().removeItem(arrowItem);
+            player.inventory.removeItem(arrowItem)
         } else {
-            arrowEntity.setPickupStatus(AbstractArrow.PickupStatus.CREATIVE_ONLY);
+            arrowEntity.pickupStatus = AbstractArrow.PickupStatus.CREATIVE_ONLY
         }
 
-        int unbreakingLevel = bow.getEnchantmentLevel(Enchantment.UNBREAKING);
-        boolean shouldDamage = Math.random() < 1.0 / (unbreakingLevel + 1);
-        int damage = shouldDamage ? 1 : 0;
+        val unbreakingLevel = bow.getEnchantmentLevel(Enchantment.UNBREAKING)
+        val shouldDamage = Math.random() < 1.0 / (unbreakingLevel + 1)
+        val damage = if (shouldDamage) 1 else 0
 
         if (shouldDamage) {
-            damageBow(player, bow);
+            damageBow(player, bow)
         }
 
-        PlayerItemDamageEvent damageEvent = new PlayerItemDamageEvent(player, bow, damage, 1);
-        Bukkit.getPluginManager().callEvent(damageEvent);
+        val damageEvent = PlayerItemDamageEvent(player, bow, damage, 1)
+        Bukkit.getPluginManager().callEvent(damageEvent)
     }
 
-    /**
-     * MC 1.21 introduced a new tag for arrows shot in creative mode. That tag gets added at the moment of shooting
-     * the arrow, making comparisons with it fail. This method removes the tag from the item.
-     */
-    private static @NotNull ItemStack removeIntangibleProjectileTag(@NotNull ItemStack arrowItem) {
-        String unwantedTag = "minecraft:intangible_projectile=\\{}";
-        String replacementPattern = String.format("(?<=\\[)%s,?|,%s", unwantedTag, unwantedTag);
-        ItemMeta arrowMeta = arrowItem.getItemMeta();
+    private fun damageBow(player: Player, bow: ItemStack) {
+        val bowMeta = checkNotNull(bow.itemMeta as Damageable)
+        bowMeta.damage += 1
+        bow.setItemMeta(bowMeta)
 
-        // Example - [minecraft:enchantments={levels: {"minecraft:efficiency": 2}},minecraft:intangible_projectile={}]
-        String componentString = arrowMeta.getAsComponentString();
-        // Example - [minecraft:enchantments={levels: {"minecraft:efficiency": 2}}]
-        componentString = componentString.replaceFirst(replacementPattern, "");
-        // Example - minecraft:arrow
-        String itemTypeKey = arrowItem.getType().getKey().toString();
-        // Example - minecraft:arrow[minecraft:enchantments={levels: {"minecraft:efficiency": 2}}]
-        String itemAsString = itemTypeKey + componentString;
-
-        return Bukkit.getItemFactory().createItemStack(itemAsString);
+        if (bow.type.maxDurability - bowMeta.damage <= 0) {
+            player.inventory.removeItem(bow)
+            stopShooting(player)
+            val pitch = (Math.random() * 0.4 + 0.8).toFloat()
+            player.playSound(player.location, Sound.ENTITY_ITEM_BREAK, 1f, pitch)
+            val eyes = player.eyeLocation
+            val direction = eyes.direction
+            player.spawnParticle(
+                Particle.ITEM,
+                eyes.add(direction.multiply(0.5)),
+                5,
+                0.1,
+                0.1,
+                0.1,
+                0.0,
+                bow
+            )
+        }
     }
 
-    private void damageBow(Player player, ItemStack bow) {
-        Damageable bowMeta = (Damageable) bow.getItemMeta();
-        assert bowMeta != null;
-        bowMeta.setDamage(bowMeta.getDamage() + 1);
-        bow.setItemMeta(bowMeta);
+    companion object {
 
-        if (bow.getType().getMaxDurability() - bowMeta.getDamage() <= 0) {
-            player.getInventory().removeItem(bow);
-            stopShooting(player);
-            float pitch = (float) (Math.random() * 0.4 + 0.8);
-            player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1, pitch);
-            Location eyes = player.getEyeLocation();
-            Vector direction = eyes.getDirection();
-            player.spawnParticle(Particle.ITEM,
-                    eyes.add(direction.multiply(0.5)),
-                    5,
-                    0.1,
-                    0.1,
-                    0.1,
-                    0,
-                    bow);
+        /**
+         * MC 1.21 introduced a new tag for arrows shot in creative mode. That tag gets added at the moment of shooting
+         * the arrow, making comparisons with it fail. This method removes the tag from the item.
+         */
+        private fun removeIntangibleProjectileTag(arrowItem: ItemStack): ItemStack {
+            val unwantedTag = "minecraft:intangible_projectile=\\{}"
+            val replacementPattern = String.format("(?<=\\[)%s,?|,%s", unwantedTag, unwantedTag)
+            val arrowMeta = arrowItem.itemMeta
+
+            // Example - [minecraft:enchantments={levels: {"minecraft:efficiency": 2}},minecraft:intangible_projectile={}]
+            var componentString = arrowMeta.asComponentString
+            // Example - [minecraft:enchantments={levels: {"minecraft:efficiency": 2}}]
+            componentString = componentString.replaceFirst(replacementPattern.toRegex(), "")
+            // Example - minecraft:arrow
+            val itemTypeKey = arrowItem.type.key.toString()
+            // Example - minecraft:arrow[minecraft:enchantments={levels: {"minecraft:efficiency": 2}}]
+            val itemAsString = itemTypeKey + componentString
+
+            return Bukkit.getItemFactory().createItemStack(itemAsString)
         }
     }
 }

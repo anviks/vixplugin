@@ -1,20 +1,18 @@
-package me.captainpotatoaim.myplugin.custom_items.rapid_fire_bow;
+package me.captainpotatoaim.myplugin.custom_items.rapid_fire_bow
 
-import me.captainpotatoaim.myplugin.custom_items.CustomItem;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
+import me.captainpotatoaim.myplugin.custom_items.CustomItem
+import org.bukkit.Material
+import org.bukkit.inventory.ItemStack
 
-public class RapidFireBow extends CustomItem {
+class RapidFireBow : CustomItem() {
 
-    @Override
-    public ItemStack getItem(int count) {
-        ItemStack bow = new ItemStack(Material.BOW);
-        var meta = bow.getItemMeta();
-        assert meta != null;
-        bow.setItemMeta(meta);
+    override fun getItem(count: Int): ItemStack {
+        val bow = ItemStack(Material.BOW)
+        val meta = checkNotNull(bow.itemMeta)
+        bow.setItemMeta(meta)
         // TODO: Customise item
-        CustomItem.setType(bow, RapidFireBow.class);
+        setType(bow, RapidFireBow::class.java)
 
-        return bow;
+        return bow
     }
 }
