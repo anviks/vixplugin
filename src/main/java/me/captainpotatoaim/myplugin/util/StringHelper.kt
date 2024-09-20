@@ -1,11 +1,11 @@
-package me.captainpotatoaim.myplugin.util;
+package me.captainpotatoaim.myplugin.util
 
-public class StringHelper {
-    public static String camelCaseToSnakeCase(String camelCase) {
-        return camelCase.replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase();
+object StringHelper {
+    fun camelCaseToSnakeCase(camelCase: String): String {
+        return camelCase.replace("([a-z])([A-Z])".toRegex(), "$1_$2").lowercase()
     }
 
-    public static String camelCaseToKebabCase(String camelCase) {
-        return camelCase.replaceAll("([a-z])([A-Z])", "$1-$2").toLowerCase();
+    fun camelCaseToKebabCase(camelCase: String): String {
+        return camelCase.replace("([a-z])([A-Z])".toRegex(), "$1-$2").lowercase()
     }
 }
