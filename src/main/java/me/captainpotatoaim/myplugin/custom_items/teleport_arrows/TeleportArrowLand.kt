@@ -12,7 +12,7 @@ class TeleportArrowLand : Listener {
 
     @EventHandler
     fun onArrowShot(event: EntityShootBowEvent) {
-        if (CustomItem.isOfType(event.consumable, TeleportArrow::class.java)) {
+        if (CustomItem.isOfType(event.consumable!!, TeleportArrow::class.java)) {
             CustomItem.setType(event.projectile, TeleportArrow::class.java)
         }
     }

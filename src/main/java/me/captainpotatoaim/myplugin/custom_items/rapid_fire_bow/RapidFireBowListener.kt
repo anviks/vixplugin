@@ -31,7 +31,7 @@ class RapidFireBowListener : Listener {
     @EventHandler
     fun onBowShoot(event: EntityShootBowEvent) {
         val player = event.entity as? Player ?: return
-        if (CustomItem.isOfType(event.bow, RapidFireBow::class.java)) {
+        if (CustomItem.isOfType(event.bow!!, RapidFireBow::class.java)) {
 //            event.setCancelled(true);  // BUG-ACCOMMODATION-11113: commented this line
             shootArrows(player, event)
         }

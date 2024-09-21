@@ -24,7 +24,7 @@ public class ArrowListener implements Listener {
     @EventHandler
     void onArrowHit(ProjectileHitEvent event) {
         Projectile projectile = event.getEntity();
-        if (CustomItem.isOfType(projectile, TeleportArrow.class)) return;
+        if (CustomItem.Companion.isOfType(projectile, TeleportArrow.class)) return;
 
         Entity hitEntity = event.getHitEntity();
         if (hitEntity == null) return;
