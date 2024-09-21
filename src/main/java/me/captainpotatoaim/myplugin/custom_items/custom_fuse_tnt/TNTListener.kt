@@ -11,6 +11,7 @@ import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.EntitySpawnEvent
 import org.bukkit.persistence.PersistentDataType
+import kotlin.math.roundToInt
 
 class TNTListener : Listener {
 
@@ -31,7 +32,7 @@ class TNTListener : Listener {
 
         val blockLocation = block.location
         event.isDropItems = false
-        val fuseSeconds = PDCManager.getData(block, "fuse_seconds", PersistentDataType.FLOAT).orElseThrow()
+        val fuseSeconds = PDCManager.getData(block, "fuse_seconds", PersistentDataType.FLOAT)!!
 
         if (event.player.gameMode == GameMode.CREATIVE) return
         val drop = CustomFuseTNT.getItem(1, fuseSeconds)
@@ -44,7 +45,7 @@ class TNTListener : Listener {
         val block: Block = tntEntity.location.block
         if (!CustomItem.isOfType(block, CustomFuseTNT::class.java)) return
 
-        val seconds = PDCManager.getData(block, "fuse_seconds", PersistentDataType.FLOAT).orElseThrow()
-        tntEntity.fuseTicks = Math.round(seconds * 20.0).toInt()
+        val seconds = PDCManager.getData(block, "fuse_seconds", PersistentDataType.FLOAT)!!
+        tntEntity.fuseTicks = (seconds * 20.0).roundToInt()
     }
 }

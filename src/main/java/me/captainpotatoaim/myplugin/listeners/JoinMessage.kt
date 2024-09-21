@@ -20,7 +20,7 @@ class JoinMessage : Listener {
         val player = event.getPlayer()
         val vanished = PDCManager.getData<Byte?, Boolean?>(player, "vanished", PersistentDataType.BOOLEAN)
 
-        if (vanished.isPresent && vanished.get()) {
+        if (vanished == true) {
             event.joinMessage(null)
         } else {
             event.joinMessage(
@@ -39,7 +39,7 @@ class JoinMessage : Listener {
         val player = event.getPlayer()
         val vanished = PDCManager.getData<Byte?, Boolean?>(player, "vanished", PersistentDataType.BOOLEAN)
 
-        if (vanished.isPresent && vanished.get()) {
+        if (vanished == true) {
             event.quitMessage(null)
         } else {
             event.quitMessage(

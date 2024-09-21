@@ -31,14 +31,14 @@ class Vanish : CustomCommand, Listener {
         val player = event.player
         val isVanished = PDCManager.getData(player, "vanished", PersistentDataType.BOOLEAN)
 
-        if (isVanished.isPresent && isVanished.get()) {
+        if (isVanished == true) {
             this.updatePlayerVisibilityForAll(player, false)
         }
 
         for (onlinePlayer in Bukkit.getOnlinePlayers().minus(player)) {
             val isSomeoneElseVanished = PDCManager.getData(onlinePlayer, "vanished", PersistentDataType.BOOLEAN)
 
-            if (isSomeoneElseVanished.isPresent && isSomeoneElseVanished.get()) {
+            if (isSomeoneElseVanished == true) {
                 this.updatePlayerVisibility(onlinePlayer, player, false)
             }
         }
@@ -61,7 +61,7 @@ class Vanish : CustomCommand, Listener {
     private fun runSilently(player: Player, args: CommandArguments) {
         val isVanished = PDCManager.getData(player, "vanished", PersistentDataType.BOOLEAN)
 
-        if (isVanished.isPresent && isVanished.get()) {
+        if (isVanished == true) {
             this.updatePlayerVisibilityForAll(player, true)
             this.broadcastJoinEvent(player)
         } else {
@@ -73,7 +73,7 @@ class Vanish : CustomCommand, Listener {
     private fun runWithEffects(player: Player, args: CommandArguments) {
         val isVanished = PDCManager.getData(player, "vanished", PersistentDataType.BOOLEAN)
 
-        if (isVanished.isPresent && isVanished.get()) {
+        if (isVanished == true) {
             var delay = 0L
             val scheduler = Bukkit.getScheduler()
 

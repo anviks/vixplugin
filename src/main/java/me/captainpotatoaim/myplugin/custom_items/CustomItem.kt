@@ -29,14 +29,14 @@ abstract class CustomItem {
                 else -> throw IllegalArgumentException("Unsupported type: " + obj.javaClass)
             }
 
-            return data.isPresent && data.get() == identifier
+            return data == identifier
         }
 
         fun setType(item: ItemStack, clazz: Class<*>) {
             PDCManager.setData(item, CUSTOM_ITEM_KEY, PersistentDataType.STRING, classToIdentifier(clazz))
         }
 
-        fun setType(entity: Entity?, clazz: Class<*>) {
+        fun setType(entity: Entity, clazz: Class<*>) {
             PDCManager.setData(entity, CUSTOM_ITEM_KEY, PersistentDataType.STRING, classToIdentifier(clazz))
         }
 
