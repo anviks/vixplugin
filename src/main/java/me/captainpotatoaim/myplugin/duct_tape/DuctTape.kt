@@ -1,19 +1,21 @@
-package me.captainpotatoaim.myplugin.duct_tape;
+package me.captainpotatoaim.myplugin.duct_tape
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.jetbrains.annotations.NotNull;
+import org.bukkit.command.Command
+import org.bukkit.command.CommandExecutor
+import org.bukkit.command.CommandSender
+import java.util.HashSet
+import java.util.UUID
 
-import java.util.HashSet;
-import java.util.UUID;
+class DuctTape : CommandExecutor {
 
-public class DuctTape implements CommandExecutor {
-    static HashSet<UUID> tapedPlayers = new HashSet<>();
+    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>?): Boolean {
+        tapedPlayers.add(sender.server.getPlayer(args!![0])?.uniqueId)
 
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        tapedPlayers.add(sender.getServer().getPlayer(args[0]).getUniqueId());
+        return true
+    }
 
-        return true;
+    companion object {
+        @JvmField
+        var tapedPlayers: HashSet<UUID?> = HashSet<UUID?>()
     }
 }

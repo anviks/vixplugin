@@ -1,15 +1,14 @@
-package me.captainpotatoaim.myplugin.listeners;
+package me.captainpotatoaim.myplugin.listeners
 
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.event.player.PlayerMoveEvent
 
-public class Moving implements Listener {
-
+class Moving : Listener {
     @EventHandler
-    public void canMove(PlayerMoveEvent event) {
+    fun canMove(event: PlayerMoveEvent) {
         if (!event.getPlayer().hasPermission("vix.move")) {
-            event.setCancelled(true);
+            event.isCancelled = true
         }
     }
 }

@@ -1,7 +1,7 @@
-package me.captainpotatoaim.myplugin;
+package me.captainpotatoaim.myplugin
 
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.JavaPlugin
 
-public interface CustomCommand {
-    void register(JavaPlugin plugin);
+interface CustomCommand {
+    fun register(plugin: JavaPlugin?)
 }

@@ -1,82 +1,76 @@
-package me.captainpotatoaim.myplugin.enderman;
+package me.captainpotatoaim.myplugin.enderman
 
-import me.captainpotatoaim.myplugin.custom_items.CustomItem;
-import me.captainpotatoaim.myplugin.custom_items.teleport_arrows.TeleportArrow;
-import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
-import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.block.data.BlockData;
-import org.bukkit.block.data.Waterlogged;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Projectile;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.entity.ProjectileHitEvent;
+import me.captainpotatoaim.myplugin.custom_items.CustomItem.Companion.isOfType
+import me.captainpotatoaim.myplugin.custom_items.teleport_arrows.TeleportArrow
+import org.bukkit.Location
+import org.bukkit.Particle
+import org.bukkit.Sound
+import org.bukkit.block.data.Waterlogged
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.event.entity.ProjectileHitEvent
+import java.util.HashSet
+import java.util.Random
+import kotlin.math.floor
 
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
-
-public class ArrowListener implements Listener {
+class ArrowListener : Listener {
 
     @EventHandler
-    void onArrowHit(ProjectileHitEvent event) {
-        Projectile projectile = event.getEntity();
-        if (CustomItem.Companion.isOfType(projectile, TeleportArrow.class)) return;
+    fun onArrowHit(event: ProjectileHitEvent) {
+        val projectile = event.getEntity()
+        if (isOfType(projectile, TeleportArrow::class.java)) return
 
-        Entity hitEntity = event.getHitEntity();
-        if (hitEntity == null) return;
+        val hitEntity = event.hitEntity
+        if (hitEntity == null) return
 
-        if (BecomeEnderman.endermenPlayers.contains(hitEntity.getUniqueId())) {
-            Location hitEntityLocation = hitEntity.getLocation();
-            Set<Location> availableLocations = new HashSet<>();
+        if (BecomeEnderman.endermenPlayers.contains(hitEntity.uniqueId)) {
+            val hitEntityLocation = hitEntity.location
+            val availableLocations: MutableSet<Location> = HashSet<Location>()
 
             // Find a suitable location to teleport the player to
-            for (int x = -32; x <= 32; x++) {
-                for (int y = -32; y <= 32; y++) {
-                    innerCoordinateLoop:
-                    for (int z = -32; z <= 32; z++) {
-                        Location destination = hitEntityLocation.clone();
-                        destination.setX(Math.floor(destination.getX()) + 0.5);
-                        destination.setY(Math.floor(destination.getY()));
-                        destination.setZ(Math.floor(destination.getZ()) + 0.5);
-                        destination.add(x, y, z);
+            for (x in -32..32) {
+                for (y in -32..32) {
+                    innerCoordinateLoop@ for (z in -32..32) {
+                        val destination = hitEntityLocation.clone()
+                        destination.x = floor(destination.x) + 0.5
+                        destination.y = floor(destination.y)
+                        destination.z = floor(destination.z) + 0.5
+                        destination.add(x.toDouble(), y.toDouble(), z.toDouble())
 
-                        for (int i = 0; i < 3; i++) {
-                            Block block = destination.add(0, 1, 0).getBlock();
-                            if (!block.isPassable() || block.isLiquid()) {
-                                continue innerCoordinateLoop;
+                        for (i in 0..2) {
+                            val block = destination.add(0.0, 1.0, 0.0).block
+                            if (!block.isPassable || block.isLiquid) {
+                                continue@innerCoordinateLoop
                             }
                         }
 
-                        destination.subtract(0, 3, 0);
-                        Block block = destination.getBlock();
-                        if (block.isLiquid() || block.isPassable()) {
-                            continue;
+                        destination.subtract(0.0, 3.0, 0.0)
+                        val block = destination.block
+                        if (block.isLiquid || block.isPassable) {
+                            continue
                         }
 
-                        BlockData blockData = block.getBlockData();
+                        val blockData = block.blockData
 
-                        if (blockData instanceof Waterlogged waterlogged
-                                && waterlogged.isWaterlogged()) {
-                            continue;
+                        if (blockData is Waterlogged
+                            && blockData.isWaterlogged
+                        ) {
+                            continue
                         }
 
-                        availableLocations.add(destination);
+                        availableLocations.add(destination)
                     }
                 }
             }
 
-            Random random = new Random();
-            Location destination = availableLocations.stream().toList().get(random.nextInt(0, availableLocations.size()));
+            val random = Random()
+            val destination = availableLocations.stream().toList()[random.nextInt(0, availableLocations.size)]
 
-            World world = hitEntity.getWorld();
-            world.playSound(hitEntity, Sound.ENTITY_ENDERMAN_TELEPORT, 1, 1);
-            world.spawnParticle(Particle.PORTAL, hitEntityLocation, 200, 0.3, 0.3, 0.3);
-            hitEntity.teleport(destination.add(0, 1, 0));
-            event.setCancelled(true);
+            val world = hitEntity.world
+            world.playSound(hitEntity, Sound.ENTITY_ENDERMAN_TELEPORT, 1f, 1f)
+            world.spawnParticle(Particle.PORTAL, hitEntityLocation, 200, 0.3, 0.3, 0.3)
+            hitEntity.teleport(destination.add(0.0, 1.0, 0.0))
+            event.isCancelled = true
         }
     }
 }

@@ -1,32 +1,35 @@
-package me.captainpotatoaim.myplugin.duct_tape;
+package me.captainpotatoaim.myplugin.duct_tape
 
-import io.papermc.paper.event.player.AsyncChatEvent;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import io.papermc.paper.event.player.AsyncChatEvent
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.TextComponent
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import java.lang.StringBuilder
+import java.util.Random
 
-import java.util.Random;
-
-public class DuctTapeListener implements Listener {
-    final int UNICODE_DIFFERENCE = 'm' - 'f';
-    final Random randomizer = new Random();
+class DuctTapeListener : Listener {
 
     @EventHandler
-    public void onChatUse(AsyncChatEvent event) {
-        if (DuctTape.tapedPlayers.contains(event.getPlayer().getUniqueId())) {
-            String message = ((TextComponent) event.message()).content();
-            StringBuilder newMessage = new StringBuilder();
+    fun onChatUse(event: AsyncChatEvent) {
+        if (DuctTape.tapedPlayers.contains(event.getPlayer().uniqueId)) {
+            val message = (event.message() as TextComponent).content()
+            val newMessage = StringBuilder()
 
-            for (char letter : message.toCharArray()) {
+            for (letter in message.toCharArray()) {
                 if (letter == ' ') {
-                    newMessage.append(' ');
+                    newMessage.append(' ')
                 } else {
-                    newMessage.append((char) ('f' + UNICODE_DIFFERENCE * randomizer.nextInt(2)));
+                    newMessage.append(('f'.code + UNICODE_DIFFERENCE * randomizer.nextInt(2)).toChar())
                 }
             }
 
-            event.message(Component.text(newMessage.toString()));
+            event.message(Component.text(newMessage.toString()))
         }
+    }
+
+    companion object {
+        private val UNICODE_DIFFERENCE = 'm'.code - 'f'.code
+        private val randomizer = Random()
     }
 }
