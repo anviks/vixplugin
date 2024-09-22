@@ -5,7 +5,6 @@ import dev.jorel.commandapi.CommandPermission
 import dev.jorel.commandapi.arguments.LiteralArgument
 import dev.jorel.commandapi.executors.CommandArguments
 import me.captainpotatoaim.myplugin.CustomCommand
-import me.captainpotatoaim.myplugin.Initializer
 import me.captainpotatoaim.myplugin.util.PDCManager
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.format.NamedTextColor
@@ -29,7 +28,7 @@ import java.util.*
 import kotlin.math.ceil
 import kotlin.math.max
 
-class Vanish : CustomCommand, Listener {
+class Vanish(private val plugin: JavaPlugin) : CustomCommand, Listener {
 
     private val vanishingPlayers = mutableSetOf<UUID>()
     private val alreadyVanishingMessage =
@@ -51,7 +50,7 @@ class Vanish : CustomCommand, Listener {
         }
     }
 
-    override fun register(plugin: JavaPlugin) {
+    override fun register() {
         val commandBase = CommandAPICommand("vanish")
             .withPermission(CommandPermission.OP)
             .withRequirement { it is Player }
@@ -98,7 +97,7 @@ class Vanish : CustomCommand, Listener {
             val effectsDuration = this.spawnUnvanishSpecialEffects(player)
             this.showVisibilityCountdown(player, effectsDuration)
 
-            Bukkit.getScheduler().runTaskLater(Initializer.getPlugin(), Runnable {
+            Bukkit.getScheduler().runTaskLater(plugin, Runnable {
                 vanishingPlayers.remove(player.uniqueId)
                 // Get the player object again in case the player logged out and back in during the delay
                 val player = Bukkit.getPlayer(player.uniqueId) ?: return@Runnable
@@ -124,7 +123,7 @@ class Vanish : CustomCommand, Listener {
 
         for (offset in neighbourOffsets) {
             scheduler.runTaskLater(
-                Initializer.getPlugin(),
+                plugin,
                 Runnable { if (player.isOnline) spawnLightningWithOffset(player.location, offset) },
                 delay
             )
@@ -133,7 +132,7 @@ class Vanish : CustomCommand, Listener {
 
         delay += 20
 
-        scheduler.runTaskLater(Initializer.getPlugin(), Runnable {
+        scheduler.runTaskLater(plugin, Runnable {
             // Get the player object again in case the player logged out and back in during the delay
             val player = Bukkit.getPlayer(player.uniqueId) ?: return@Runnable
             for (offset in neighbourOffsets) {
@@ -146,7 +145,7 @@ class Vanish : CustomCommand, Listener {
 
     private fun showVisibilityCountdown(player: Player, fromTicks: Long) {
         for (i in ceil(fromTicks.toDouble() / 20).toLong() downTo 0) {
-            Bukkit.getScheduler().runTaskLater(Initializer.getPlugin(), Runnable {
+            Bukkit.getScheduler().runTaskLater(plugin, Runnable {
                 val message = if (i != 0L) "Visible in $i" else "You are now visible"
                 player.sendActionBar(text(message, NamedTextColor.GREEN))
             }, max(fromTicks - i * 20, 0))
@@ -172,7 +171,7 @@ class Vanish : CustomCommand, Listener {
                 val actionBarMessage = text(message, NamedTextColor.GREEN)
                 player.sendActionBar(actionBarMessage)
             }
-        }.runTaskTimer(Initializer.getPlugin(), 0, 40)
+        }.runTaskTimer(plugin, 0, 40)
     }
 
     private fun spawnLightningWithOffset(location: Location, offset: Pair<Int, Int>) {
@@ -214,7 +213,6 @@ class Vanish : CustomCommand, Listener {
     }
 
     private fun updatePlayerVisibility(target: Player, observer: Player, visible: Boolean) {
-        val plugin = Initializer.getPlugin()
         val packet = if (visible) getTabListAddPacket(target) else getTabListRemovePacket(target)
 
         val nmsObserver = (observer as CraftPlayer).handle

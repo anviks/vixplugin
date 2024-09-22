@@ -20,7 +20,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
-class GiveCustomItem(customItems: Array<CustomItem>) : CustomCommand {
+class GiveCustomItem(private val plugin: JavaPlugin, customItems: Array<CustomItem>) : CustomCommand {
 
     private val customItems: MutableMap<String?, CustomItem> = HashMap()
 
@@ -32,7 +32,7 @@ class GiveCustomItem(customItems: Array<CustomItem>) : CustomCommand {
         }
     }
 
-    override fun register(plugin: JavaPlugin) {
+    override fun register() {
         val targetsParam = "targets"
         val countParam = "count"
         val itemParam = "item"

@@ -2,6 +2,8 @@ package me.captainpotatoaim.myplugin;
 
 import me.captainpotatoaim.myplugin.custom_items.CustomItem;
 import me.captainpotatoaim.myplugin.custom_items.GiveCustomItem;
+import me.captainpotatoaim.myplugin.custom_items.custom_fuse_tnt.CustomFuseTNT;
+import me.captainpotatoaim.myplugin.custom_items.custom_fuse_tnt.TNTListener;
 import me.captainpotatoaim.myplugin.custom_items.explosive_arrows.ExplosiveArrow;
 import me.captainpotatoaim.myplugin.custom_items.explosive_arrows.ExplosiveArrowLand;
 import me.captainpotatoaim.myplugin.custom_items.grappling_hook.GrapplingHook;
@@ -16,8 +18,6 @@ import me.captainpotatoaim.myplugin.custom_items.rapid_fire_bow.RapidFireBow;
 import me.captainpotatoaim.myplugin.custom_items.rapid_fire_bow.RapidFireBowListener;
 import me.captainpotatoaim.myplugin.custom_items.teleport_arrows.TeleportArrow;
 import me.captainpotatoaim.myplugin.custom_items.teleport_arrows.TeleportArrowLand;
-import me.captainpotatoaim.myplugin.custom_items.custom_fuse_tnt.CustomFuseTNT;
-import me.captainpotatoaim.myplugin.custom_items.custom_fuse_tnt.TNTListener;
 import me.captainpotatoaim.myplugin.duct_tape.DuctTape;
 import me.captainpotatoaim.myplugin.duct_tape.DuctTapeListener;
 import me.captainpotatoaim.myplugin.enderman.ArrowListener;
@@ -111,13 +111,13 @@ public final class Initializer extends JavaPlugin {
 
         PluginManager pluginManager = this.getServer().getPluginManager();
 
-        GiveCustomItem giveCustomItem = new GiveCustomItem(customItems);
-        Vanish vanish = new Vanish();
-        EnchantAnything enchantAnything = new EnchantAnything();
+        GiveCustomItem giveCustomItem = new GiveCustomItem(this, customItems);
+        Vanish vanish = new Vanish(this);
+        EnchantAnything enchantAnything = new EnchantAnything(this);
 
-        giveCustomItem.register(this);
-        vanish.register(this);
-        enchantAnything.register(this);
+        giveCustomItem.register();
+        vanish.register();
+        enchantAnything.register();
 
         pluginManager.registerEvents(vanish, this);
     }

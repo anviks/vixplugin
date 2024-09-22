@@ -16,8 +16,14 @@ import java.util.Collection;
 
 public class EnchantAnything implements CustomCommand {
 
+    private final JavaPlugin plugin;
+
+    public EnchantAnything(JavaPlugin plugin) {
+        this.plugin = plugin;
+    }
+
     @Override
-    public void register(JavaPlugin plugin) {
+    public void register() {
         new CommandAPICommand("enchantanything")
                 .withPermission(CommandPermission.OP)
                 .withArguments(new EntitySelectorArgument.ManyPlayers("players"))
