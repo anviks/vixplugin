@@ -120,7 +120,7 @@ class RapidFireBowListener : Listener {
             arrowForce,
             1f,
             arrowClass
-        )!!
+        )
 
         arrowEntity.shooter = player
         arrowEntity.itemStack = arrowItem
