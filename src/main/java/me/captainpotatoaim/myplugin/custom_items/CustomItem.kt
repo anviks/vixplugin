@@ -1,6 +1,6 @@
 package me.captainpotatoaim.myplugin.custom_items
 
-import me.captainpotatoaim.myplugin.util.StringHelper.camelCaseToSnakeCase
+import me.captainpotatoaim.myplugin.util.camelToSnake
 import me.captainpotatoaim.myplugin.util.getPDCData
 import me.captainpotatoaim.myplugin.util.setPDCData
 import org.bukkit.block.Block
@@ -42,7 +42,7 @@ abstract class CustomItem {
         }
 
         private fun classToIdentifier(clazz: Class<*>): String {
-            return camelCaseToSnakeCase(clazz.getSimpleName())
+            return clazz.simpleName.camelToSnake()
         }
     }
 }

@@ -9,8 +9,7 @@ import dev.jorel.commandapi.arguments.LiteralArgument
 import dev.jorel.commandapi.arguments.MultiLiteralArgument
 import dev.jorel.commandapi.executors.CommandArguments
 import me.captainpotatoaim.myplugin.CustomCommand
-import me.captainpotatoaim.myplugin.custom_items.custom_fuse_tnt.CustomFuseTNT
-import me.captainpotatoaim.myplugin.util.StringHelper.camelCaseToKebabCase
+import me.captainpotatoaim.myplugin.util.camelToKebab
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -23,7 +22,7 @@ class GiveCustomItem(private val plugin: JavaPlugin, customItems: Array<CustomIt
     init {
         for (item in customItems) {
             val className = item.javaClass.simpleName
-            val subCommand = camelCaseToKebabCase(className)
+            val subCommand = className.camelToKebab()
             this.customItems[subCommand] = item
         }
     }
@@ -49,9 +48,9 @@ class GiveCustomItem(private val plugin: JavaPlugin, customItems: Array<CustomIt
 
     private fun giveItem(sender: CommandSender, arguments: CommandArguments) {
         val count = arguments.getByClassOrDefault("count", Int::class.java, 1)
-        val item = arguments.getByClass("item", String::class.java)
-        val itemObj = customItems[item]
-        val items = itemObj!!.getItem(count)
+        val item = arguments.getByClass("item", String::class.java)!!
+        val itemObj = customItems[item]!!
+        val items = itemObj.getItem(count)
 
         this.giveItemToPlayer(items, arguments)
     }
@@ -59,7 +58,8 @@ class GiveCustomItem(private val plugin: JavaPlugin, customItems: Array<CustomIt
     private fun giveCustomFuseTnt(sender: CommandSender, arguments: CommandArguments) {
         val count = arguments.getByClassOrDefault("count", Int::class.java, 1)
         val fuseTime = arguments.getByClass("fuse-seconds", Float::class.java)!!
-        val items = CustomFuseTNT.getItem(count, fuseTime)
+        val itemObj = customItems["custom-fuse-tnt"] as CustomFuseTNT
+        val items = itemObj.getItem(count, fuseTime)
 
         this.giveItemToPlayer(items, arguments)
     }

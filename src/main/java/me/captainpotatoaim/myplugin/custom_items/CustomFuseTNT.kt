@@ -1,9 +1,11 @@
-package me.captainpotatoaim.myplugin.custom_items.custom_fuse_tnt
+package me.captainpotatoaim.myplugin.custom_items
 
-import me.captainpotatoaim.myplugin.custom_items.CustomItem
 import me.captainpotatoaim.myplugin.util.copyPDCTo
 import me.captainpotatoaim.myplugin.util.getPDCData
+import me.captainpotatoaim.myplugin.util.setPDCData
+import net.kyori.adventure.text.Component.text
 import org.bukkit.GameMode
+import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.entity.TNTPrimed
 import org.bukkit.event.EventHandler
@@ -11,17 +13,38 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.EntitySpawnEvent
+import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import kotlin.math.roundToInt
 
-class TNTListener : Listener {
+class CustomFuseTNT : CustomItem(), Listener {
+
+    override fun getItem(count: Int): ItemStack {
+        return getItem(count, 8f)
+    }
+
+    fun getItem(count: Int, fuseSeconds: Float): ItemStack {
+        val item = ItemStack.of(Material.TNT, count)
+        val meta = checkNotNull(item.itemMeta)
+        meta.lore(
+            listOf(
+                text("Fuse time: $fuseSeconds seconds")
+            )
+        )
+        item.setItemMeta(meta)
+        setType(item, CustomFuseTNT::class.java)
+        item.setPDCData("fuse_seconds", PersistentDataType.FLOAT, fuseSeconds)
+
+        return item
+    }
+
 
     @EventHandler
     fun onTNTPlace(event: BlockPlaceEvent) {
         val itemInHand = event.itemInHand
         val blockPlaced = event.blockPlaced
 
-        if (CustomItem.isOfType(itemInHand, CustomFuseTNT::class.java)) {
+        if (isOfType(itemInHand, CustomFuseTNT::class.java)) {
             itemInHand.copyPDCTo(blockPlaced)
         }
     }
@@ -29,14 +52,14 @@ class TNTListener : Listener {
     @EventHandler
     fun onTNTBreak(event: BlockBreakEvent) {
         val block = event.block
-        if (!CustomItem.isOfType(block, CustomFuseTNT::class.java)) return
+        if (!isOfType(block, CustomFuseTNT::class.java)) return
 
         val blockLocation = block.location
         event.isDropItems = false
         val fuseSeconds = block.getPDCData("fuse_seconds", PersistentDataType.FLOAT)!!
 
         if (event.player.gameMode == GameMode.CREATIVE) return
-        val drop = CustomFuseTNT.getItem(1, fuseSeconds)
+        val drop = getItem(1, fuseSeconds)
         blockLocation.world.dropItemNaturally(blockLocation, drop)
     }
 
@@ -44,7 +67,7 @@ class TNTListener : Listener {
     fun onTntSpawn(event: EntitySpawnEvent) {
         val tntEntity = event.entity as? TNTPrimed ?: return
         val block: Block = tntEntity.location.block
-        if (!CustomItem.isOfType(block, CustomFuseTNT::class.java)) return
+        if (!isOfType(block, CustomFuseTNT::class.java)) return
 
         val seconds = block.getPDCData("fuse_seconds", PersistentDataType.FLOAT)!!
         tntEntity.fuseTicks = (seconds * 20.0).roundToInt()

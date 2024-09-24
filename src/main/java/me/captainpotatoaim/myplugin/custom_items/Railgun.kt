@@ -1,17 +1,33 @@
-package me.captainpotatoaim.myplugin.custom_items.railgun
+package me.captainpotatoaim.myplugin.custom_items
 
-import me.captainpotatoaim.myplugin.custom_items.CustomItem
+import me.captainpotatoaim.myplugin.util.AdventureHelper.createAlternatingColoredText
+import net.kyori.adventure.text.format.NamedTextColor.GRAY
+import net.kyori.adventure.text.format.NamedTextColor.YELLOW
 import org.bukkit.Location
 import org.bukkit.Material
+import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.LivingEntity
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.ProjectileLaunchEvent
 import org.bukkit.inventory.EntityEquipment
+import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Vector
 
-class RailgunListener : Listener {
+
+class Railgun : CustomItem(), Listener {
+
+    override fun getItem(count: Int): ItemStack {
+        val railGun = ItemStack(Material.TRIDENT, 1)
+        val railGunMeta = checkNotNull(railGun.itemMeta)
+        railGunMeta.displayName(createAlternatingColoredText("RAILGUN", GRAY, YELLOW))
+        railGunMeta.addEnchant(Enchantment.INFINITY, 1, true)
+        railGun.setItemMeta(railGunMeta)
+        setType(railGun, Railgun::class.java)
+
+        return railGun
+    }
 
     @EventHandler
     fun onTridentThrown(event: ProjectileLaunchEvent) {
@@ -28,7 +44,7 @@ class RailgunListener : Listener {
             else
                 itemInOffHand
 
-        if (!CustomItem.isOfType(shotTrident, Railgun::class.java)) {
+        if (!isOfType(shotTrident, Railgun::class.java)) {
             return
         }
 
@@ -37,7 +53,8 @@ class RailgunListener : Listener {
         var explosion: Location = shooter.location
 
         explosion = explosion.add(shot.multiply(1.8)).add(0.0, 2.0, 0.0)
-        for (i in 0..<150) {
+
+        repeat(150) {
             explosion = explosion.add(shot)
             shooter.world.createExplosion(explosion, 2.6f, true, true, shooter)
         }

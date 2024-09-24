@@ -1,7 +1,7 @@
 package me.captainpotatoaim.myplugin.enderman
 
 import me.captainpotatoaim.myplugin.custom_items.CustomItem.Companion.isOfType
-import me.captainpotatoaim.myplugin.custom_items.teleport_arrows.TeleportArrow
+import me.captainpotatoaim.myplugin.custom_items.TeleportArrow
 import org.bukkit.Location
 import org.bukkit.Particle
 import org.bukkit.Sound

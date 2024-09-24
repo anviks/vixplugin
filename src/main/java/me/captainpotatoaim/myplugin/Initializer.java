@@ -1,23 +1,7 @@
 package me.captainpotatoaim.myplugin;
 
-import me.captainpotatoaim.myplugin.custom_items.CustomItem;
-import me.captainpotatoaim.myplugin.custom_items.GiveCustomItem;
-import me.captainpotatoaim.myplugin.custom_items.custom_fuse_tnt.CustomFuseTNT;
-import me.captainpotatoaim.myplugin.custom_items.custom_fuse_tnt.TNTListener;
-import me.captainpotatoaim.myplugin.custom_items.explosive_arrows.ExplosiveArrow;
-import me.captainpotatoaim.myplugin.custom_items.explosive_arrows.ExplosiveArrowLand;
-import me.captainpotatoaim.myplugin.custom_items.grappling_hook.GrapplingHook;
-import me.captainpotatoaim.myplugin.custom_items.grappling_hook.GrapplingHookListener;
-import me.captainpotatoaim.myplugin.custom_items.grenade.Grenade;
-import me.captainpotatoaim.myplugin.custom_items.grenade.ThrownGrenade;
-import me.captainpotatoaim.myplugin.custom_items.multi_tool.MultiTool;
-import me.captainpotatoaim.myplugin.custom_items.multi_tool.MultiToolListener;
-import me.captainpotatoaim.myplugin.custom_items.railgun.Railgun;
-import me.captainpotatoaim.myplugin.custom_items.railgun.RailgunListener;
-import me.captainpotatoaim.myplugin.custom_items.rapid_fire_bow.RapidFireBow;
-import me.captainpotatoaim.myplugin.custom_items.rapid_fire_bow.RapidFireBowListener;
-import me.captainpotatoaim.myplugin.custom_items.teleport_arrows.TeleportArrow;
-import me.captainpotatoaim.myplugin.custom_items.teleport_arrows.TeleportArrowLand;
+import me.captainpotatoaim.myplugin.custom_items.*;
+import me.captainpotatoaim.myplugin.custom_items.RapidFireBow;
 import me.captainpotatoaim.myplugin.duct_tape.DuctTape;
 import me.captainpotatoaim.myplugin.duct_tape.DuctTapeListener;
 import me.captainpotatoaim.myplugin.enderman.ArrowListener;
@@ -83,15 +67,24 @@ public final class Initializer extends JavaPlugin {
             put("world", new ChangeWorlds());
         }};
 
+        ExplosiveArrow explosiveArrow = new ExplosiveArrow(this);
+        GrapplingHook grapplingHook = new GrapplingHook();
+        Grenade grenade = new Grenade();
+        MultiTool multiTool = new MultiTool();
+        Railgun railgun = new Railgun();
+        RapidFireBow rapidFireBow = new RapidFireBow();
+        TeleportArrow teleportArrow = new TeleportArrow();
+        CustomFuseTNT customFuseTNT = new CustomFuseTNT();
+
         CustomItem[] customItems = {
-                new ExplosiveArrow(this),
-                new GrapplingHook(),
-                new Grenade(),
-                new MultiTool(),
-                new Railgun(),
-                new RapidFireBow(),
-                new TeleportArrow(),
-                new CustomFuseTNT()
+                explosiveArrow,
+                grapplingHook,
+                grenade,
+                multiTool,
+                railgun,
+                rapidFireBow,
+                teleportArrow,
+                customFuseTNT
         };
 
         for (var command : commands.entrySet()) {
@@ -115,6 +108,14 @@ public final class Initializer extends JavaPlugin {
         prankCommand.register();
 
         pluginManager.registerEvents(vanish, this);
+        pluginManager.registerEvents(explosiveArrow, this);
+        pluginManager.registerEvents(grapplingHook, this);
+        pluginManager.registerEvents(grenade, this);
+        pluginManager.registerEvents(multiTool, this);
+        pluginManager.registerEvents(railgun, this);
+        pluginManager.registerEvents(rapidFireBow, this);
+        pluginManager.registerEvents(teleportArrow, this);
+        pluginManager.registerEvents(customFuseTNT, this);
     }
 
     private void registerEvents() {
@@ -125,18 +126,10 @@ public final class Initializer extends JavaPlugin {
                 new JoinMessage(),
                 new BedMessage(),
                 new Moving(),
-                new ThrownGrenade(),
-                new ExplosiveArrowLand(),
                 new Inventory(),
-                new RailgunListener(),
-                new TeleportArrowLand(),
                 new DuctTapeListener(),
-                new GrapplingHookListener(),
-                new RapidFireBowListener(),
                 new ArrowListener(),
                 new BlockListener(),
-                new MultiToolListener(),
-                new TNTListener(),
                 new EntityListener(),
         };
 

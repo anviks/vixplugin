@@ -1,11 +1,25 @@
-package me.captainpotatoaim.myplugin.custom_items.grappling_hook
+package me.captainpotatoaim.myplugin.custom_items
 
-import me.captainpotatoaim.myplugin.custom_items.CustomItem
+import net.kyori.adventure.text.Component
+import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerFishEvent
+import org.bukkit.inventory.ItemStack
 
-class GrapplingHookListener : Listener {
+class GrapplingHook : CustomItem(), Listener {
+
+    override fun getItem(count: Int): ItemStack {
+        val hook = ItemStack(Material.FISHING_ROD, count)
+        val meta = checkNotNull(hook.itemMeta)
+        meta.displayName(Component.text("Grappling hook"))
+        meta.isUnbreakable = true
+        hook.setItemMeta(meta)
+        setType(hook, GrapplingHook::class.java)
+
+        return hook
+    }
+
     @EventHandler
     private fun thrown(event: PlayerFishEvent) {
         val state = event.state
@@ -16,7 +30,7 @@ class GrapplingHookListener : Listener {
 
         val player = event.player
 
-        if (!CustomItem.isOfType(player.inventory.itemInMainHand, GrapplingHook::class.java)) {
+        if (!isOfType(player.inventory.itemInMainHand, GrapplingHook::class.java)) {
             return
         }
 
