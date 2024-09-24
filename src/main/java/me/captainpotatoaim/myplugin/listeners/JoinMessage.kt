@@ -1,7 +1,7 @@
 package me.captainpotatoaim.myplugin.listeners
 
 import me.captainpotatoaim.myplugin.Initializer
-import me.captainpotatoaim.myplugin.util.PDCManager
+import me.captainpotatoaim.myplugin.util.getPDCData
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.event.EventHandler
@@ -18,7 +18,7 @@ class JoinMessage : Listener {
     @EventHandler
     fun onPlayerJoin(event: PlayerJoinEvent) {
         val player = event.getPlayer()
-        val vanished = PDCManager.getData<Byte?, Boolean?>(player, "vanished", PersistentDataType.BOOLEAN)
+        val vanished = player.getPDCData<Byte?, Boolean?>("vanished", PersistentDataType.BOOLEAN)
 
         if (vanished == true) {
             event.joinMessage(null)
@@ -37,7 +37,7 @@ class JoinMessage : Listener {
     @EventHandler
     fun onPlayerLeave(event: PlayerQuitEvent) {
         val player = event.getPlayer()
-        val vanished = PDCManager.getData<Byte?, Boolean?>(player, "vanished", PersistentDataType.BOOLEAN)
+        val vanished = player.getPDCData<Byte?, Boolean?>("vanished", PersistentDataType.BOOLEAN)
 
         if (vanished == true) {
             event.quitMessage(null)

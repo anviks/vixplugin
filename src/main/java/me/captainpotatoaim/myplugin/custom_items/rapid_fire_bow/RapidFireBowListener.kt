@@ -2,7 +2,7 @@ package me.captainpotatoaim.myplugin.custom_items.rapid_fire_bow
 
 import me.captainpotatoaim.myplugin.Initializer
 import me.captainpotatoaim.myplugin.custom_items.CustomItem
-import me.captainpotatoaim.myplugin.util.PDCManager
+import me.captainpotatoaim.myplugin.util.copyPDCTo
 import org.bukkit.*
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.AbstractArrow
@@ -140,7 +140,7 @@ class RapidFireBowListener : Listener {
         val pitch = arrowForce / 10 + 0.8
         arrowEntity.world.playSound(arrowEntity.location, Sound.ENTITY_ARROW_SHOOT, 1f, pitch.toFloat())
 
-        PDCManager.copyCustomData(arrowItem, arrowEntity)
+        arrowItem.copyPDCTo(arrowEntity)
 
         if (player.gameMode == GameMode.CREATIVE) {
             arrowEntity.pickupStatus = AbstractArrow.PickupStatus.CREATIVE_ONLY

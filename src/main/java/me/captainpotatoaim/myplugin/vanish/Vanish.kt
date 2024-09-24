@@ -5,7 +5,8 @@ import dev.jorel.commandapi.CommandPermission
 import dev.jorel.commandapi.arguments.LiteralArgument
 import dev.jorel.commandapi.executors.CommandArguments
 import me.captainpotatoaim.myplugin.CustomCommand
-import me.captainpotatoaim.myplugin.util.PDCManager
+import me.captainpotatoaim.myplugin.util.getPDCData
+import me.captainpotatoaim.myplugin.util.setPDCData
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.NamedTextColor.RED
@@ -153,11 +154,11 @@ class Vanish(private val plugin: JavaPlugin) : CustomCommand, Listener {
     }
 
     private fun isPlayerVanished(player: Player): Boolean {
-        return PDCManager.getData(player, "vanished", PersistentDataType.BOOLEAN) == true
+        return player.getPDCData("vanished", PersistentDataType.BOOLEAN) == true
     }
 
     private fun setPlayerVisibility(player: Player, visible: Boolean) {
-        PDCManager.setData(player, "vanished", PersistentDataType.BOOLEAN, !visible)
+        player.setPDCData("vanished", PersistentDataType.BOOLEAN, !visible)
     }
 
     private fun displayVanishedActionBar(player: Player) {

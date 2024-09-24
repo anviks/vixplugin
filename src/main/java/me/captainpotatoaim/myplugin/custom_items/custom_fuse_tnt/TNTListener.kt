@@ -1,7 +1,8 @@
 package me.captainpotatoaim.myplugin.custom_items.custom_fuse_tnt
 
 import me.captainpotatoaim.myplugin.custom_items.CustomItem
-import me.captainpotatoaim.myplugin.util.PDCManager
+import me.captainpotatoaim.myplugin.util.copyPDCTo
+import me.captainpotatoaim.myplugin.util.getPDCData
 import org.bukkit.GameMode
 import org.bukkit.block.Block
 import org.bukkit.entity.TNTPrimed
@@ -21,7 +22,7 @@ class TNTListener : Listener {
         val blockPlaced = event.blockPlaced
 
         if (CustomItem.isOfType(itemInHand, CustomFuseTNT::class.java)) {
-            PDCManager.copyCustomData(itemInHand, blockPlaced)
+            itemInHand.copyPDCTo(blockPlaced)
         }
     }
 
@@ -32,7 +33,7 @@ class TNTListener : Listener {
 
         val blockLocation = block.location
         event.isDropItems = false
-        val fuseSeconds = PDCManager.getData(block, "fuse_seconds", PersistentDataType.FLOAT)!!
+        val fuseSeconds = block.getPDCData("fuse_seconds", PersistentDataType.FLOAT)!!
 
         if (event.player.gameMode == GameMode.CREATIVE) return
         val drop = CustomFuseTNT.getItem(1, fuseSeconds)
@@ -45,7 +46,7 @@ class TNTListener : Listener {
         val block: Block = tntEntity.location.block
         if (!CustomItem.isOfType(block, CustomFuseTNT::class.java)) return
 
-        val seconds = PDCManager.getData(block, "fuse_seconds", PersistentDataType.FLOAT)!!
+        val seconds = block.getPDCData("fuse_seconds", PersistentDataType.FLOAT)!!
         tntEntity.fuseTicks = (seconds * 20.0).roundToInt()
     }
 }

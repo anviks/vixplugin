@@ -1,7 +1,8 @@
 package me.captainpotatoaim.myplugin.custom_items
 
-import me.captainpotatoaim.myplugin.util.PDCManager
 import me.captainpotatoaim.myplugin.util.StringHelper.camelCaseToSnakeCase
+import me.captainpotatoaim.myplugin.util.getPDCData
+import me.captainpotatoaim.myplugin.util.setPDCData
 import org.bukkit.block.Block
 import org.bukkit.entity.Entity
 import org.bukkit.inventory.ItemStack
@@ -23,9 +24,9 @@ abstract class CustomItem {
             val identifier = classToIdentifier(clazz)
 
             val data = when (obj) {
-                is ItemStack -> PDCManager.getData(obj, CUSTOM_ITEM_KEY, PersistentDataType.STRING)
-                is Entity -> PDCManager.getData(obj, CUSTOM_ITEM_KEY, PersistentDataType.STRING)
-                is Block -> PDCManager.getData(obj, CUSTOM_ITEM_KEY, PersistentDataType.STRING)
+                is ItemStack -> obj.getPDCData(CUSTOM_ITEM_KEY, PersistentDataType.STRING)
+                is Entity -> obj.getPDCData(CUSTOM_ITEM_KEY, PersistentDataType.STRING)
+                is Block -> obj.getPDCData(CUSTOM_ITEM_KEY, PersistentDataType.STRING)
                 else -> throw IllegalArgumentException("Unsupported type: " + obj.javaClass)
             }
 
@@ -33,11 +34,11 @@ abstract class CustomItem {
         }
 
         fun setType(item: ItemStack, clazz: Class<*>) {
-            PDCManager.setData(item, CUSTOM_ITEM_KEY, PersistentDataType.STRING, classToIdentifier(clazz))
+            item.setPDCData(CUSTOM_ITEM_KEY, PersistentDataType.STRING, classToIdentifier(clazz))
         }
 
         fun setType(entity: Entity, clazz: Class<*>) {
-            PDCManager.setData(entity, CUSTOM_ITEM_KEY, PersistentDataType.STRING, classToIdentifier(clazz))
+            entity.setPDCData(CUSTOM_ITEM_KEY, PersistentDataType.STRING, classToIdentifier(clazz))
         }
 
         private fun classToIdentifier(clazz: Class<*>): String {

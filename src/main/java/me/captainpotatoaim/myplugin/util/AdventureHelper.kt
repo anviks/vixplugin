@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 
 object AdventureHelper {
+
     fun createAlternatingColoredText(text: String, vararg colors: NamedTextColor?): Component {
         val builder = Component.text()
         val colorCount = colors.size

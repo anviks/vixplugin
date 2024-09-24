@@ -28,26 +28,26 @@ fun Entity.face(targetLocation: Location) {
  * Set the amount of experience an entity drops upon death
  */
 fun Entity.setExperienceDrop(amount: Int) {
-    PDCManager.setData(this, "experience_drop", PersistentDataType.INTEGER, amount)
+    this.setPDCData("experience_drop", PersistentDataType.INTEGER, amount)
 }
 
 /**
  * Get the amount of experience an entity drops upon death
  */
 fun Entity.getExperienceDrop(): Int? {
-    return PDCManager.getData(this, "experience_drop", PersistentDataType.INTEGER)
+    return this.getPDCData("experience_drop", PersistentDataType.INTEGER)
 }
 
 /**
  * Set the items an entity drops upon death
  */
 fun Entity.setItemDrops(items: List<ItemStack>) {
-    PDCManager.setData(this, "item_drops", DataType.asList(DataType.ITEM_STACK), items)
+    this.setPDCData("item_drops", DataType.asList(DataType.ITEM_STACK), items)
 }
 
 /**
  * Get the items an entity drops upon death
  */
 fun Entity.getItemDrops(): List<ItemStack>? {
-    return PDCManager.getData(this, "item_drops", DataType.asList(DataType.ITEM_STACK))
+    return this.getPDCData("item_drops", DataType.asList(DataType.ITEM_STACK))
 }
