@@ -4,6 +4,9 @@ import me.captainpotatoaim.myplugin.Initializer
 import me.captainpotatoaim.myplugin.util.copyPDCTo
 import me.captainpotatoaim.myplugin.util.copyWithoutIntangibleTag
 import me.captainpotatoaim.myplugin.util.toInt
+import net.kyori.adventure.text.Component.*
+import net.kyori.adventure.text.format.NamedTextColor.*
+import net.kyori.adventure.text.format.TextDecoration.*
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.Material
@@ -35,9 +38,25 @@ class RapidFireBow : CustomItem(), Listener {
 
     override fun getItem(count: Int): ItemStack {
         val bow = ItemStack(Material.BOW)
-        val meta = checkNotNull(bow.itemMeta)
-        bow.setItemMeta(meta)
-        // TODO: Customise item
+        val meta = bow.itemMeta
+
+        val bowName = text("\uD83C\uDFF9 Archer's Minigun 🏹")
+            .color(GREEN)
+            .decoration(BOLD, true)
+            .decoration(ITALIC, false)
+
+        val lore = listOf(
+            text("Shoots arrows rapidly.").color(GRAY).decoration(ITALIC, false),
+            text("Requires arrows to shoot.").color(GRAY).decoration(ITALIC, false),
+            empty(),
+            text("TIP: With Quick Charge, the fire rate can").color(DARK_AQUA).decoration(ITALIC, false),
+            text("increase to as much as 20 times per second!").color(DARK_AQUA).decoration(ITALIC, false)
+        )
+
+        meta.displayName(bowName)
+        meta.lore(lore)
+        bow.itemMeta = meta
+
         setType(bow, RapidFireBow::class.java)
 
         return bow
