@@ -55,10 +55,6 @@ commands:
     /sandbox leave\n
     /sandbox leave <player>\n
     /sandbox delete <slot/world name>"
-  creep:
-    description: Idk
-  creep2:
-    description: vol 2
   tp-up:
     description: Teleport up to a random height.
   duct-tape:

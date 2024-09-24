@@ -22,18 +22,13 @@ import me.captainpotatoaim.myplugin.duct_tape.DuctTape;
 import me.captainpotatoaim.myplugin.duct_tape.DuctTapeListener;
 import me.captainpotatoaim.myplugin.enderman.ArrowListener;
 import me.captainpotatoaim.myplugin.enderman.BecomeEnderman;
-import me.captainpotatoaim.myplugin.listeners.BedMessage;
-import me.captainpotatoaim.myplugin.listeners.DeathMessages;
-import me.captainpotatoaim.myplugin.listeners.JoinMessage;
-import me.captainpotatoaim.myplugin.listeners.Moving;
+import me.captainpotatoaim.myplugin.listeners.*;
 import me.captainpotatoaim.myplugin.random_commands.*;
 import me.captainpotatoaim.myplugin.random_commands.protect_area.BlockListener;
 import me.captainpotatoaim.myplugin.random_commands.protect_area.ProtectArea;
 import me.captainpotatoaim.myplugin.random_commands.protect_area.ProtectedAreas;
 import me.captainpotatoaim.myplugin.random_commands.protect_area.UnprotectArea;
 import me.captainpotatoaim.myplugin.sandbox.Inventory;
-import me.captainpotatoaim.myplugin.unfinished_commands.CreeperPrank;
-import me.captainpotatoaim.myplugin.unfinished_commands.CreeperPrankWithTp;
 import me.captainpotatoaim.myplugin.vanish.Vanish;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -80,8 +75,6 @@ public final class Initializer extends JavaPlugin {
             put("unfreeze", new UnFreeze());
             put("god", new GodMode());
 //            put("sandbox", new SandboxMainCommand());
-            put("creep", new CreeperPrank());
-            put("creep2", new CreeperPrankWithTp());
             put("tp-up", new TeleportUp());
             put("duct-tape", new DuctTape());
             put("ender-toggle", new BecomeEnderman());
@@ -114,10 +107,12 @@ public final class Initializer extends JavaPlugin {
         GiveCustomItem giveCustomItem = new GiveCustomItem(this, customItems);
         Vanish vanish = new Vanish(this);
         EnchantAnything enchantAnything = new EnchantAnything(this);
+        PrankCommand prankCommand = new PrankCommand(this);
 
         giveCustomItem.register();
         vanish.register();
         enchantAnything.register();
+        prankCommand.register();
 
         pluginManager.registerEvents(vanish, this);
     }
@@ -142,6 +137,7 @@ public final class Initializer extends JavaPlugin {
                 new BlockListener(),
                 new MultiToolListener(),
                 new TNTListener(),
+                new EntityListener(),
         };
 
         for (var listener : listeners) {

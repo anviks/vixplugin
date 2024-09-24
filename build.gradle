@@ -42,7 +42,7 @@ repositories {
         url = 'https://repo.codemc.org/repository/maven-public/'
     }
     maven {
-        url "https://repo.dmulloy2.net/repository/public/"
+        url 'https://repo.dmulloy2.net/repository/public/'
     }
 }
 
@@ -54,9 +54,10 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.1'
     implementation 'com.fasterxml.jackson.core:jackson-core:2.14.2'
     implementation 'com.jeff-media:custom-block-data:2.2.2'
+    implementation 'com.jeff-media:MorePersistentDataTypes:2.4.0'
     compileOnly 'dev.jorel:commandapi-bukkit-core:9.5.0'
-    paperweight.paperDevBundle "1.21.1-R0.1-SNAPSHOT"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    paperweight.paperDevBundle '1.21.1-R0.1-SNAPSHOT'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -70,8 +71,9 @@ tasks.withType(JavaCompile).configureEach {
 shadowJar {
     archiveClassifier.set('')
     archiveVersion.set('1.0')
-    relocate "com.jeff_media.customblockdata", "me.captainpotatoaim.customblockdata"
-    destinationDirectory.set(file("C:/Users/Andreas Viks/Desktop/MC Servers/Paper 1.21.1/plugins"))
+    relocate 'com.jeff_media.customblockdata', 'me.captainpotatoaim.customblockdata'
+    relocate 'com.jeff_media.morepersistentdatatypes', 'me.captainpotatoaim.morepersistentdatatypes'
+    destinationDirectory.set(file('C:/Users/Andreas Viks/Desktop/MC Servers/Paper 1.21.1/plugins'))
 }
 
 build.dependsOn(shadowJar)
