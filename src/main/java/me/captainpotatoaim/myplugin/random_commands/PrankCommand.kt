@@ -1,5 +1,6 @@
 package me.captainpotatoaim.myplugin.random_commands
 
+import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.CommandPermission
 import dev.jorel.commandapi.CommandTree
 import dev.jorel.commandapi.arguments.EntitySelectorArgument
@@ -21,19 +22,18 @@ import org.bukkit.plugin.java.JavaPlugin
 class PrankCommand(private val plugin: JavaPlugin) : CustomCommand {
 
     override fun register() {
-        CommandTree("prank")
+        val baseCommand = CommandAPICommand("prank")
             .withPermission(CommandPermission.OP)
-            .then(
-                EntitySelectorArgument.ManyPlayers("targets")
-                    .then(
-                        LiteralArgument("creeper")
-                            .executes(this::runCreeperPrank)
-                    )
-                    .then(
-                        LiteralArgument("elder-guardian")
-                            .executes(this::runElderGuardianPrank)
-                    )
-            )
+            .withArguments(EntitySelectorArgument.ManyPlayers("targets"))
+
+        baseCommand.copy()
+            .withArguments(LiteralArgument("creeper"))
+            .executes(this::runCreeperPrank)
+            .register(this.plugin)
+
+        baseCommand
+            .withArguments(LiteralArgument("elder-guardian"))
+            .executes(this::runElderGuardianPrank)
             .register(this.plugin)
     }
 
