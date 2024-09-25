@@ -17,7 +17,7 @@ kotlin {
     jvmToolchain(targetJavaVersion)
 }
 
-group = 'me.captainpotatoaim'
+group = 'com.github.anviks'
 version = '1.0'
 
 base {
@@ -71,8 +71,8 @@ tasks.withType(JavaCompile).configureEach {
 shadowJar {
     archiveClassifier.set('')
     archiveVersion.set('1.0')
-    relocate 'com.jeff_media.customblockdata', 'me.captainpotatoaim.customblockdata'
-    relocate 'com.jeff_media.morepersistentdatatypes', 'me.captainpotatoaim.morepersistentdatatypes'
+    relocate 'com.jeff_media.customblockdata', 'com.github.anviks.customblockdata'
+    relocate 'com.jeff_media.morepersistentdatatypes', 'com.github.anviks.morepersistentdatatypes'
     destinationDirectory.set(file('C:/Users/Andreas Viks/Desktop/MC Servers/Paper 1.21.1/plugins'))
 }
 
