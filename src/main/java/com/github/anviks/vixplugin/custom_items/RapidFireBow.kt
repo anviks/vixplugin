@@ -1,6 +1,6 @@
 package com.github.anviks.vixplugin.custom_items
 
-import com.github.anviks.vixplugin.Initializer
+import com.github.anviks.vixplugin.VixPlugin
 import com.github.anviks.vixplugin.util.copyPDCTo
 import com.github.anviks.vixplugin.util.copyWithoutIntangibleTag
 import com.github.anviks.vixplugin.util.toInt
@@ -106,7 +106,7 @@ class RapidFireBow : CustomItem(), Listener {
         val shotDelay = this.calculateShotDelay(bow)
 
         val task = Bukkit.getScheduler().runTaskTimer(
-            Initializer.getPlugin(),
+            VixPlugin.getPlugin(),
             Runnable { shootArrowTask(player, bow, arrowItem, event.force, arrowClass) },
             shotDelay,  // BUG-ACCOMMODATION-11113: changed delay from 0 to shotDelay
             shotDelay

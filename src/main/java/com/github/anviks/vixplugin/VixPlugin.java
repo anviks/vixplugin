@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-public final class Initializer extends JavaPlugin {
+public final class VixPlugin extends JavaPlugin {
 
     private static JavaPlugin plugin;
     public static List<World> defaultWorlds = null;
@@ -39,7 +39,7 @@ public final class Initializer extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        plugin = getPlugin(Initializer.class);
+        plugin = getPlugin(VixPlugin.class);
         defaultWorlds = getServer().getWorlds();
         ProtectedAreas.loadAreas();
 

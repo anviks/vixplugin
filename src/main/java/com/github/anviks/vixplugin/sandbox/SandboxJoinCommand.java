@@ -1,6 +1,6 @@
 package com.github.anviks.vixplugin.sandbox;
 
-import com.github.anviks.vixplugin.Initializer;
+import com.github.anviks.vixplugin.VixPlugin;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -79,7 +79,7 @@ public class SandboxJoinCommand {
             return true;
         }
 
-        if (Initializer.defaultWorlds.contains(player.getWorld())) {
+        if (VixPlugin.defaultWorlds.contains(player.getWorld())) {
             sandboxedPlayers.put(player.getUniqueId(), new SandboxPlayerData(player));
         }
 

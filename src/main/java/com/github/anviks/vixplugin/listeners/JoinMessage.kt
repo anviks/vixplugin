@@ -1,6 +1,6 @@
 package com.github.anviks.vixplugin.listeners
 
-import com.github.anviks.vixplugin.Initializer
+import com.github.anviks.vixplugin.VixPlugin
 import com.github.anviks.vixplugin.util.getPDCData
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -29,7 +29,7 @@ class JoinMessage : Listener {
         }
 
         if (!permissions.containsKey(player.uniqueId)) {
-            val attachment = player.addAttachment(Initializer.getPlugin())
+            val attachment = player.addAttachment(VixPlugin.getPlugin())
             permissions.put(player.uniqueId, attachment)
         }
     }

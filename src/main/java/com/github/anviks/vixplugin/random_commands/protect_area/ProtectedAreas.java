@@ -3,7 +3,7 @@ package com.github.anviks.vixplugin.random_commands.protect_area;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.github.anviks.vixplugin.Initializer;
+import com.github.anviks.vixplugin.VixPlugin;
 import org.bukkit.Location;
 
 import java.io.FileReader;
@@ -16,8 +16,8 @@ import java.util.logging.Logger;
 
 public class ProtectedAreas {
     static Map<String, Area> protectedAreas = new HashMap<>();
-    static final String FILE_PATH = Initializer.getPlugin().getDataFolder().getPath() + "/protected_areas.json";
-    static final Logger logger = Initializer.getPlugin().getLogger();
+    static final String FILE_PATH = VixPlugin.getPlugin().getDataFolder().getPath() + "/protected_areas.json";
+    static final Logger logger = VixPlugin.getPlugin().getLogger();
 
     public static void saveAreas() {
         try (FileWriter writer1 = new FileWriter(FILE_PATH)) {

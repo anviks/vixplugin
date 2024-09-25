@@ -1,6 +1,6 @@
 package com.github.anviks.vixplugin.unfinished_commands;
 
-import com.github.anviks.vixplugin.Initializer;
+import com.github.anviks.vixplugin.VixPlugin;
 import com.github.anviks.vixplugin.listeners.JoinMessage;
 
 import org.bukkit.ChatColor;
@@ -21,7 +21,7 @@ public class GivePermission implements TabExecutor {
             Player player = sender.getServer().getPlayerExact(args[1]);
 
             if (player != null) {
-                List<String> perms = Initializer.getPlugin().getDescription()
+                List<String> perms = VixPlugin.getPlugin().getDescription()
                         .getPermissions()
                         .stream()
                         .map(Permission::getName)
@@ -79,7 +79,7 @@ public class GivePermission implements TabExecutor {
                         .toList();
             }
             case 3 -> {
-                return Initializer.getPlugin().getDescription()
+                return VixPlugin.getPlugin().getDescription()
                         .getPermissions()
                         .stream()
                         .map(Permission::getName)

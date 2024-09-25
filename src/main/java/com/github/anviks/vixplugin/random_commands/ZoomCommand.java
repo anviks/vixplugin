@@ -1,6 +1,6 @@
 package com.github.anviks.vixplugin.random_commands;
 
-import com.github.anviks.vixplugin.Initializer;
+import com.github.anviks.vixplugin.VixPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Sound;
@@ -38,8 +38,8 @@ public class ZoomCommand implements CommandExecutor {
             player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 10, 1);
 
             BukkitScheduler scheduler = Bukkit.getScheduler();
-            scheduler.scheduleSyncDelayedTask(Initializer.getPlugin(), () -> player.setGameMode(GameMode.SPECTATOR), 1);
-            scheduler.scheduleSyncDelayedTask(Initializer.getPlugin(), () -> {
+            scheduler.scheduleSyncDelayedTask(VixPlugin.getPlugin(), () -> player.setGameMode(GameMode.SPECTATOR), 1);
+            scheduler.scheduleSyncDelayedTask(VixPlugin.getPlugin(), () -> {
                 if (previousGameMode != null) {
                     // Restore game mode history
                     player.setGameMode(previousGameMode);

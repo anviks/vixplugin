@@ -1,6 +1,6 @@
 package com.github.anviks.vixplugin.random_commands;
 
-import com.github.anviks.vixplugin.Initializer;
+import com.github.anviks.vixplugin.VixPlugin;
 import com.github.anviks.vixplugin.listeners.JoinMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -88,7 +88,7 @@ public class Freeze implements CommandExecutor {
             target.sendMessage(text("You have been frozen.", AQUA, BOLD));
 
             int unfreezeTask = Bukkit.getScheduler()
-                    .scheduleSyncDelayedTask(Initializer.getPlugin(), () -> {
+                    .scheduleSyncDelayedTask(VixPlugin.getPlugin(), () -> {
                         attachment.setPermission("vix.move", true);
                         target.setFreezeTicks(100);
                     }, ticks);

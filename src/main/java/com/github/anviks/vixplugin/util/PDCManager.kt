@@ -1,7 +1,7 @@
 package com.github.anviks.vixplugin.util
 
+import com.github.anviks.vixplugin.VixPlugin
 import com.jeff_media.customblockdata.CustomBlockData
-import com.github.anviks.vixplugin.Initializer
 import org.bukkit.NamespacedKey
 import org.bukkit.block.Block
 import org.bukkit.entity.Entity
@@ -52,7 +52,7 @@ private fun <P, C> getData(
     dataType: PersistentDataType<P?, C?>
 ): C? = container.get(createKey(key), dataType)
 
-private fun createKey(key: String): NamespacedKey = NamespacedKey(Initializer.getPlugin(), key)
+private fun createKey(key: String): NamespacedKey = NamespacedKey(VixPlugin.getPlugin(), key)
 
 fun ItemStack.copyPDCTo(to: Entity) {
     getContainer(this).copyTo(getContainer(to), true)
@@ -74,7 +74,7 @@ private fun getContainer(itemStack: ItemStack): PersistentDataContainer {
 
 private fun getContainer(entity: Entity): PersistentDataContainer = entity.persistentDataContainer
 
-private fun getContainer(block: Block): PersistentDataContainer = CustomBlockData(block, Initializer.getPlugin())
+private fun getContainer(block: Block): PersistentDataContainer = CustomBlockData(block, VixPlugin.getPlugin())
 
 /**
  * This method is needed, because [io.papermc.paper.persistence.PersistentDataContainerView.copyTo] doesn't work with

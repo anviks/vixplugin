@@ -1,6 +1,6 @@
 package com.github.anviks.vixplugin.custom_items
 
-import com.github.anviks.vixplugin.Initializer
+import com.github.anviks.vixplugin.VixPlugin
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Bukkit
@@ -40,7 +40,7 @@ class Grenade : CustomItem(), Listener {
                 Runnable { event.player.world.createExplosion(itemDrop.location, 10f) }
             val uuid = itemDrop.uniqueId
             val bukkitTask = Bukkit.getScheduler()
-                .runTaskLater(Initializer.getPlugin(), task, 100)
+                .runTaskLater(VixPlugin.getPlugin(), task, 100)
 
             liveGrenades[uuid] = bukkitTask
         }
@@ -61,7 +61,7 @@ class Grenade : CustomItem(), Listener {
         val itemStack: ItemStack = item.itemStack
         if (isOfType(itemStack, Grenade::class.java)) {
             // Item#isDead returns true only after the final damage event is processed
-            Bukkit.getScheduler().runTaskLater(Initializer.getPlugin(), Runnable {
+            Bukkit.getScheduler().runTaskLater(VixPlugin.getPlugin(), Runnable {
                 if (item.isDead) this.tryCancelGrenadeExplosion(item)
             }, 1)
         }

@@ -1,6 +1,6 @@
 package com.github.anviks.vixplugin.sandbox;
 
-import com.github.anviks.vixplugin.Initializer;
+import com.github.anviks.vixplugin.VixPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -13,7 +13,7 @@ public class SandboxLeaveCommand {
         SandboxPlayerData data = SandboxJoinCommand.sandboxedPlayers.get(player.getUniqueId());
         data.revertPlayerState();
         SandboxJoinCommand.sandboxedPlayers.remove(player.getUniqueId());
-        player.sendMessage(Initializer.defaultWorlds.toString());
+        player.sendMessage(VixPlugin.defaultWorlds.toString());
         Bukkit.broadcastMessage(player + SandboxJoinCommand.sandboxedPlayers.toString());
         // TODO: Leave all
 

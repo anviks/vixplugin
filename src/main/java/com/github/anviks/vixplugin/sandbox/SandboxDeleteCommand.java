@@ -1,6 +1,6 @@
 package com.github.anviks.vixplugin.sandbox;
 
-import com.github.anviks.vixplugin.Initializer;
+import com.github.anviks.vixplugin.VixPlugin;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -76,7 +76,7 @@ public class SandboxDeleteCommand {
             }
         };
 
-        Bukkit.getScheduler().scheduleSyncDelayedTask(Initializer.getPlugin(), runnable, 1);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(VixPlugin.getPlugin(), runnable, 1);
 
 
         return true;
