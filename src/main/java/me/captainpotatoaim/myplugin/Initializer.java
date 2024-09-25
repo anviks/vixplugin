@@ -1,9 +1,7 @@
 package me.captainpotatoaim.myplugin;
 
 import me.captainpotatoaim.myplugin.custom_items.*;
-import me.captainpotatoaim.myplugin.custom_items.RapidFireBow;
 import me.captainpotatoaim.myplugin.duct_tape.DuctTape;
-import me.captainpotatoaim.myplugin.duct_tape.DuctTapeListener;
 import me.captainpotatoaim.myplugin.enderman.ArrowListener;
 import me.captainpotatoaim.myplugin.enderman.BecomeEnderman;
 import me.captainpotatoaim.myplugin.listeners.*;
@@ -13,6 +11,7 @@ import me.captainpotatoaim.myplugin.random_commands.protect_area.ProtectArea;
 import me.captainpotatoaim.myplugin.random_commands.protect_area.ProtectedAreas;
 import me.captainpotatoaim.myplugin.random_commands.protect_area.UnprotectArea;
 import me.captainpotatoaim.myplugin.sandbox.Inventory;
+import me.captainpotatoaim.myplugin.util.EntityExtensionsKt;
 import me.captainpotatoaim.myplugin.vanish.Vanish;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -23,13 +22,17 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 public final class Initializer extends JavaPlugin {
 
     private static JavaPlugin plugin;
     public static List<World> defaultWorlds = null;
+    private DuctTape ductTape;
 
     public static JavaPlugin getPlugin() {
         return plugin;
@@ -44,6 +47,8 @@ public final class Initializer extends JavaPlugin {
         registerCommands();
         registerEvents();
         registerRecipes();
+
+        loadTapedPlayers();
     }
 
     private void registerCommands() {
@@ -60,7 +65,6 @@ public final class Initializer extends JavaPlugin {
             put("god", new GodMode());
 //            put("sandbox", new SandboxMainCommand());
             put("tp-up", new TeleportUp());
-            put("duct-tape", new DuctTape());
             put("ender-toggle", new BecomeEnderman());
             put("protect", new ProtectArea());
             put("unprotect", new UnprotectArea());
@@ -101,13 +105,17 @@ public final class Initializer extends JavaPlugin {
         Vanish vanish = new Vanish(this);
         EnchantAnything enchantAnything = new EnchantAnything(this);
         PrankCommand prankCommand = new PrankCommand(this);
+        ductTape = new DuctTape(this);
 
         giveCustomItem.register();
         vanish.register();
         enchantAnything.register();
         prankCommand.register();
+        ductTape.register();
 
         pluginManager.registerEvents(vanish, this);
+        pluginManager.registerEvents(ductTape, this);
+
         pluginManager.registerEvents(explosiveArrow, this);
         pluginManager.registerEvents(grapplingHook, this);
         pluginManager.registerEvents(grenade, this);
@@ -127,7 +135,6 @@ public final class Initializer extends JavaPlugin {
                 new BedMessage(),
                 new Moving(),
                 new Inventory(),
-                new DuctTapeListener(),
                 new ArrowListener(),
                 new BlockListener(),
                 new EntityListener(),
@@ -152,6 +159,8 @@ public final class Initializer extends JavaPlugin {
     public void onDisable() {
         ProtectedAreas.saveAreas();
 
+        saveTapedPlayers();
+
 //        for (Player player : getServer().getOnlinePlayers()) {
 //            if (!defaultWorlds.contains(player.getWorld())) {
 //                SandboxJoinCommand.sandboxedPlayers.get(player.getUniqueId()).revertPlayerState();
@@ -169,5 +178,23 @@ public final class Initializer extends JavaPlugin {
 //            }
 //        }
 
+    }
+
+    private void saveTapedPlayers() {
+        var file = getConfig();
+        ductTape.getTapedPlayers().forEach((uuid, unmuteTime) -> file.set("taped-players." + uuid, unmuteTime.toString()));
+        saveConfig();
+    }
+
+    private void loadTapedPlayers() {
+        var file = getConfig();
+        var tapedPlayersSection = file.getConfigurationSection("taped-players");
+        if (tapedPlayersSection != null) {
+            for (var key : tapedPlayersSection.getKeys(false)) {
+                var uuid = UUID.fromString(key);
+                var unmuteTime = LocalDateTime.parse(Objects.requireNonNull(tapedPlayersSection.getString(key)));
+                ductTape.getTapedPlayers().put(uuid, unmuteTime);
+            }
+        }
     }
 }
