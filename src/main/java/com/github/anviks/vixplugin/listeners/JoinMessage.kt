@@ -1,7 +1,6 @@
 package com.github.anviks.vixplugin.listeners
 
-import com.github.anviks.vixplugin.VixPlugin
-import com.github.anviks.vixplugin.util.getPDCData
+import com.github.anviks.vixplugin.util.PDCManager.getPDCData
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.event.EventHandler
@@ -10,11 +9,13 @@ import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.permissions.PermissionAttachment
 import org.bukkit.persistence.PersistentDataType
+import org.bukkit.plugin.Plugin
 import java.util.HashMap
 import java.util.Objects
 import java.util.UUID
 
-class JoinMessage : Listener {
+class JoinMessage(private val plugin: Plugin) : Listener {
+
     @EventHandler
     fun onPlayerJoin(event: PlayerJoinEvent) {
         val player = event.getPlayer()
@@ -29,7 +30,7 @@ class JoinMessage : Listener {
         }
 
         if (!permissions.containsKey(player.uniqueId)) {
-            val attachment = player.addAttachment(VixPlugin.getPlugin())
+            val attachment = player.addAttachment(plugin)
             permissions.put(player.uniqueId, attachment)
         }
     }

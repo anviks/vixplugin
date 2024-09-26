@@ -1,8 +1,10 @@
 package com.github.anviks.vixplugin.random_commands.protect_area;
 
+import kotlinx.serialization.Serializable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
+@Serializable
 public class SerializableLocation {
     private final String world;
     private final int x;

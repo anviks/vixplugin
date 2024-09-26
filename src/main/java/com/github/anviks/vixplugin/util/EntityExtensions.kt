@@ -1,5 +1,7 @@
 package com.github.anviks.vixplugin.util
 
+import com.github.anviks.vixplugin.util.PDCManager.getPDCData
+import com.github.anviks.vixplugin.util.PDCManager.setPDCData
 import com.jeff_media.morepersistentdatatypes.DataType
 import org.bukkit.Location
 import org.bukkit.entity.Entity

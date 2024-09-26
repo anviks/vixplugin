@@ -1,6 +1,6 @@
 # User-specific stuff
 .idea/
-src/main/java/Wtf.java
+src/main/java/com/github/anviks/vixplugin/sandbox
 
 *.iml
 *.ipr

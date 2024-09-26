@@ -8,6 +8,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +23,12 @@ import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class Freeze implements CommandExecutor {
 
+    private final Plugin plugin;
     public static HashMap<UUID, Integer> frozenPlayers = new HashMap<>();
+
+    public Freeze(Plugin plugin) {
+        this.plugin = plugin;
+    }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -88,7 +94,7 @@ public class Freeze implements CommandExecutor {
             target.sendMessage(text("You have been frozen.", AQUA, BOLD));
 
             int unfreezeTask = Bukkit.getScheduler()
-                    .scheduleSyncDelayedTask(VixPlugin.getPlugin(), () -> {
+                    .scheduleSyncDelayedTask(plugin, () -> {
                         attachment.setPermission("vix.move", true);
                         target.setFreezeTicks(100);
                     }, ticks);

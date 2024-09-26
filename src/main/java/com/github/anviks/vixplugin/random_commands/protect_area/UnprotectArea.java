@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import static com.github.anviks.vixplugin.random_commands.protect_area.ProtectedAreas.protectedAreas;
+import static com.github.anviks.vixplugin.random_commands.protect_area.ProtectedAreas.getProtectedAreas;
 import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
 import static net.kyori.adventure.text.format.NamedTextColor.RED;
 
@@ -24,7 +24,7 @@ public class UnprotectArea implements TabExecutor {
             return false;
         }
 
-        if (protectedAreas.remove(args[0]) == null) {
+        if (getProtectedAreas().remove(args[0]) == null) {
             sender.sendMessage(RED + "No such area");
         } else {
             sender.sendMessage(GREEN + "Successfully removed defenses from " + args[0]);
@@ -36,6 +36,6 @@ public class UnprotectArea implements TabExecutor {
     @Nullable
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        return args.length == 1 ? protectedAreas.keySet().stream().toList() : List.of();
+        return args.length == 1 ? getProtectedAreas().keySet().stream().toList() : List.of();
     }
 }

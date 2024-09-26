@@ -10,10 +10,17 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
+import org.bukkit.plugin.Plugin;
 
 import java.util.List;
 
 public class GivePermission implements TabExecutor {
+
+    private final Plugin plugin;
+
+    public GivePermission(Plugin plugin) {
+        this.plugin = plugin;
+    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -21,7 +28,7 @@ public class GivePermission implements TabExecutor {
             Player player = sender.getServer().getPlayerExact(args[1]);
 
             if (player != null) {
-                List<String> perms = VixPlugin.getPlugin().getDescription()
+                List<String> perms = plugin.getDescription()
                         .getPermissions()
                         .stream()
                         .map(Permission::getName)
@@ -79,7 +86,7 @@ public class GivePermission implements TabExecutor {
                         .toList();
             }
             case 3 -> {
-                return VixPlugin.getPlugin().getDescription()
+                return plugin.getDescription()
                         .getPermissions()
                         .stream()
                         .map(Permission::getName)

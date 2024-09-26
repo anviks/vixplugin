@@ -1,20 +1,30 @@
 package com.github.anviks.vixplugin.random_commands;
 
-import com.github.anviks.vixplugin.VixPlugin;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.*;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Wolf;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 public class DogCommand implements CommandExecutor {
+
+    private final Plugin plugin;
+
+    public DogCommand(Plugin plugin) {
+        this.plugin = plugin;
+    }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (sender instanceof Player && sender.isOp()
                 || args.length > 0 &&
                 (sender instanceof ConsoleCommandSender ||
-                sender instanceof BlockCommandSender)) {
+                        sender instanceof BlockCommandSender)) {
 
             Server server = sender.getServer();
 
@@ -32,7 +42,7 @@ public class DogCommand implements CommandExecutor {
                     Wolf dog = (Wolf) wolf;
                     dog.customName(Component.text("Doggo"));
                     dog.setOwner(target);
-                    server.getScheduler().scheduleSyncDelayedTask(VixPlugin.getPlugin(), () -> dog.damage(50, target), 400);
+                    server.getScheduler().scheduleSyncDelayedTask(plugin, () -> dog.damage(50, target), 400);
                 }
             } else {
                 sender.sendMessage("That player is not online or doesn't exist.");

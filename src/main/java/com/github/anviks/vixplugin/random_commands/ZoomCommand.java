@@ -8,6 +8,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,7 +16,13 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class ZoomCommand implements CommandExecutor {
+
+    private final Plugin plugin;
     private final HashMap<UUID, Long> cooldowns = new HashMap<>();
+
+    public ZoomCommand(Plugin plugin) {
+        this.plugin = plugin;
+    }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -38,8 +45,8 @@ public class ZoomCommand implements CommandExecutor {
             player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 10, 1);
 
             BukkitScheduler scheduler = Bukkit.getScheduler();
-            scheduler.scheduleSyncDelayedTask(VixPlugin.getPlugin(), () -> player.setGameMode(GameMode.SPECTATOR), 1);
-            scheduler.scheduleSyncDelayedTask(VixPlugin.getPlugin(), () -> {
+            scheduler.scheduleSyncDelayedTask(plugin, () -> player.setGameMode(GameMode.SPECTATOR), 1);
+            scheduler.scheduleSyncDelayedTask(plugin, () -> {
                 if (previousGameMode != null) {
                     // Restore game mode history
                     player.setGameMode(previousGameMode);

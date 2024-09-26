@@ -1,43 +1,16 @@
 package com.github.anviks.vixplugin.random_commands.protect_area;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-import com.github.anviks.vixplugin.VixPlugin;
 import org.bukkit.Location;
+import org.bukkit.plugin.Plugin;
 
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 public class ProtectedAreas {
-    static Map<String, Area> protectedAreas = new HashMap<>();
-    static final String FILE_PATH = VixPlugin.getPlugin().getDataFolder().getPath() + "/protected_areas.json";
-    static final Logger logger = VixPlugin.getPlugin().getLogger();
 
-    public static void saveAreas() {
-        try (FileWriter writer1 = new FileWriter(FILE_PATH)) {
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            gson.toJson(protectedAreas, writer1);
-        } catch (IOException e) {
-            logger.warning("Error writing to the JSON file: " + e.getMessage());
-        }
-    }
+    private static Map<String, Area> protectedAreas = new HashMap<>();
 
-    public static void loadAreas() {
-        Gson gson = new GsonBuilder().create();
-
-        try (FileReader reader = new FileReader(FILE_PATH)) {
-            Type jsonStructure = new TypeToken<Map<String, Area>>() {
-            }.getType();
-            protectedAreas = gson.fromJson(reader, jsonStructure);
-        } catch (IOException e) {
-            logger.warning("Error reading from the JSON file: " + e.getMessage());
-        }
+    public ProtectedAreas(Plugin plugin) {
     }
 
     static boolean isProtected(Location location) {
@@ -46,12 +19,20 @@ public class ProtectedAreas {
     }
 
     static boolean isProtected(SerializableLocation location) {
-        for (Area area : protectedAreas.values()) {
+        for (Area area : getProtectedAreas().values()) {
             if (area.contains(location)) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    public static Map<String, Area> getProtectedAreas() {
+        return protectedAreas;
+    }
+
+    public static void setProtectedAreas(Map<String, Area> protectedAreas) {
+        ProtectedAreas.protectedAreas = protectedAreas;
     }
 }

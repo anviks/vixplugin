@@ -1,6 +1,7 @@
 package com.github.anviks.vixplugin.duct_tape
 
 import com.github.anviks.vixplugin.CustomCommand
+import com.github.anviks.vixplugin.DuctTapedPlayers
 import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.CommandPermission
 import dev.jorel.commandapi.arguments.EntitySelectorArgument
@@ -17,11 +18,13 @@ import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
 import java.time.LocalDateTime
 import java.util.Random
-import java.util.UUID
 
-class DuctTape(private val plugin: JavaPlugin) : CustomCommand, Listener {
 
-    val tapedPlayers = hashMapOf<UUID, LocalDateTime>()
+class DuctTape(
+    private val plugin: JavaPlugin,
+    private val tapedPlayers: DuctTapedPlayers
+) : CustomCommand, Listener {
+
     private val randomizer = Random()
 
     override fun register() {

@@ -15,7 +15,7 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
 
-class GiveCustomItem(private val plugin: JavaPlugin, customItems: Array<CustomItem>) : CustomCommand {
+class GiveCustomItem(private val plugin: JavaPlugin, customItems: List<CustomItem>) : CustomCommand {
 
     private val customItems: MutableMap<String, CustomItem> = HashMap()
 

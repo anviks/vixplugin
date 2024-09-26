@@ -1,104 +1,88 @@
 package com.github.anviks.vixplugin
 
 import com.github.anviks.vixplugin.custom_items.CustomCraftableItem
-import com.github.anviks.vixplugin.custom_items.CustomFuseTNT
 import com.github.anviks.vixplugin.custom_items.CustomItem
-import com.github.anviks.vixplugin.custom_items.ExplosiveArrow
-import com.github.anviks.vixplugin.custom_items.GiveCustomItem
-import com.github.anviks.vixplugin.custom_items.GrapplingHook
-import com.github.anviks.vixplugin.custom_items.Grenade
-import com.github.anviks.vixplugin.custom_items.MultiTool
-import com.github.anviks.vixplugin.custom_items.Railgun
-import com.github.anviks.vixplugin.custom_items.RapidFireBow
-import com.github.anviks.vixplugin.custom_items.TeleportArrow
-import com.github.anviks.vixplugin.duct_tape.DuctTape
-import com.github.anviks.vixplugin.enderman.ArrowListener
 import com.github.anviks.vixplugin.enderman.BecomeEnderman
-import com.github.anviks.vixplugin.listeners.BedMessage
-import com.github.anviks.vixplugin.listeners.DeathMessages
-import com.github.anviks.vixplugin.listeners.EntityListener
-import com.github.anviks.vixplugin.listeners.JoinMessage
-import com.github.anviks.vixplugin.listeners.Moving
 import com.github.anviks.vixplugin.random_commands.ChangeWorlds
 import com.github.anviks.vixplugin.random_commands.DogCommand
-import com.github.anviks.vixplugin.random_commands.EnchantAnything
 import com.github.anviks.vixplugin.random_commands.EnderChestCommand
 import com.github.anviks.vixplugin.random_commands.FlightCommand
 import com.github.anviks.vixplugin.random_commands.Freeze
 import com.github.anviks.vixplugin.random_commands.GodMode
 import com.github.anviks.vixplugin.random_commands.InventoryCommand
 import com.github.anviks.vixplugin.random_commands.LaunchCommand
-import com.github.anviks.vixplugin.random_commands.PrankCommand
 import com.github.anviks.vixplugin.random_commands.SlapCommand
 import com.github.anviks.vixplugin.random_commands.TeleportUp
 import com.github.anviks.vixplugin.random_commands.UnFreeze
 import com.github.anviks.vixplugin.random_commands.ZoomCommand
-import com.github.anviks.vixplugin.random_commands.protect_area.BlockListener
+import com.github.anviks.vixplugin.random_commands.protect_area.Area
 import com.github.anviks.vixplugin.random_commands.protect_area.ProtectArea
 import com.github.anviks.vixplugin.random_commands.protect_area.ProtectedAreas
 import com.github.anviks.vixplugin.random_commands.protect_area.UnprotectArea
-import com.github.anviks.vixplugin.sandbox.Inventory
-import com.github.anviks.vixplugin.vanish.Vanish
+import com.github.anviks.vixplugin.util.PDCManager
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
+import com.jeff_media.customblockdata.CustomBlockData
 import org.bukkit.Bukkit
-import org.bukkit.World
 import org.bukkit.event.Listener
+import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
+import org.reflections.Reflections
 import java.lang.RuntimeException
 import java.time.LocalDateTime
 import java.util.Objects
 import java.util.UUID
+import kotlin.reflect.KClass
 
+typealias DuctTapedPlayers = HashMap<UUID, LocalDateTime>
 
 class VixPlugin : JavaPlugin() {
 
-    private val explosiveArrow = ExplosiveArrow(this)
-    private val grapplingHook = GrapplingHook()
-    private val grenade = Grenade()
-    private val multiTool = MultiTool()
-    private val railgun = Railgun()
-    private val rapidFireBow = RapidFireBow()
-    private val teleportArrow = TeleportArrow()
-    private val customFuseTNT = CustomFuseTNT()
-
-    private val customItems = arrayOf<CustomItem>(
-        explosiveArrow,
-        grapplingHook,
-        grenade,
-        multiTool,
-        railgun,
-        rapidFireBow,
-        teleportArrow,
-        customFuseTNT
-    )
-
-    private val giveCustomItem = GiveCustomItem(this, customItems)
-    private val vanish = Vanish(this)
-    private val enchantAnything = EnchantAnything(this)
-    private val prankCommand = PrankCommand(this)
-    private val ductTape = DuctTape(this)
+    private val dependencyRegistry = DependencyRegistry()
+    private val instanceCache = mutableMapOf<Class<*>, Any>()
+    private val tapedPlayers = loadTapedPlayers()
 
     override fun onEnable() {
-        plugin = getPlugin(VixPlugin::class.java)
-        defaultWorlds = server.worlds
-        ProtectedAreas.loadAreas()
+        CustomBlockData.registerListener(this)
+        PDCManager.init(this)
+        val pluginManager = this.server.pluginManager
+
+        dependencyRegistry.register<Plugin> { this }
+        dependencyRegistry.register<JavaPlugin> { this }  // CommandAPICommand requires JavaPlugin
+        dependencyRegistry.register<DuctTapedPlayers> { tapedPlayers }
+
+        val customItems = createChildrenOf<CustomItem>()
+
+        dependencyRegistry.register { customItems }
+
+        val customCommands = createChildrenOf<CustomCommand>()
+        val customListeners = createChildrenOf<Listener>()
+        val craftableItems = createChildrenOf<CustomCraftableItem>()
+
+        customCommands.forEach { it.register() }
+        customListeners.forEach { pluginManager.registerEvents(it, this) }
+        craftableItems.forEach { Bukkit.addRecipe(it.getRecipe()) }
 
         registerCommands()
-        registerEvents()
-        registerRecipes()
 
-        loadTapedPlayers()
+        loadAreas()
+    }
+
+    override fun onDisable() {
+        saveAreas()
+        saveTapedPlayers()
     }
 
     private fun registerCommands() {
         val commands = mapOf(
-            "loyalsquad" to DogCommand(),
+            "loyalsquad" to DogCommand(this),
             "slap" to SlapCommand(),
             "fly" to FlightCommand(),
             "inventory" to InventoryCommand(),
             "echest" to EnderChestCommand(),
             "launch" to LaunchCommand(),
-            "zoom" to ZoomCommand(),
-            "freeze" to Freeze(),
+            "zoom" to ZoomCommand(this),
+            "freeze" to Freeze(this),
             "unfreeze" to UnFreeze(),
             "god" to GodMode(),
             //  "sandbox" to SandboxMainCommand(),
@@ -113,85 +97,41 @@ class VixPlugin : JavaPlugin() {
             val cmd = this.getCommand(it.key) ?: throw RuntimeException("Command ${it.key} not found")
             cmd.setExecutor(it.value)
         }
-
-        val commandAPICommands = arrayOf<CustomCommand>(
-            giveCustomItem,
-            vanish,
-            enchantAnything,
-            prankCommand,
-            ductTape,
-        )
-
-        commandAPICommands.forEach(CustomCommand::register)
     }
 
-    private fun registerEvents() {
-        val pluginManager = this.server.pluginManager
+    private inline fun <reified T> createChildrenOf(): List<T> {
+        val reflections = Reflections(VixPlugin::class.java.`package`.name)
+        val childClasses = reflections.getSubTypesOf(T::class.java)
 
-        val listeners = arrayOf<Listener>(
-            vanish,
-            ductTape,
+        return childClasses
+            .filter { it.constructors.isNotEmpty() }
+            .map { getOrCreateInstance(it) }
+    }
 
-            explosiveArrow,
-            grapplingHook,
-            grenade,
-            multiTool,
-            railgun,
-            rapidFireBow,
-            teleportArrow,
-            customFuseTNT,
-
-            DeathMessages(),
-            JoinMessage(),
-            BedMessage(),
-            Moving(),
-            Inventory(),
-            ArrowListener(),
-            BlockListener(),
-            EntityListener(),
-        )
-
-        for (listener in listeners) {
-            pluginManager.registerEvents(listener, this)
+    private inline fun <reified T> getOrCreateInstance(clazz: Class<out T>): T {
+        // Check if the instance is already cached
+        if (instanceCache.containsKey(clazz)) {
+            return instanceCache[clazz] as T
         }
-    }
 
-    private fun registerRecipes() {
-        val craftableItems = arrayOf<CustomCraftableItem>(
-            explosiveArrow
-        )
+        // Get the primary constructor
+        val constructor = clazz.kotlin.constructors.firstOrNull()
+            ?: throw IllegalArgumentException("No constructor found for ${clazz.name}")
 
-        for (item in craftableItems) {
-            Bukkit.addRecipe(item.getRecipe())
+        // Resolve constructor parameters
+        val params = constructor.parameters.map { param ->
+            dependencyRegistry.resolve(param.type.classifier as KClass<*>)
         }
-    }
 
-    override fun onDisable() {
-        ProtectedAreas.saveAreas()
+        val instance = constructor.call(*params.toTypedArray())
+        instanceCache[clazz] = instance
 
-        saveTapedPlayers()
-
-//        for (Player player : getServer().getOnlinePlayers()) {
-//            if (!defaultWorlds.contains(player.getWorld())) {
-//                SandboxJoinCommand.sandboxedPlayers.get(player.getUniqueId()).revertPlayerState();
-//            }
-//        }
-
-//        for (World world : getServer().getWorlds()) {
-//            if (!defaultWorlds.contains(world)) {
-//                Bukkit.unloadWorld(world, false);
-//                try {
-//                    FileUtils.deleteDirectory(world.getWorldFolder());
-//                } catch (IOException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
-//        }
+        return instance
     }
 
     private fun saveTapedPlayers() {
         val file = getConfig()
-        ductTape.tapedPlayers.forEach { (uuid: UUID?, unmuteTime: LocalDateTime?) ->
+        tapedPlayers.forEach { (uuid: UUID?, unmuteTime: LocalDateTime?) ->
             file.set(
                 "taped-players.$uuid",
                 unmuteTime.toString()
@@ -200,27 +140,35 @@ class VixPlugin : JavaPlugin() {
         saveConfig()
     }
 
-    private fun loadTapedPlayers() {
+    private fun loadTapedPlayers(): DuctTapedPlayers {
         val file = getConfig()
         val tapedPlayersSection = file.getConfigurationSection("taped-players")
+        val tapedPlayers = HashMap<UUID, LocalDateTime>()
+
         if (tapedPlayersSection != null) {
             for (key in tapedPlayersSection.getKeys(false)) {
                 val uuid = UUID.fromString(key)
                 val unmuteTime =
                     LocalDateTime.parse(Objects.requireNonNull<String?>(tapedPlayersSection.getString(key)))
-                ductTape.tapedPlayers.put(uuid, unmuteTime)
+                tapedPlayers.put(uuid, unmuteTime)
             }
         }
+
+        return tapedPlayers
     }
 
-    companion object {
-        private lateinit var plugin: JavaPlugin
+    private fun saveAreas() {
+        val file = dataFolder.resolve("protected-areas.json")
+        val gson = GsonBuilder().setPrettyPrinting().create()
+        file.writeText(gson.toJson(ProtectedAreas.getProtectedAreas()))
+//        file.writeText(Json.encodeToString<Map<String, Area>>(ProtectedAreas.getProtectedAreas()))
+    }
 
-        lateinit var defaultWorlds: MutableList<World?>
-
-        @JvmStatic
-        fun getPlugin(): JavaPlugin {
-            return plugin
-        }
+    private fun loadAreas() {
+        val file = dataFolder.resolve("protected-areas.json")
+        val gson = GsonBuilder().create()
+        val areas = gson.fromJson<Map<String, Area>>(file.readText(), object : TypeToken<Map<String, Area>>() {}.type)
+//        val areas = Json.decodeFromString<Map<String, Area>>(file.readText())
+        ProtectedAreas.setProtectedAreas(areas)
     }
 }

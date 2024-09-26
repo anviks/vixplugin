@@ -15,10 +15,11 @@ import org.bukkit.event.entity.EntityPickupItemEvent
 import org.bukkit.event.entity.ExpBottleEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.inventory.ItemStack
+import org.bukkit.plugin.Plugin
 import org.bukkit.scheduler.BukkitTask
 import java.util.UUID
 
-class Grenade : CustomItem, Listener {
+class Grenade(private val plugin: Plugin) : CustomItem, Listener {
 
     private val liveGrenades = HashMap<UUID, BukkitTask>()
 
@@ -42,7 +43,7 @@ class Grenade : CustomItem, Listener {
                 Runnable { event.player.world.createExplosion(itemDrop.location, 10f) }
             val uuid = itemDrop.uniqueId
             val bukkitTask = Bukkit.getScheduler()
-                .runTaskLater(VixPlugin.getPlugin(), task, 100)
+                .runTaskLater(plugin, task, 100)
 
             liveGrenades[uuid] = bukkitTask
         }
@@ -63,7 +64,7 @@ class Grenade : CustomItem, Listener {
         val itemStack: ItemStack = item.itemStack
         if (itemStack.isOfCustomType(Grenade::class.java)) {
             // Item#isDead returns true only after the final damage event is processed
-            Bukkit.getScheduler().runTaskLater(VixPlugin.getPlugin(), Runnable {
+            Bukkit.getScheduler().runTaskLater(plugin, Runnable {
                 if (item.isDead) this.tryCancelGrenadeExplosion(item)
             }, 1)
         }

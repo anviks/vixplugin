@@ -1,10 +1,10 @@
 package com.github.anviks.vixplugin.custom_items
 
-import com.github.anviks.vixplugin.util.copyPDCTo
-import com.github.anviks.vixplugin.util.getPDCData
+import com.github.anviks.vixplugin.util.PDCManager.copyPDCTo
+import com.github.anviks.vixplugin.util.PDCManager.getPDCData
+import com.github.anviks.vixplugin.util.PDCManager.setPDCData
 import com.github.anviks.vixplugin.util.isOfCustomType
 import com.github.anviks.vixplugin.util.setCustomType
-import com.github.anviks.vixplugin.util.setPDCData
 import net.kyori.adventure.text.Component.text
 import org.bukkit.GameMode
 import org.bukkit.Material
