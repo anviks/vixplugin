@@ -19,7 +19,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import kotlin.math.roundToInt
 
-class CustomFuseTNT : CustomCraftableItem, Listener {
+class CustomFuseTNT : CustomItem, Listener {
 
     override fun getItem(count: Int): ItemStack {
         return getItem(count, 8f)

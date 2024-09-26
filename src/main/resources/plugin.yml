@@ -1,6 +1,6 @@
 name: VixPlugin
 version: 1.0
-main: com.github.anviks.vixplugin.Initializer
+main: com.github.anviks.vixplugin.VixPlugin
 api-version: 1.21.1
 depend: [CommandAPI]
 commands:

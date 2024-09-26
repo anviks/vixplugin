@@ -2,6 +2,7 @@ package com.github.anviks.vixplugin.enderman
 
 import com.github.anviks.vixplugin.custom_items.CustomItem
 import com.github.anviks.vixplugin.custom_items.TeleportArrow
+import com.github.anviks.vixplugin.util.isOfCustomType
 import org.bukkit.Location
 import org.bukkit.Particle
 import org.bukkit.Sound
@@ -18,7 +19,7 @@ class ArrowListener : Listener {
     @EventHandler
     fun onArrowHit(event: ProjectileHitEvent) {
         val projectile = event.getEntity()
-        if (CustomItem.Companion.isOfType(projectile, TeleportArrow::class.java)) return
+        if (projectile.isOfCustomType(TeleportArrow::class.java)) return
 
         val hitEntity = event.hitEntity
         if (hitEntity == null) return
