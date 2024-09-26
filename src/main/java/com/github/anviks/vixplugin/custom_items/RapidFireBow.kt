@@ -3,6 +3,8 @@ package com.github.anviks.vixplugin.custom_items
 import com.github.anviks.vixplugin.VixPlugin
 import com.github.anviks.vixplugin.util.copyPDCTo
 import com.github.anviks.vixplugin.util.copyWithoutIntangibleTag
+import com.github.anviks.vixplugin.util.isOfCustomType
+import com.github.anviks.vixplugin.util.setCustomType
 import com.github.anviks.vixplugin.util.toInt
 import net.kyori.adventure.text.Component.*
 import net.kyori.adventure.text.format.NamedTextColor.*
@@ -32,7 +34,7 @@ import org.bukkit.inventory.meta.PotionMeta
 import org.bukkit.scheduler.BukkitTask
 import java.util.UUID
 
-class RapidFireBow : CustomItem(), Listener {
+class RapidFireBow : CustomItem, Listener {
 
     private val shootingPlayers: MutableMap<UUID, BukkitTask> = HashMap()
 
@@ -57,7 +59,7 @@ class RapidFireBow : CustomItem(), Listener {
         meta.lore(lore)
         bow.itemMeta = meta
 
-        setType(bow, RapidFireBow::class.java)
+        bow.setCustomType(RapidFireBow::class.java)
 
         return bow
     }
@@ -65,7 +67,7 @@ class RapidFireBow : CustomItem(), Listener {
     @EventHandler
     fun onBowShoot(event: EntityShootBowEvent) {
         val player = event.entity as? Player ?: return
-        if (isOfType(event.bow!!, RapidFireBow::class.java)) {
+        if (event.bow!!.isOfCustomType(RapidFireBow::class.java)) {
 //            event.setCancelled(true);  // BUG-ACCOMMODATION-11113: commented this line
             shootArrows(player, event)
         }

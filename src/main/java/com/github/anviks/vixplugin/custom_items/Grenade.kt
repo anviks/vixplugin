@@ -1,6 +1,8 @@
 package com.github.anviks.vixplugin.custom_items
 
 import com.github.anviks.vixplugin.VixPlugin
+import com.github.anviks.vixplugin.util.isOfCustomType
+import com.github.anviks.vixplugin.util.setCustomType
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Bukkit
@@ -16,7 +18,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.scheduler.BukkitTask
 import java.util.UUID
 
-class Grenade : CustomItem(), Listener {
+class Grenade : CustomItem, Listener {
 
     private val liveGrenades = HashMap<UUID, BukkitTask>()
 
@@ -26,7 +28,7 @@ class Grenade : CustomItem(), Listener {
         grenadeMeta.displayName(Component.text("GRENADE", NamedTextColor.RED))
         grenadeMeta.lore(listOf(Component.text("Toss it at someone.")))
         grenade.setItemMeta(grenadeMeta)
-        setType(grenade, Grenade::class.java)
+        grenade.setCustomType(Grenade::class.java)
 
         return grenade
     }
@@ -35,7 +37,7 @@ class Grenade : CustomItem(), Listener {
     fun onItemDropped(event: PlayerDropItemEvent) {
         val itemDrop = event.itemDrop
 
-        if (isOfType(itemDrop.itemStack, Grenade::class.java)) {
+        if (itemDrop.itemStack.isOfCustomType(Grenade::class.java)) {
             val task =
                 Runnable { event.player.world.createExplosion(itemDrop.location, 10f) }
             val uuid = itemDrop.uniqueId
@@ -50,7 +52,7 @@ class Grenade : CustomItem(), Listener {
     fun onItemPicked(event: EntityPickupItemEvent) {
         val item = event.item
 
-        if (isOfType(item.itemStack, Grenade::class.java)) {
+        if (item.itemStack.isOfCustomType(Grenade::class.java)) {
             this.tryCancelGrenadeExplosion(item)
         }
     }
@@ -59,7 +61,7 @@ class Grenade : CustomItem(), Listener {
     fun onEntityDamage(event: EntityDamageEvent) {
         val item = event.entity as? Item ?: return
         val itemStack: ItemStack = item.itemStack
-        if (isOfType(itemStack, Grenade::class.java)) {
+        if (itemStack.isOfCustomType(Grenade::class.java)) {
             // Item#isDead returns true only after the final damage event is processed
             Bukkit.getScheduler().runTaskLater(VixPlugin.getPlugin(), Runnable {
                 if (item.isDead) this.tryCancelGrenadeExplosion(item)
@@ -69,7 +71,7 @@ class Grenade : CustomItem(), Listener {
 
     @EventHandler
     fun onXPBottleThrown(event: ExpBottleEvent) {
-        if (isOfType(event.entity.item, Grenade::class.java)) {
+        if (event.entity.item.isOfCustomType(Grenade::class.java)) {
             event.experience = 0
             event.showEffect = false
             event.entity.world.createExplosion(event.entity.location, 5f)

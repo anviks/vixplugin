@@ -1,5 +1,6 @@
 package com.github.anviks.vixplugin
 
+import com.github.anviks.vixplugin.custom_items.CustomCraftableItem
 import com.github.anviks.vixplugin.custom_items.CustomFuseTNT
 import com.github.anviks.vixplugin.custom_items.CustomItem
 import com.github.anviks.vixplugin.custom_items.ExplosiveArrow
@@ -41,7 +42,6 @@ import com.github.anviks.vixplugin.vanish.Vanish
 import org.bukkit.Bukkit
 import org.bukkit.World
 import org.bukkit.event.Listener
-import org.bukkit.inventory.ShapedRecipe
 import org.bukkit.plugin.java.JavaPlugin
 import java.lang.RuntimeException
 import java.time.LocalDateTime
@@ -51,7 +51,31 @@ import java.util.UUID
 
 class VixPlugin : JavaPlugin() {
 
-    private lateinit var ductTape: DuctTape
+    private val explosiveArrow = ExplosiveArrow(this)
+    private val grapplingHook = GrapplingHook()
+    private val grenade = Grenade()
+    private val multiTool = MultiTool()
+    private val railgun = Railgun()
+    private val rapidFireBow = RapidFireBow()
+    private val teleportArrow = TeleportArrow()
+    private val customFuseTNT = CustomFuseTNT()
+
+    private val customItems = arrayOf<CustomItem>(
+        explosiveArrow,
+        grapplingHook,
+        grenade,
+        multiTool,
+        railgun,
+        rapidFireBow,
+        teleportArrow,
+        customFuseTNT
+    )
+
+    private val giveCustomItem = GiveCustomItem(this, customItems)
+    private val vanish = Vanish(this)
+    private val enchantAnything = EnchantAnything(this)
+    private val prankCommand = PrankCommand(this)
+    private val ductTape = DuctTape(this)
 
     override fun onEnable() {
         plugin = getPlugin(VixPlugin::class.java)
@@ -85,16 +109,29 @@ class VixPlugin : JavaPlugin() {
             "world" to ChangeWorlds(),
         )
 
-        val explosiveArrow = ExplosiveArrow(this)
-        val grapplingHook = GrapplingHook()
-        val grenade = Grenade()
-        val multiTool = MultiTool()
-        val railgun = Railgun()
-        val rapidFireBow = RapidFireBow()
-        val teleportArrow = TeleportArrow()
-        val customFuseTNT = CustomFuseTNT()
+        commands.forEach {
+            val cmd = this.getCommand(it.key) ?: throw RuntimeException("Command ${it.key} not found")
+            cmd.setExecutor(it.value)
+        }
 
-        val customItems = arrayOf<CustomItem>(
+        val commandAPICommands = arrayOf<CustomCommand>(
+            giveCustomItem,
+            vanish,
+            enchantAnything,
+            prankCommand,
+            ductTape,
+        )
+
+        commandAPICommands.forEach(CustomCommand::register)
+    }
+
+    private fun registerEvents() {
+        val pluginManager = this.server.pluginManager
+
+        val listeners = arrayOf<Listener>(
+            vanish,
+            ductTape,
+
             explosiveArrow,
             grapplingHook,
             grenade,
@@ -102,49 +139,8 @@ class VixPlugin : JavaPlugin() {
             railgun,
             rapidFireBow,
             teleportArrow,
-            customFuseTNT
-        )
+            customFuseTNT,
 
-        for (command in commands.entries) {
-            val cmd = this.getCommand(command.key)
-            if (cmd == null) {
-                throw RuntimeException("Command " + command.key + " not found")
-            }
-            cmd.setExecutor(command.value)
-        }
-
-        val pluginManager = this.server.pluginManager
-
-        val giveCustomItem = GiveCustomItem(this, customItems)
-        val vanish = Vanish(this)
-        val enchantAnything = EnchantAnything(this)
-        val prankCommand = PrankCommand(this)
-        ductTape = DuctTape(this)
-
-        giveCustomItem.register()
-        vanish.register()
-        enchantAnything.register()
-        prankCommand.register()
-        ductTape.register()
-
-        pluginManager.registerEvents(vanish, this)
-        pluginManager.registerEvents(ductTape, this)
-
-        pluginManager.registerEvents(explosiveArrow, this)
-        pluginManager.registerEvents(grapplingHook, this)
-        pluginManager.registerEvents(grenade, this)
-        pluginManager.registerEvents(multiTool, this)
-        pluginManager.registerEvents(railgun, this)
-        pluginManager.registerEvents(rapidFireBow, this)
-        pluginManager.registerEvents(teleportArrow, this)
-        pluginManager.registerEvents(customFuseTNT, this)
-    }
-
-    private fun registerEvents(listeners: Array<Listener> = arrayOf()) {
-        val pluginManager = this.server.pluginManager
-
-        val listeners = arrayOf<Listener>(
-            *listeners,
             DeathMessages(),
             JoinMessage(),
             BedMessage(),
@@ -161,12 +157,12 @@ class VixPlugin : JavaPlugin() {
     }
 
     private fun registerRecipes() {
-        val recipes: Array<ShapedRecipe?> = arrayOf<ShapedRecipe?>(
-            ExplosiveArrow(this).getRecipe(),
+        val craftableItems = arrayOf<CustomCraftableItem>(
+            explosiveArrow
         )
 
-        for (recipe in recipes) {
-            Bukkit.addRecipe(recipe)
+        for (item in craftableItems) {
+            Bukkit.addRecipe(item.getRecipe())
         }
     }
 
@@ -175,7 +171,7 @@ class VixPlugin : JavaPlugin() {
 
         saveTapedPlayers()
 
-        //        for (Player player : getServer().getOnlinePlayers()) {
+//        for (Player player : getServer().getOnlinePlayers()) {
 //            if (!defaultWorlds.contains(player.getWorld())) {
 //                SandboxJoinCommand.sandboxedPlayers.get(player.getUniqueId()).revertPlayerState();
 //            }
@@ -220,8 +216,7 @@ class VixPlugin : JavaPlugin() {
     companion object {
         private lateinit var plugin: JavaPlugin
 
-        @JvmField
-        var defaultWorlds: MutableList<World?>? = null
+        lateinit var defaultWorlds: MutableList<World?>
 
         @JvmStatic
         fun getPlugin(): JavaPlugin {

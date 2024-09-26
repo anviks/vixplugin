@@ -1,5 +1,7 @@
 package com.github.anviks.vixplugin.custom_items
 
+import com.github.anviks.vixplugin.util.isOfCustomType
+import com.github.anviks.vixplugin.util.setCustomType
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Material
@@ -16,7 +18,7 @@ import org.bukkit.inventory.ShapedRecipe
 import org.bukkit.plugin.Plugin
 import org.bukkit.projectiles.BlockProjectileSource
 
-class ExplosiveArrow(private val plugin: Plugin) : CustomItem(), Listener {
+class ExplosiveArrow(private val plugin: Plugin) : CustomCraftableItem, Listener {
 
     private var dispenserShotExplosiveArrow = false
 
@@ -26,12 +28,12 @@ class ExplosiveArrow(private val plugin: Plugin) : CustomItem(), Listener {
         arrowMeta.displayName(Component.text("Explosive Arrow", NamedTextColor.YELLOW))
         arrowMeta.addEnchant(Enchantment.INFINITY, 1, false)
         arrows.setItemMeta(arrowMeta)
-        setType(arrows, ExplosiveArrow::class.java)
+        arrows.setCustomType(ExplosiveArrow::class.java)
 
         return arrows
     }
 
-    fun getRecipe(): ShapedRecipe {
+    override fun getRecipe(): ShapedRecipe {
         val arrow = getItem(1)
         val key = NamespacedKey(this.plugin, "explosive_arrow")
         val recipe = ShapedRecipe(key, arrow)
@@ -44,7 +46,7 @@ class ExplosiveArrow(private val plugin: Plugin) : CustomItem(), Listener {
 
     @EventHandler
     fun onDispenserPowered(event: BlockDispenseEvent) {
-        if (isOfType(event.item, ExplosiveArrow::class.java)) {
+        if (event.item.isOfCustomType(ExplosiveArrow::class.java)) {
             dispenserShotExplosiveArrow = true
         }
     }
@@ -54,8 +56,8 @@ class ExplosiveArrow(private val plugin: Plugin) : CustomItem(), Listener {
         val consumable = event.consumable
         val projectile = event.projectile
 
-        if (consumable != null && isOfType(consumable, ExplosiveArrow::class.java)) {
-            setType(projectile, ExplosiveArrow::class.java)
+        if (consumable != null && consumable.isOfCustomType(ExplosiveArrow::class.java)) {
+            projectile.setCustomType(ExplosiveArrow::class.java)
         }
     }
 
@@ -66,14 +68,14 @@ class ExplosiveArrow(private val plugin: Plugin) : CustomItem(), Listener {
 
         if (dispenserShotExplosiveArrow && shooter is BlockProjectileSource) {
             dispenserShotExplosiveArrow = false
-            setType(projectile, ExplosiveArrow::class.java)
+            projectile.setCustomType(ExplosiveArrow::class.java)
         }
     }
 
     @EventHandler
     fun onArrowLand(event: ProjectileHitEvent) {
         val projectile = event.entity
-        if (isOfType(projectile, ExplosiveArrow::class.java)) {
+        if (projectile.isOfCustomType(ExplosiveArrow::class.java)) {
             projectile.world.createExplosion(projectile.location, 7f, false, true, projectile)
             projectile.remove()
         }

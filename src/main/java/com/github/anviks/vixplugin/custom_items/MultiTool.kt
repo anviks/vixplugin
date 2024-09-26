@@ -1,5 +1,7 @@
 package com.github.anviks.vixplugin.custom_items
 
+import com.github.anviks.vixplugin.util.isOfCustomType
+import com.github.anviks.vixplugin.util.setCustomType
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.Tag
@@ -12,7 +14,7 @@ import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 
-class MultiTool : CustomItem(), Listener {
+class MultiTool : CustomItem, Listener {
 
     override fun getItem(count: Int): ItemStack {
         val tool = ItemStack(Material.DIAMOND_PICKAXE)
@@ -23,7 +25,7 @@ class MultiTool : CustomItem(), Listener {
         meta.addEnchant(Enchantment.MENDING, 1, false)
         meta.addEnchant(Enchantment.UNBREAKING, 3, false)
         tool.setItemMeta(meta)
-        setType(tool, MultiTool::class.java)
+        tool.setCustomType(MultiTool::class.java)
 
         return tool
     }
@@ -32,7 +34,7 @@ class MultiTool : CustomItem(), Listener {
     fun onPlayerInteract(event: PlayerInteractEvent) {
         val eventItem = event.item ?: return
 
-        if (!isOfType(eventItem, MultiTool::class.java)) return
+        if (!eventItem.isOfCustomType(MultiTool::class.java)) return
 
         val player = event.player
         val block = event.clickedBlock

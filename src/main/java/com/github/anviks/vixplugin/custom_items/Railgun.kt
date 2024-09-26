@@ -1,6 +1,8 @@
 package com.github.anviks.vixplugin.custom_items
 
 import com.github.anviks.vixplugin.util.AdventureHelper
+import com.github.anviks.vixplugin.util.isOfCustomType
+import com.github.anviks.vixplugin.util.setCustomType
 import net.kyori.adventure.text.format.NamedTextColor.GRAY
 import net.kyori.adventure.text.format.NamedTextColor.YELLOW
 import org.bukkit.Location
@@ -16,7 +18,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Vector
 
 
-class Railgun : CustomItem(), Listener {
+class Railgun : CustomItem, Listener {
 
     override fun getItem(count: Int): ItemStack {
         val railGun = ItemStack(Material.TRIDENT, 1)
@@ -24,7 +26,7 @@ class Railgun : CustomItem(), Listener {
         railGunMeta.displayName(AdventureHelper.createAlternatingColoredText("RAILGUN", GRAY, YELLOW))
         railGunMeta.addEnchant(Enchantment.INFINITY, 1, true)
         railGun.setItemMeta(railGunMeta)
-        setType(railGun, Railgun::class.java)
+        railGun.setCustomType(Railgun::class.java)
 
         return railGun
     }
@@ -44,7 +46,7 @@ class Railgun : CustomItem(), Listener {
             else
                 itemInOffHand
 
-        if (!isOfType(shotTrident, Railgun::class.java)) {
+        if (!shotTrident.isOfCustomType(Railgun::class.java)) {
             return
         }
 

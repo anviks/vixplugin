@@ -1,5 +1,7 @@
 package com.github.anviks.vixplugin.custom_items
 
+import com.github.anviks.vixplugin.util.isOfCustomType
+import com.github.anviks.vixplugin.util.setCustomType
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
@@ -7,7 +9,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerFishEvent
 import org.bukkit.inventory.ItemStack
 
-class GrapplingHook : CustomItem(), Listener {
+class GrapplingHook : CustomItem, Listener {
 
     override fun getItem(count: Int): ItemStack {
         val hook = ItemStack(Material.FISHING_ROD, count)
@@ -15,7 +17,7 @@ class GrapplingHook : CustomItem(), Listener {
         meta.displayName(Component.text("Grappling hook"))
         meta.isUnbreakable = true
         hook.setItemMeta(meta)
-        setType(hook, GrapplingHook::class.java)
+        hook.setCustomType(GrapplingHook::class.java)
 
         return hook
     }
@@ -30,7 +32,7 @@ class GrapplingHook : CustomItem(), Listener {
 
         val player = event.player
 
-        if (!isOfType(player.inventory.itemInMainHand, GrapplingHook::class.java)) {
+        if (!player.inventory.itemInMainHand.isOfCustomType(GrapplingHook::class.java)) {
             return
         }
 
