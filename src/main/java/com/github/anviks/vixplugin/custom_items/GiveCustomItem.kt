@@ -14,6 +14,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
+import kotlin.math.roundToInt
 
 class GiveCustomItem(private val plugin: JavaPlugin, customItems: List<CustomItem>) : CustomCommand {
 
@@ -56,10 +57,10 @@ class GiveCustomItem(private val plugin: JavaPlugin, customItems: List<CustomIte
     }
 
     private fun giveCustomFuseTnt(sender: CommandSender, arguments: CommandArguments) {
-        val count = arguments.getByClassOrDefault("count", Int::class.java, 1)
-        val fuseTime = arguments.getByClass("fuse-seconds", Float::class.java)!!
+        val fuseTime = arguments.get("fuse-seconds") as Float
+        val count = arguments.getOrDefault("count", 1) as Int
         val itemObj = customItems["custom-fuse-tnt"] as CustomFuseTNT
-        val items = itemObj.getItem(count, fuseTime)
+        val items = itemObj.getItem(count, (fuseTime * 20).roundToInt())
 
         this.giveItemToPlayer(items, arguments)
     }

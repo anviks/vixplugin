@@ -36,6 +36,14 @@ object PDCManager {
         setPDCData(getContainer(this), key, dataType, data)
     }
 
+    fun <P, C> Block.setPDCData(
+        key: String,
+        dataType: PersistentDataType<P?, C?>,
+        data: C & Any
+    ) {
+        setPDCData(getContainer(this), key, dataType, data)
+    }
+
     private fun <P, C> setPDCData(
         container: PersistentDataContainer,
         key: String,
