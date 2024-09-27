@@ -15,7 +15,6 @@ import com.github.anviks.vixplugin.random_commands.SlapCommand
 import com.github.anviks.vixplugin.random_commands.TeleportUp
 import com.github.anviks.vixplugin.random_commands.UnFreeze
 import com.github.anviks.vixplugin.random_commands.ZoomCommand
-import com.github.anviks.vixplugin.random_commands.protect_area.Area
 import com.github.anviks.vixplugin.util.PDCManager
 import com.jeff_media.customblockdata.CustomBlockData
 import kotlinx.serialization.encodeToString
@@ -26,20 +25,15 @@ import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
 import org.reflections.Reflections
 import java.lang.RuntimeException
-import java.time.LocalDateTime
-import java.util.Objects
-import java.util.UUID
 import kotlin.reflect.KClass
 
-typealias DuctTapedPlayers = MutableMap<UUID, LocalDateTime>
-typealias ProtectedAreas = MutableMap<String, Area>
+val json = Json { prettyPrint = true }
 
 class VixPlugin : JavaPlugin() {
 
     private val dependencyRegistry = DependencyRegistry()
     private val instanceCache = mutableMapOf<Class<*>, Any>()
-    private val tapedPlayers = loadTapedPlayers()
-    private val protectedAreas = loadAreas()
+    private val pluginData = loadPluginData()
 
     override fun onEnable() {
         CustomBlockData.registerListener(this)
@@ -48,8 +42,7 @@ class VixPlugin : JavaPlugin() {
 
         dependencyRegistry.register<Plugin> { this }
         dependencyRegistry.register<JavaPlugin> { this }  // CommandAPICommand requires JavaPlugin
-        dependencyRegistry.register<DuctTapedPlayers> { tapedPlayers }
-        dependencyRegistry.register<ProtectedAreas> { protectedAreas }
+        dependencyRegistry.register<PluginState> { pluginData }
 
         val customItems = createChildrenOf<CustomItem>()
 
@@ -64,13 +57,10 @@ class VixPlugin : JavaPlugin() {
         craftableItems.forEach { Bukkit.addRecipe(it.getRecipe()) }
 
         registerCommands()
-
-        loadAreas()
     }
 
     override fun onDisable() {
-        saveAreas()
-        saveTapedPlayers()
+        savePluginData()
     }
 
     private fun registerCommands() {
@@ -127,42 +117,15 @@ class VixPlugin : JavaPlugin() {
         return instance
     }
 
-    private fun saveTapedPlayers() {
-        val file = getConfig()
-        tapedPlayers.forEach { (uuid: UUID?, unmuteTime: LocalDateTime?) ->
-            file.set(
-                "taped-players.$uuid",
-                unmuteTime.toString()
-            )
-        }
-        saveConfig()
+    private fun savePluginData() {
+        val file = dataFolder.resolve("plugin_state.json")
+        if (!file.exists()) file.createNewFile()
+        file.writeText(json.encodeToString(pluginData))
     }
 
-    private fun loadTapedPlayers(): DuctTapedPlayers {
-        val file = getConfig()
-        val tapedPlayersSection = file.getConfigurationSection("taped-players")
-        val tapedPlayers = HashMap<UUID, LocalDateTime>()
-
-        if (tapedPlayersSection != null) {
-            for (key in tapedPlayersSection.getKeys(false)) {
-                val uuid = UUID.fromString(key)
-                val unmuteTime =
-                    LocalDateTime.parse(Objects.requireNonNull<String?>(tapedPlayersSection.getString(key)))
-                tapedPlayers.put(uuid, unmuteTime)
-            }
-        }
-
-        return tapedPlayers
-    }
-
-    private fun saveAreas() {
-        val file = dataFolder.resolve("protected-areas.json")
-        file.writeText(Json.encodeToString(protectedAreas))
-    }
-
-    private fun loadAreas(): ProtectedAreas {
-        val file = dataFolder.resolve("protected-areas.json")
-        val areas = Json.decodeFromString<ProtectedAreas>(file.readText())
-        return areas
+    private fun loadPluginData(): PluginState {
+        val file = dataFolder.resolve("plugin_state.json")
+        if (!file.exists()) return PluginState()
+        return json.decodeFromString<PluginState>(file.readText())
     }
 }

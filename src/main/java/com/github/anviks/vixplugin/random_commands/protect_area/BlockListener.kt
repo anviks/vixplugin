@@ -1,6 +1,6 @@
 package com.github.anviks.vixplugin.random_commands.protect_area
 
-import com.github.anviks.vixplugin.ProtectedAreas
+import com.github.anviks.vixplugin.PluginState
 import org.bukkit.Location
 import org.bukkit.event.Cancellable
 import org.bukkit.event.EventHandler
@@ -13,7 +13,7 @@ import org.bukkit.event.block.BlockMultiPlaceEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.EntityExplodeEvent
 
-class BlockListener(private val protectedAreas: ProtectedAreas) : Listener {
+class BlockListener(private val pluginState: PluginState) : Listener {
 
     @EventHandler
     fun blockDamaged(event: BlockDamageEvent) {
@@ -54,13 +54,8 @@ class BlockListener(private val protectedAreas: ProtectedAreas) : Listener {
     }
 
     private fun isProtected(location: Location): Boolean {
-        val serializableLocation = SerializableLocation(location)
-        return isProtected(serializableLocation)
-    }
-
-    private fun isProtected(location: SerializableLocation): Boolean {
-        for (area in protectedAreas.values) {
-            if (area.contains(location)) {
+        for (area in pluginState.protectedAreas.values) {
+            if (location in area) {
                 return true
             }
         }

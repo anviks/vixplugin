@@ -1,7 +1,9 @@
 package com.github.anviks.vixplugin.random_commands.protect_area
 
+import com.github.anviks.vixplugin.Area
 import com.github.anviks.vixplugin.CustomCommand
-import com.github.anviks.vixplugin.ProtectedAreas
+import com.github.anviks.vixplugin.PluginState
+import com.github.anviks.vixplugin.SerializableLocation
 import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.CommandPermission
 import dev.jorel.commandapi.arguments.GreedyStringArgument
@@ -17,7 +19,7 @@ import org.bukkit.plugin.java.JavaPlugin
 
 class ProtectArea(
     private val plugin: JavaPlugin,
-    private val protectedAreas: ProtectedAreas,
+    private val pluginState: PluginState,
 ) : CustomCommand {
 
     override fun register() {
@@ -36,13 +38,13 @@ class ProtectArea(
         val end = arguments.get("end") as Location
         val areaName = arguments.get("area-name") as String
 
-        if (protectedAreas.containsKey(areaName)) {
+        if (pluginState.protectedAreas.containsKey(areaName)) {
             sender.sendMessage(text("Area with name \"$areaName\" already exists", RED))
             return
         }
 
         val area = Area(SerializableLocation(start), SerializableLocation(end))
-        protectedAreas[areaName] = area
+        pluginState.protectedAreas[areaName] = area
         sender.sendMessage(text("Successfully protected area \"$areaName\"", GREEN))
     }
 }

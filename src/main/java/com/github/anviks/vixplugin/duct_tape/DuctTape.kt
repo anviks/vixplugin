@@ -1,7 +1,7 @@
 package com.github.anviks.vixplugin.duct_tape
 
 import com.github.anviks.vixplugin.CustomCommand
-import com.github.anviks.vixplugin.DuctTapedPlayers
+import com.github.anviks.vixplugin.PluginState
 import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.CommandPermission
 import dev.jorel.commandapi.arguments.EntitySelectorArgument
@@ -22,7 +22,7 @@ import java.util.Random
 
 class DuctTape(
     private val plugin: JavaPlugin,
-    private val tapedPlayers: DuctTapedPlayers
+    private val pluginState: PluginState,
 ) : CustomCommand, Listener {
 
     private val randomizer = Random()
@@ -43,16 +43,16 @@ class DuctTape(
         val scheduler = Bukkit.getScheduler()
 
         for (target in targets) {
-            tapedPlayers.put(target.uniqueId, removeTapeAt)
+            pluginState.tapedPlayers.put(target.uniqueId, removeTapeAt)
             scheduler.runTaskLater(this.plugin, Runnable {
-                tapedPlayers.remove(target.uniqueId)
+                pluginState.tapedPlayers.remove(target.uniqueId)
             }, duration)
         }
     }
 
     @EventHandler
     fun onChatUse(event: AsyncChatEvent) {
-        if (tapedPlayers.contains(event.getPlayer().uniqueId)) {
+        if (pluginState.tapedPlayers.contains(event.getPlayer().uniqueId)) {
             val message = (event.message() as TextComponent).content()
             val newMessage = StringBuilder()
 
