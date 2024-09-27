@@ -5,11 +5,13 @@ import com.github.anviks.vixplugin.util.isOfCustomType
 import com.github.anviks.vixplugin.util.setCustomType
 import net.kyori.adventure.text.format.NamedTextColor.GRAY
 import net.kyori.adventure.text.format.NamedTextColor.YELLOW
+import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.LivingEntity
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.ProjectileLaunchEvent
@@ -50,15 +52,19 @@ class Railgun : CustomItem, Listener {
             return
         }
 
+        if (shooter is Player && shooter.gameMode != GameMode.CREATIVE) {
+            shotTrident.subtract()
+        }
+
         event.isCancelled = true
         val shot: Vector = shooter.eyeLocation.direction
-        var explosion: Location = shooter.location
+        var explosionLocation: Location = shooter.location
 
-        explosion = explosion.add(shot.multiply(1.8)).add(0.0, 2.0, 0.0)
+        explosionLocation.add(shot).add(0.0, 2.0, 0.0)
 
         repeat(150) {
-            explosion = explosion.add(shot)
-            shooter.world.createExplosion(explosion, 2.6f, true, true, shooter)
+            explosionLocation.add(shot)
+            shooter.world.createExplosion(explosionLocation, 2.6f, true, true, shooter)
         }
     }
 }
