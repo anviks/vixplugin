@@ -16,13 +16,10 @@ import com.github.anviks.vixplugin.random_commands.TeleportUp
 import com.github.anviks.vixplugin.random_commands.UnFreeze
 import com.github.anviks.vixplugin.random_commands.ZoomCommand
 import com.github.anviks.vixplugin.random_commands.protect_area.Area
-import com.github.anviks.vixplugin.random_commands.protect_area.ProtectArea
-import com.github.anviks.vixplugin.random_commands.protect_area.ProtectedAreas
-import com.github.anviks.vixplugin.random_commands.protect_area.UnprotectArea
 import com.github.anviks.vixplugin.util.PDCManager
-import com.google.gson.GsonBuilder
-import com.google.gson.reflect.TypeToken
 import com.jeff_media.customblockdata.CustomBlockData
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import org.bukkit.Bukkit
 import org.bukkit.event.Listener
 import org.bukkit.plugin.Plugin
@@ -34,13 +31,15 @@ import java.util.Objects
 import java.util.UUID
 import kotlin.reflect.KClass
 
-typealias DuctTapedPlayers = HashMap<UUID, LocalDateTime>
+typealias DuctTapedPlayers = MutableMap<UUID, LocalDateTime>
+typealias ProtectedAreas = MutableMap<String, Area>
 
 class VixPlugin : JavaPlugin() {
 
     private val dependencyRegistry = DependencyRegistry()
     private val instanceCache = mutableMapOf<Class<*>, Any>()
     private val tapedPlayers = loadTapedPlayers()
+    private val protectedAreas = loadAreas()
 
     override fun onEnable() {
         CustomBlockData.registerListener(this)
@@ -50,6 +49,7 @@ class VixPlugin : JavaPlugin() {
         dependencyRegistry.register<Plugin> { this }
         dependencyRegistry.register<JavaPlugin> { this }  // CommandAPICommand requires JavaPlugin
         dependencyRegistry.register<DuctTapedPlayers> { tapedPlayers }
+        dependencyRegistry.register<ProtectedAreas> { protectedAreas }
 
         val customItems = createChildrenOf<CustomItem>()
 
@@ -88,8 +88,6 @@ class VixPlugin : JavaPlugin() {
             //  "sandbox" to SandboxMainCommand(),
             "tp-up" to TeleportUp(),
             "ender-toggle" to BecomeEnderman(),
-            "protect" to ProtectArea(),
-            "unprotect" to UnprotectArea(),
             "world" to ChangeWorlds(),
         )
 
@@ -159,16 +157,12 @@ class VixPlugin : JavaPlugin() {
 
     private fun saveAreas() {
         val file = dataFolder.resolve("protected-areas.json")
-        val gson = GsonBuilder().setPrettyPrinting().create()
-        file.writeText(gson.toJson(ProtectedAreas.getProtectedAreas()))
-//        file.writeText(Json.encodeToString<Map<String, Area>>(ProtectedAreas.getProtectedAreas()))
+        file.writeText(Json.encodeToString(protectedAreas))
     }
 
-    private fun loadAreas() {
+    private fun loadAreas(): ProtectedAreas {
         val file = dataFolder.resolve("protected-areas.json")
-        val gson = GsonBuilder().create()
-        val areas = gson.fromJson<Map<String, Area>>(file.readText(), object : TypeToken<Map<String, Area>>() {}.type)
-//        val areas = Json.decodeFromString<Map<String, Area>>(file.readText())
-        ProtectedAreas.setProtectedAreas(areas)
+        val areas = Json.decodeFromString<ProtectedAreas>(file.readText())
+        return areas
     }
 }

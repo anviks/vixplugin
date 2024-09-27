@@ -1,59 +1,70 @@
-package com.github.anviks.vixplugin.random_commands.protect_area;
+package com.github.anviks.vixplugin.random_commands.protect_area
 
-import org.bukkit.Location;
-import org.bukkit.block.Block;
-import org.bukkit.event.Cancellable;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.block.*;
-import org.bukkit.event.entity.EntityExplodeEvent;
+import com.github.anviks.vixplugin.ProtectedAreas
+import org.bukkit.Location
+import org.bukkit.event.Cancellable
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.event.block.BlockBreakEvent
+import org.bukkit.event.block.BlockDamageEvent
+import org.bukkit.event.block.BlockEvent
+import org.bukkit.event.block.BlockExplodeEvent
+import org.bukkit.event.block.BlockMultiPlaceEvent
+import org.bukkit.event.block.BlockPlaceEvent
+import org.bukkit.event.entity.EntityExplodeEvent
 
-import java.util.ArrayList;
+class BlockListener(private val protectedAreas: ProtectedAreas) : Listener {
 
-public class BlockListener implements Listener {
     @EventHandler
-    void blockDamaged(BlockDamageEvent event) {
-        cancelIfProtected(event);
+    fun blockDamaged(event: BlockDamageEvent) {
+        cancelIfProtected(event)
     }
 
     @EventHandler
-    void blockBroken(BlockBreakEvent event) {
-        cancelIfProtected(event);
+    fun blockBroken(event: BlockBreakEvent) {
+        cancelIfProtected(event)
     }
 
     @EventHandler
-    void blockExplosion(BlockExplodeEvent event) {
-        cancelIfProtected(event);
+    fun blockExplosion(event: BlockExplodeEvent) {
+        cancelIfProtected(event)
     }
 
     @EventHandler
-    void blockExplosionByEntity(EntityExplodeEvent event) {
-        var blocks = event.blockList();
-        var blocksClone = new ArrayList<>(blocks);
+    fun blockPlaced(event: BlockPlaceEvent) {
+        cancelIfProtected(event)
+    }
 
-        for (Block b : blocksClone) {
-            Location location = b.getLocation();
-            if (ProtectedAreas.isProtected(location)) {
-                blocks.remove(b);
+    @EventHandler
+    fun blockMultiPlaced(event: BlockMultiPlaceEvent) {
+        cancelIfProtected(event)
+    }
+
+    @EventHandler
+    fun blockExplosionByEntity(event: EntityExplodeEvent) {
+        event.blockList().removeIf { isProtected(it.location) }
+    }
+
+    private fun <T> cancelIfProtected(event: T) where T : BlockEvent, T : Cancellable {
+        val location = event.block.location
+
+        if (isProtected(location)) {
+            event.isCancelled = true
+        }
+    }
+
+    private fun isProtected(location: Location): Boolean {
+        val serializableLocation = SerializableLocation(location)
+        return isProtected(serializableLocation)
+    }
+
+    private fun isProtected(location: SerializableLocation): Boolean {
+        for (area in protectedAreas.values) {
+            if (area.contains(location)) {
+                return true
             }
         }
-    }
 
-    @EventHandler
-    void blockPlaced(BlockPlaceEvent event) {
-        cancelIfProtected(event);
-    }
-
-    @EventHandler
-    void blockMultiPlaced(BlockMultiPlaceEvent event) {
-        cancelIfProtected(event);
-    }
-
-    private static <T extends BlockEvent & Cancellable> void cancelIfProtected(T event) {
-        Location location = event.getBlock().getLocation();
-
-        if (ProtectedAreas.isProtected(location)) {
-            event.setCancelled(true);
-        }
+        return false
     }
 }

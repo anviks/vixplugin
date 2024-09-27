@@ -61,12 +61,6 @@ commands:
     description: N
   ender-toggle:
     description: G
-  protect:
-    description: Protect an area.
-    usage: /protect <from> <to> as <area-name>
-  unprotect:
-    description: Unprotect an area.
-    usage: /unprotect <area-name>
   world:
     description: Change world.
 #  give-custom:
