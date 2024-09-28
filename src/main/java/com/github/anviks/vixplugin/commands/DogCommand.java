@@ -1,4 +1,4 @@
-package com.github.anviks.vixplugin.random_commands;
+package com.github.anviks.vixplugin.commands;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;

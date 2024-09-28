@@ -1,4 +1,4 @@
-package com.github.anviks.vixplugin.random_commands.protect_area
+package com.github.anviks.vixplugin.commands.protect_area
 
 import com.github.anviks.vixplugin.PluginState
 import org.bukkit.Location

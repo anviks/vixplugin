@@ -1,4 +1,4 @@
-package com.github.anviks.vixplugin.random_commands;
+package com.github.anviks.vixplugin.commands;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
-public class InventoryCommand implements CommandExecutor {
+public class EnderChestCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (sender.isOp() && sender instanceof Player) {
@@ -23,7 +23,7 @@ public class InventoryCommand implements CommandExecutor {
                     sender.sendMessage("That player doesn't exist.");
                 }
             } else {
-                ((Player) sender).openInventory(target.getInventory());
+                ((Player) sender).openInventory(target.getEnderChest());
             }
         }
         return true;

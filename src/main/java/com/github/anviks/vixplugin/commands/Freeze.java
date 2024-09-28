@@ -1,6 +1,5 @@
-package com.github.anviks.vixplugin.random_commands;
+package com.github.anviks.vixplugin.commands;
 
-import com.github.anviks.vixplugin.VixPlugin;
 import com.github.anviks.vixplugin.listeners.JoinMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;

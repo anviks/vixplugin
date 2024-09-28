@@ -1,4 +1,4 @@
-package com.github.anviks.vixplugin.random_commands;
+package com.github.anviks.vixplugin.commands;
 
 import com.github.anviks.vixplugin.CustomCommand;
 import dev.jorel.commandapi.CommandAPICommand;

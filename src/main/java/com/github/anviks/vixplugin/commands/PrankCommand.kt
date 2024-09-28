@@ -1,4 +1,4 @@
-package com.github.anviks.vixplugin.random_commands
+package com.github.anviks.vixplugin.commands
 
 import com.github.anviks.vixplugin.CustomCommand
 import com.github.anviks.vixplugin.util.face
@@ -16,7 +16,6 @@ import org.bukkit.entity.Creeper
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
-import org.bukkit.util.Vector
 
 
 class PrankCommand(private val plugin: JavaPlugin) : CustomCommand {

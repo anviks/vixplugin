@@ -1,6 +1,5 @@
-package com.github.anviks.vixplugin.random_commands;
+package com.github.anviks.vixplugin.commands;
 
-import com.github.anviks.vixplugin.VixPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Sound;

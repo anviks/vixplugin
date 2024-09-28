@@ -1,4 +1,4 @@
-package com.github.anviks.vixplugin.random_commands
+package com.github.anviks.vixplugin.commands
 
 import com.github.anviks.vixplugin.CustomCommand
 import com.github.anviks.vixplugin.custom_items.TeleportArrow
@@ -7,11 +7,9 @@ import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.CommandPermission
 import dev.jorel.commandapi.executors.CommandArguments
 import dev.jorel.commandapi.executors.ProxyCommandExecutor
-import io.papermc.paper.event.entity.EntityMoveEvent
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.format.NamedTextColor.*
 import org.bukkit.Location
-import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
 import org.bukkit.block.data.Waterlogged
