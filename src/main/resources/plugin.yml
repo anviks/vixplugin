@@ -57,10 +57,6 @@ commands:
     /sandbox delete <slot/world name>"
   tp-up:
     description: Teleport up to a random height.
-  enchantitem:
-    description: N
-  ender-toggle:
-    description: G
   world:
     description: Change world.
 #  give-custom:

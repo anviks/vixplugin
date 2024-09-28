@@ -2,7 +2,6 @@ package com.github.anviks.vixplugin
 
 import com.github.anviks.vixplugin.custom_items.CustomCraftableItem
 import com.github.anviks.vixplugin.custom_items.CustomItem
-import com.github.anviks.vixplugin.enderman.BecomeEnderman
 import com.github.anviks.vixplugin.random_commands.ChangeWorlds
 import com.github.anviks.vixplugin.random_commands.DogCommand
 import com.github.anviks.vixplugin.random_commands.EnderChestCommand
@@ -77,7 +76,6 @@ class VixPlugin : JavaPlugin() {
             "god" to GodMode(),
             //  "sandbox" to SandboxMainCommand(),
             "tp-up" to TeleportUp(),
-            "ender-toggle" to BecomeEnderman(),
             "world" to ChangeWorlds(),
         )
 

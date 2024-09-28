@@ -1,4 +1,4 @@
-package com.github.anviks.vixplugin.duct_tape
+package com.github.anviks.vixplugin.random_commands
 
 import com.github.anviks.vixplugin.CustomCommand
 import com.github.anviks.vixplugin.PluginState

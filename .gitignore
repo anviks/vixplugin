@@ -1,6 +1,7 @@
 # User-specific stuff
 .idea/
 src/main/java/com/github/anviks/vixplugin/sandbox
+future_ideas.txt
 
 *.iml
 *.ipr
