@@ -1,7 +1,5 @@
 package com.github.anviks.vixplugin
 
-import com.github.anviks.vixplugin.custom_items.CustomCraftableItem
-import com.github.anviks.vixplugin.custom_items.CustomItem
 import com.github.anviks.vixplugin.commands.ChangeWorlds
 import com.github.anviks.vixplugin.commands.DogCommand
 import com.github.anviks.vixplugin.commands.EnderChestCommand
@@ -14,19 +12,30 @@ import com.github.anviks.vixplugin.commands.SlapCommand
 import com.github.anviks.vixplugin.commands.TeleportUp
 import com.github.anviks.vixplugin.commands.UnFreeze
 import com.github.anviks.vixplugin.commands.ZoomCommand
+import com.github.anviks.vixplugin.custom_items.CustomCraftableItem
+import com.github.anviks.vixplugin.custom_items.CustomItem
 import com.github.anviks.vixplugin.util.PDCManager
 import com.jeff_media.customblockdata.CustomBlockData
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.modules.SerializersModule
 import org.bukkit.Bukkit
 import org.bukkit.event.Listener
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
 import org.reflections.Reflections
 import java.lang.RuntimeException
+import java.time.LocalDateTime
+import java.util.UUID
 import kotlin.reflect.KClass
 
-val json = Json { prettyPrint = true }
+val json = Json {
+    prettyPrint = true
+    serializersModule = SerializersModule {
+        contextual(UUID::class, UUIDSerializer)
+        contextual(LocalDateTime::class, LocalDateTimeSerializer)
+    }
+}
 
 class VixPlugin : JavaPlugin() {
 
@@ -56,6 +65,13 @@ class VixPlugin : JavaPlugin() {
         craftableItems.forEach { Bukkit.addRecipe(it.getRecipe()) }
 
         registerCommands()
+
+        Bukkit.getScheduler().runTaskTimer(this, Runnable {
+            pluginData.protectedEntities.forEach {
+                it.value.removeIf { server.getEntity(it) == null }
+                if (it.value.isEmpty()) pluginData.protectedEntities.remove(it.key)
+            }
+        }, 100, 100)
     }
 
     override fun onDisable() {

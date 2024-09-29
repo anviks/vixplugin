@@ -24,7 +24,7 @@ class Railgun : CustomItem, Listener {
 
     override fun getItem(count: Int): ItemStack {
         val railGun = ItemStack(Material.TRIDENT, 1)
-        val railGunMeta = checkNotNull(railGun.itemMeta)
+        val railGunMeta = railGun.itemMeta
         railGunMeta.displayName(AdventureHelper.createAlternatingColoredText("RAILGUN", GRAY, YELLOW))
         railGunMeta.addEnchant(Enchantment.INFINITY, 1, true)
         railGun.setItemMeta(railGunMeta)
