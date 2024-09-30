@@ -1,9 +1,9 @@
-package com.github.anviks.vixplugin.custom_items
+package com.github.anviks.vixplugin.commands
 
-import com.github.anviks.vixplugin.CustomCommand
+import com.github.anviks.vixplugin.custom_items.CustomFuseTNT
+import com.github.anviks.vixplugin.custom_items.CustomItem
 import com.github.anviks.vixplugin.util.camelToKebab
 import dev.jorel.commandapi.CommandAPICommand
-import dev.jorel.commandapi.CommandPermission
 import dev.jorel.commandapi.arguments.EntitySelectorArgument
 import dev.jorel.commandapi.arguments.FloatArgument
 import dev.jorel.commandapi.arguments.IntegerArgument
@@ -30,7 +30,7 @@ class GiveCustomItem(private val plugin: JavaPlugin, customItems: List<CustomIte
 
     override fun register() {
         val baseGiveCommand = CommandAPICommand("give-custom")
-            .withPermission(CommandPermission.OP)
+            .withPermission("vixplugin.commands.givecustom")
             .withArguments(EntitySelectorArgument.ManyPlayers("targets"))
 
         baseGiveCommand.copy()

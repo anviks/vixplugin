@@ -1,10 +1,8 @@
 package com.github.anviks.vixplugin.commands
 
-import com.github.anviks.vixplugin.CustomCommand
 import com.github.anviks.vixplugin.custom_items.TeleportArrow
 import com.github.anviks.vixplugin.util.isOfCustomType
 import dev.jorel.commandapi.CommandAPICommand
-import dev.jorel.commandapi.CommandPermission
 import dev.jorel.commandapi.executors.CommandArguments
 import dev.jorel.commandapi.executors.ProxyCommandExecutor
 import net.kyori.adventure.text.Component.text
@@ -31,7 +29,8 @@ class BecomeEnderman(private val plugin: JavaPlugin) : CustomCommand, Listener {
 
     override fun register() {
         CommandAPICommand("become-enderman")
-            .withPermission(CommandPermission.OP)
+            .withAliases("enderman")
+            .withPermission("vixplugin.commands.fun")
             .executesPlayer(this::run)
             .executesProxy(ProxyCommandExecutor(this::runProxy))
             .register(plugin)

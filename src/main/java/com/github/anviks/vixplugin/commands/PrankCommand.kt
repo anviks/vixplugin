@@ -1,11 +1,9 @@
 package com.github.anviks.vixplugin.commands
 
-import com.github.anviks.vixplugin.CustomCommand
 import com.github.anviks.vixplugin.util.face
 import com.github.anviks.vixplugin.util.setExperienceDrop
 import com.github.anviks.vixplugin.util.setItemDrops
 import dev.jorel.commandapi.CommandAPICommand
-import dev.jorel.commandapi.CommandPermission
 import dev.jorel.commandapi.arguments.EntitySelectorArgument
 import dev.jorel.commandapi.arguments.LiteralArgument
 import dev.jorel.commandapi.executors.CommandArguments
@@ -22,7 +20,7 @@ class PrankCommand(private val plugin: JavaPlugin) : CustomCommand {
 
     override fun register() {
         val baseCommand = CommandAPICommand("prank")
-            .withPermission(CommandPermission.OP)
+            .withPermission("vixplugin.commands.fun")
             .withArguments(EntitySelectorArgument.ManyPlayers("targets"))
 
         baseCommand.copy()

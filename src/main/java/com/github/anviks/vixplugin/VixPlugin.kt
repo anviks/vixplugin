@@ -1,6 +1,7 @@
 package com.github.anviks.vixplugin
 
 import com.github.anviks.vixplugin.commands.ChangeWorlds
+import com.github.anviks.vixplugin.commands.CustomCommand
 import com.github.anviks.vixplugin.commands.DogCommand
 import com.github.anviks.vixplugin.commands.EnderChestCommand
 import com.github.anviks.vixplugin.commands.FlightCommand

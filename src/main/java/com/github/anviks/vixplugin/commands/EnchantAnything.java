@@ -1,6 +1,5 @@
 package com.github.anviks.vixplugin.commands;
 
-import com.github.anviks.vixplugin.CustomCommand;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.CommandPermission;
 import dev.jorel.commandapi.arguments.EnchantmentArgument;

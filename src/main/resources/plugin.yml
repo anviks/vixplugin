@@ -59,14 +59,32 @@ commands:
     description: Teleport up to a random height.
   world:
     description: Change world.
-#  give-custom:
-#    description: Give custom item.
-#    usage: /give-custom <player> <item> <amount>
 
 permissions:
-  vix.move:
-    description: Allow or deny movement.
-    default: true
-  vix.moderate:
-    description: Access to troll commands.
+  vixplugin.commands:
+    children:
+      vixplugin.commands.moderator: true
+      vixplugin.commands.admin: true
+      vixplugin.commands.fun: true
+      vixplugin.commands.utility: true
+      vixplugin.commands.givecustom: true
+
+  vixplugin.commands.moderator:
+    description: Allows the player to use commands like freeze, unfreeze, duct-tape, etc.
     default: op
+  vixplugin.commands.admin:
+    description: Allows the player to use commands like god, fly, etc.
+    default: op
+  #  vixplugin.commands.sandbox:
+  #    description: Allows the player to use the sandbox commands.
+  #    default: op
+  vixplugin.commands.fun:
+    description: Allows the player to use the fun commands (commands that don't affect the gameplay a lot).
+    default: op
+  vixplugin.commands.utility:
+    description: Allows the player to use all the utility commands like inventory, echest, etc.
+    default: op
+  vixplugin.commands.givecustom:
+    description: Allows the player to use the give custom item command.
+    default: op
+

@@ -1,7 +1,6 @@
 package com.github.anviks.vixplugin.commands
 
 import com.github.anviks.vixplugin.Area
-import com.github.anviks.vixplugin.CustomCommand
 import com.github.anviks.vixplugin.PluginState
 import com.github.anviks.vixplugin.SerializableLocation
 import dev.jorel.commandapi.CommandAPICommand
@@ -34,7 +33,7 @@ class ProtectArea(
 
     override fun register() {
         CommandAPICommand("protect-area")
-            .withPermission(CommandPermission.OP)
+            .withPermission("vixplugin.commands.utility")
             .withArguments(LocationArgument("start", LocationType.BLOCK_POSITION))
             .withArguments(LocationArgument("end", LocationType.BLOCK_POSITION))
             .withArguments(LiteralArgument("as"))

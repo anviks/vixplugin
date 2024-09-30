@@ -1,9 +1,7 @@
 package com.github.anviks.vixplugin.commands
 
-import com.github.anviks.vixplugin.CustomCommand
 import com.github.anviks.vixplugin.PluginState
 import dev.jorel.commandapi.CommandAPICommand
-import dev.jorel.commandapi.CommandPermission
 import dev.jorel.commandapi.arguments.EntitySelectorArgument
 import dev.jorel.commandapi.arguments.TimeArgument
 import dev.jorel.commandapi.executors.CommandArguments
@@ -29,7 +27,8 @@ class DuctTape(
 
     override fun register() {
         CommandAPICommand("duct-tape")
-            .withPermission(CommandPermission.OP)
+            .withAliases("tape")
+            .withPermission("vixplugin.commands.moderator")
             .withArguments(EntitySelectorArgument.ManyPlayers("targets"))
             .withArguments(TimeArgument("duration"))
             .executes(this::run)
