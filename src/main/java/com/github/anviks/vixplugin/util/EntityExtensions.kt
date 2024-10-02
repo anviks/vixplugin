@@ -5,6 +5,7 @@ import com.github.anviks.vixplugin.util.PDCManager.setPDCData
 import com.jeff_media.morepersistentdatatypes.DataType
 import org.bukkit.Location
 import org.bukkit.entity.Entity
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import kotlin.math.asin
@@ -52,4 +53,18 @@ fun Entity.setItemDrops(items: List<ItemStack>) {
  */
 fun Entity.getItemDrops(): List<ItemStack>? {
     return this.getPDCData("item_drops", DataType.asList(DataType.ITEM_STACK))
+}
+
+/**
+ * Check if a player is allowed to fly
+ */
+fun Player.isAllowedToFly(): Boolean {
+    return this.getPDCData("allow_flight", PersistentDataType.BOOLEAN) == true
+}
+
+/**
+ * Set if a player is allowed to fly
+ */
+fun Player.setAllowedToFly(allowed: Boolean) {
+    this.setPDCData("allow_flight", PersistentDataType.BOOLEAN, allowed)
 }

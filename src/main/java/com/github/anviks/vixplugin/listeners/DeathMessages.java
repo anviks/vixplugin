@@ -22,6 +22,7 @@ public class DeathMessages implements Listener {
      *     <li>&lt;player&gt; was killed by [Intentional Game Design]</li>
      *     <li>death.fell.accident.water</li>
      *     <li>&lt;player&gt; went off with a bang due to a firework fired from &lt;item&gt; by &lt;player/mob&gt;</li>
+     *     <li>&lt;player&gt; was doomed to fall</li>
      * </ul>
      *
      * @param event player's death event.

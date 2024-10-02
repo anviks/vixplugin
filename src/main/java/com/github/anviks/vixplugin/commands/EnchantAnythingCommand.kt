@@ -1,50 +1,37 @@
-package com.github.anviks.vixplugin.commands;
+package com.github.anviks.vixplugin.commands
 
-import dev.jorel.commandapi.CommandAPICommand;
-import dev.jorel.commandapi.CommandPermission;
-import dev.jorel.commandapi.arguments.EnchantmentArgument;
-import dev.jorel.commandapi.arguments.EntitySelectorArgument;
-import dev.jorel.commandapi.arguments.IntegerArgument;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.java.JavaPlugin;
+import dev.jorel.commandapi.CommandAPICommand
+import dev.jorel.commandapi.arguments.EnchantmentArgument
+import dev.jorel.commandapi.arguments.EntitySelectorArgument.ManyPlayers
+import dev.jorel.commandapi.arguments.IntegerArgument
+import dev.jorel.commandapi.executors.CommandArguments
+import org.bukkit.command.CommandSender
+import org.bukkit.enchantments.Enchantment
+import org.bukkit.entity.Player
+import org.bukkit.plugin.java.JavaPlugin
 
-import java.util.Collection;
+class EnchantAnythingCommand(private val plugin: JavaPlugin) : CustomCommand {
 
-public class EnchantAnything implements CustomCommand {
-
-    private final JavaPlugin plugin;
-
-    public EnchantAnything(JavaPlugin plugin) {
-        this.plugin = plugin;
+    override fun register() {
+        CommandAPICommand("enchantanything")
+            .withPermission("vixplugin.commands.admin")
+            .withArguments(ManyPlayers("players"))
+            .withArguments(EnchantmentArgument("enchantment"))
+            .withArguments(IntegerArgument("level", 0, 255))
+            .executes(this::run)
+            .register(plugin)
     }
 
-    @Override
-    public void register() {
-        new CommandAPICommand("enchantanything")
-                .withPermission(CommandPermission.OP)
-                .withArguments(new EntitySelectorArgument.ManyPlayers("players"))
-                .withArguments(new EnchantmentArgument("enchantment"))
-                .withArguments(new IntegerArgument("level", 0, 255))
-                .executes((sender, args) -> {
-                    var players = args.<Collection<Player>>getUnchecked("players");
-                    var enchantment = args.getByClass("enchantment", Enchantment.class);
-                    var level = args.getByClass("level", Integer.class);
+    private fun run(sender: CommandSender, args: CommandArguments) {
+        val players = args.getUnchecked<Collection<Player>>("players")!!
+        val enchantment = args.get("enchantment") as Enchantment
+        val level = args.get("level") as Int
 
-                    assert players != null;
-                    assert enchantment != null;
-                    assert level != null;
-
-                    for (var player : players) {
-                        ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
-                        ItemMeta itemMeta = itemInMainHand.getItemMeta();
-                        if (itemMeta == null) break;
-                        itemMeta.addEnchant(enchantment, level, true);
-                        itemInMainHand.setItemMeta(itemMeta);
-                    }
-                })
-                .register(plugin);
+        for (player in players) {
+            val itemInMainHand = player.inventory.itemInMainHand
+            val itemMeta = itemInMainHand.itemMeta
+            itemMeta.addEnchant(enchantment, level, true)
+            itemInMainHand.itemMeta = itemMeta
+        }
     }
 }

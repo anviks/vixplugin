@@ -76,6 +76,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.6.20")
     implementation("org.reflections:reflections:0.10.2")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
 }
 
 tasks.withType<JavaCompile> {

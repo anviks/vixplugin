@@ -1,18 +1,6 @@
 package com.github.anviks.vixplugin
 
-import com.github.anviks.vixplugin.commands.ChangeWorlds
 import com.github.anviks.vixplugin.commands.CustomCommand
-import com.github.anviks.vixplugin.commands.DogCommand
-import com.github.anviks.vixplugin.commands.EnderChestCommand
-import com.github.anviks.vixplugin.commands.FlightCommand
-import com.github.anviks.vixplugin.commands.Freeze
-import com.github.anviks.vixplugin.commands.GodMode
-import com.github.anviks.vixplugin.commands.InventoryCommand
-import com.github.anviks.vixplugin.commands.LaunchCommand
-import com.github.anviks.vixplugin.commands.SlapCommand
-import com.github.anviks.vixplugin.commands.TeleportUp
-import com.github.anviks.vixplugin.commands.UnFreeze
-import com.github.anviks.vixplugin.commands.ZoomCommand
 import com.github.anviks.vixplugin.custom_items.CustomCraftableItem
 import com.github.anviks.vixplugin.custom_items.CustomItem
 import com.github.anviks.vixplugin.util.PDCManager
@@ -25,8 +13,6 @@ import org.bukkit.event.Listener
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
 import org.reflections.Reflections
-import java.lang.RuntimeException
-import java.time.LocalDateTime
 import java.util.UUID
 import kotlin.reflect.KClass
 
@@ -34,7 +20,6 @@ val json = Json {
     prettyPrint = true
     serializersModule = SerializersModule {
         contextual(UUID::class, UUIDSerializer)
-        contextual(LocalDateTime::class, LocalDateTimeSerializer)
     }
 }
 
@@ -42,12 +27,11 @@ class VixPlugin : JavaPlugin() {
 
     private val dependencyRegistry = DependencyRegistry()
     private val instanceCache = mutableMapOf<Class<*>, Any>()
-    private val pluginData = loadPluginData()
+    private val pluginData = loadPluginState()
 
     override fun onEnable() {
         CustomBlockData.registerListener(this)
         PDCManager.init(this)
-        val pluginManager = this.server.pluginManager
 
         dependencyRegistry.register<Plugin> { this }
         dependencyRegistry.register<JavaPlugin> { this }  // CommandAPICommand requires JavaPlugin
@@ -62,10 +46,8 @@ class VixPlugin : JavaPlugin() {
         val craftableItems = createChildrenOf<CustomCraftableItem>()
 
         customCommands.forEach { it.register() }
-        customListeners.forEach { pluginManager.registerEvents(it, this) }
+        customListeners.forEach { server.pluginManager.registerEvents(it, this) }
         craftableItems.forEach { Bukkit.addRecipe(it.getRecipe()) }
-
-        registerCommands()
 
         Bukkit.getScheduler().runTaskTimer(this, Runnable {
             pluginData.protectedEntities.forEach {
@@ -76,30 +58,7 @@ class VixPlugin : JavaPlugin() {
     }
 
     override fun onDisable() {
-        savePluginData()
-    }
-
-    private fun registerCommands() {
-        val commands = mapOf(
-            "loyalsquad" to DogCommand(this),
-            "slap" to SlapCommand(),
-            "fly" to FlightCommand(),
-            "inventory" to InventoryCommand(),
-            "echest" to EnderChestCommand(),
-            "launch" to LaunchCommand(),
-            "zoom" to ZoomCommand(this),
-            "freeze" to Freeze(this),
-            "unfreeze" to UnFreeze(),
-            "god" to GodMode(),
-            //  "sandbox" to SandboxMainCommand(),
-            "tp-up" to TeleportUp(),
-            "world" to ChangeWorlds(),
-        )
-
-        commands.forEach {
-            val cmd = this.getCommand(it.key) ?: throw RuntimeException("Command ${it.key} not found")
-            cmd.setExecutor(it.value)
-        }
+        savePluginState()
     }
 
     private inline fun <reified T> createChildrenOf(): List<T> {
@@ -132,13 +91,13 @@ class VixPlugin : JavaPlugin() {
         return instance
     }
 
-    private fun savePluginData() {
+    private fun savePluginState() {
         val file = dataFolder.resolve("plugin_state.json")
         if (!file.exists()) file.createNewFile()
         file.writeText(json.encodeToString(pluginData))
     }
 
-    private fun loadPluginData(): PluginState {
+    private fun loadPluginState(): PluginState {
         val file = dataFolder.resolve("plugin_state.json")
         if (!file.exists()) return PluginState()
         return json.decodeFromString<PluginState>(file.readText())

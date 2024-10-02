@@ -1,31 +1,31 @@
-package com.github.anviks.vixplugin.commands;
+package com.github.anviks.vixplugin.commands
 
-import org.bukkit.OfflinePlayer;
-import org.bukkit.Server;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
+import dev.jorel.commandapi.CommandAPICommand
+import dev.jorel.commandapi.arguments.EntitySelectorArgument
+import dev.jorel.commandapi.executors.CommandArguments
+import org.bukkit.entity.Player
+import org.bukkit.plugin.java.JavaPlugin
 
-import java.util.Arrays;
+class EnderChestCommand(private val plugin: JavaPlugin) : CustomCommand {
 
-public class EnderChestCommand implements CommandExecutor {
-    @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (sender.isOp() && sender instanceof Player) {
-            Server server = sender.getServer();
-            Player target = server.getPlayer(args[0]);
-            if (target == null) {
-                if (Arrays.stream(server.getOfflinePlayers()).map(OfflinePlayer::getName).toList().contains(args[0])) {
-                    sender.sendMessage(args[0] + " is not online at the moment.");
-                } else {
-                    sender.sendMessage("That player doesn't exist.");
-                }
-            } else {
-                ((Player) sender).openInventory(target.getEnderChest());
-            }
-        }
-        return true;
+    override fun register() {
+        val baseCommand = CommandAPICommand("ender-chest")
+            .withAliases("echest", "ec")
+
+        baseCommand.copy()
+            .withPermission("vixplugin.commands.moderator")
+            .withArguments(EntitySelectorArgument.OnePlayer("target"))
+            .executesPlayer(this::run)
+            .register(plugin)
+
+        baseCommand
+            .withPermission("vixplugin.commands.utility")
+            .executesPlayer(this::run)
+            .register(plugin)
+    }
+
+    private fun run(sender: Player, arguments: CommandArguments) {
+        val target = arguments.getOrDefault("target", sender) as Player
+        sender.openInventory(target.enderChest)
     }
 }

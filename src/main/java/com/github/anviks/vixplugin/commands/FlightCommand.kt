@@ -1,66 +1,75 @@
-package com.github.anviks.vixplugin.commands;
+package com.github.anviks.vixplugin.commands
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
+import com.github.anviks.vixplugin.util.sendBulkToggleMessage
+import com.github.anviks.vixplugin.util.isAllowedToFly
+import com.github.anviks.vixplugin.util.setAllowedToFly
+import dev.jorel.commandapi.CommandAPICommand
+import dev.jorel.commandapi.arguments.EntitySelectorArgument
+import dev.jorel.commandapi.executors.CommandArguments
+import net.kyori.adventure.text.Component.*
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.NamedTextColor.*
+import org.bukkit.Bukkit
+import org.bukkit.GameMode
+import org.bukkit.command.CommandSender
+import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.event.player.PlayerGameModeChangeEvent
+import org.bukkit.plugin.java.JavaPlugin
 
-import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
-import static net.kyori.adventure.text.format.NamedTextColor.RED;
+class FlightCommand(private val plugin: JavaPlugin) : CustomCommand, Listener {
 
-public class FlightCommand implements CommandExecutor {
-    @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (sender.isOp()) {
-            Player target;
+    override fun register() {
+        val baseCommand = CommandAPICommand("fly")
+            .withPermission("vixplugin.commands.admin")
 
-            if (sender instanceof Player && args.length == 0) {
-                target = (Player) sender;
-                target.setAllowFlight(!target.getAllowFlight());
-                target.setFlying(target.getAllowFlight());
-            } else if (args.length == 0) {
-                sender.sendMessage(text("You need to specify a player.", RED));
-                return true;
-            } else {
-                target = sender.getServer().getPlayerExact(args[0]);
-                if (target != null) {
-                    target.setAllowFlight(!target.getAllowFlight());
-                    target.setFlying(target.getAllowFlight());
-                } else {
-                    sender.sendMessage(text("No such player found.", RED));
-                    return true;
-                }
-            }
+        baseCommand.copy()
+            .withArguments(EntitySelectorArgument.ManyPlayers("targets"))
+            .executes(::run)
+            .register(plugin)
 
-            if (target.getAllowFlight()) {
-                target.sendMessage(text("Flying enabled.", GREEN));
-                if (target != sender) {
-                    sender.sendMessage(
-                            text("Enabled flying for ")
-                                    .append(target.displayName())
-                                    .append(text("."))
-                                    .color(GREEN)
-                    );
-                }
-            } else {
-                target.sendMessage(text("Flying disabled.", GREEN));
-                if (target != sender) {
-                    sender.sendMessage(
-                            text("Disabled flying for ")
-                                    .append(target.displayName())
-                                    .append(text("."))
-                                    .color(GREEN)
-                    );
-                }
-            }
+        baseCommand
+            .executesPlayer(::run)
+            .register(plugin)
+    }
 
+    private fun run(sender: CommandSender, arguments: CommandArguments) {
+        val targets = arguments.getUnchecked<Collection<Player>>("targets") ?: listOf(sender as Player)
+        val enable = targets.any { !it.isAllowedToFly() }
+
+        val targetMsg: String
+        val senderMsg: String
+        val color: NamedTextColor
+
+        if (enable) {
+            targetMsg = "Flying enabled."
+            senderMsg = "Enabled flying for "
+            color = GREEN
         } else {
-            sender.sendMessage(text("YOU are only allowed to fly with elytra.", RED));
-            return true;
+            targetMsg = "Flying disabled."
+            senderMsg = "Disabled flying for "
+            color = RED
         }
 
-        return true;
+        for (target in targets) {
+            target.setAllowedToFly(enable)
+            target.allowFlight = enable
+            target.isFlying = enable
+            target.sendMessage(text(targetMsg, color))
+        }
+
+        sendBulkToggleMessage(targets, sender, senderMsg, color)
+    }
+
+    @EventHandler
+    fun onGameModeChange(event: PlayerGameModeChangeEvent) {
+        if (event.newGameMode == GameMode.SURVIVAL) {
+            val canFly = event.player.isAllowedToFly()
+            Bukkit.getScheduler().runTask(plugin, Runnable {
+                event.player.allowFlight = canFly
+                event.player.isFlying = canFly
+            })
+        }
     }
 }

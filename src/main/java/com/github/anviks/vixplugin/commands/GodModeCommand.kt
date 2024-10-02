@@ -1,55 +1,56 @@
-package com.github.anviks.vixplugin.commands;
+package com.github.anviks.vixplugin.commands
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
+import com.github.anviks.vixplugin.util.sendBulkToggleMessage
+import dev.jorel.commandapi.CommandAPICommand
+import dev.jorel.commandapi.arguments.EntitySelectorArgument
+import dev.jorel.commandapi.executors.CommandArguments
+import net.kyori.adventure.text.Component.text
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.NamedTextColor.*
+import org.bukkit.command.CommandSender
+import org.bukkit.entity.Player
+import org.bukkit.plugin.java.JavaPlugin
 
-import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
-import static net.kyori.adventure.text.format.NamedTextColor.RED;
+class GodModeCommand(private val plugin: JavaPlugin) : CustomCommand {
 
-public class GodMode implements CommandExecutor {
+    override fun register() {
+        val baseCommand = CommandAPICommand("god-mode")
+            .withAliases("god")
+            .withPermission("vixplugin.commands.admin")
 
-    @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (sender.isOp()) {
-            Player target;
+        baseCommand.copy()
+            .withArguments(EntitySelectorArgument.ManyPlayers("targets"))
+            .executes(::run)
+            .register(plugin)
 
-            if (sender instanceof Player && args.length == 0) {
-                target = (Player) sender;
-                target.setInvulnerable(!target.isInvulnerable());
+        baseCommand
+            .executesPlayer(::run)
+            .register(plugin)
+    }
 
-            } else if (args.length == 0) {
-                sender.sendMessage(text("You need to specify a player.", RED));
-                return true;
-            } else {
-                target = sender.getServer().getPlayerExact(args[0]);
-                if (target != null) {
-                    target.setInvulnerable(!target.isInvulnerable());
-                } else {
-                    sender.sendMessage(text("No such player found.", RED));
-                    return true;
-                }
-            }
+    private fun run(sender: CommandSender, arguments: CommandArguments) {
+        val targets = arguments.getUnchecked<Collection<Player>>("targets") ?: listOf(sender as Player)
+        val enable = targets.any { !it.isInvulnerable }
 
-            if (target.isInvulnerable()) {
-                target.sendMessage(text("You are now in god mode.", GREEN));
-                if (target != sender) {
-                    sender.sendMessage(target.displayName().append(text(" is now in god mode.")).color(GREEN));
-                }
-            } else {
-                target.sendMessage(text("You are no longer in god mode.", GREEN));
-                if (target != sender) {
-                    sender.sendMessage(target.displayName().append(text(" is no longer in god mode.")).color(GREEN));
-                }
-            }
+        val targetMsg: String
+        val senderMsg: String
+        val color: NamedTextColor
+
+        if (enable) {
+            targetMsg = "You are now in god mode."
+            senderMsg = "Enabled god-mode for "
+            color = GREEN
         } else {
-            sender.sendMessage(text("You lack the divinity to use this command.", RED));
-            return true;
+            targetMsg = "You are no longer in god mode."
+            senderMsg = "Disabled god-mode for "
+            color = RED
         }
 
-        return true;
+        for (target in targets) {
+            target.isInvulnerable = enable
+            target.sendMessage(text(targetMsg, color))
+        }
+
+        sendBulkToggleMessage(targets, sender, senderMsg, color)
     }
 }

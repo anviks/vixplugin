@@ -3,62 +3,6 @@ version: 1.0
 main: com.github.anviks.vixplugin.VixPlugin
 api-version: 1.21.1
 depend: [CommandAPI]
-commands:
-  loyalsquad:
-    description: Spawn a loyal army of puppers.
-    usage: "/loyalsquad\n/loyalsquad <player>"
-  slap:
-    description: Slap everyone.
-    usage: Slap!
-  fly:
-    description: Fly.
-    usage: Fly.
-  inventory:
-    description: Open player's inventory.
-    usage: Open inventory.
-  echest:
-    description: Open player's ender chest.
-    usage: Open player's ender chest.
-  launch:
-    description: Launch player(s).
-    usage: Launch someone.
-  zoom:
-    description: Zoom forward.
-#  permissions:
-#    description: Set, get or remove permissions.
-#    usage: "/permissions set <player> <permission> <true/false>\n
-#    /permissions unset <player> <permission>\n
-#    /permissions get <player>"
-#    aliases:
-#      - perms
-#      - perm
-#      - permission
-  freeze:
-    description: Freeze a player.
-    usage: /freeze <player> <duration>
-  unfreeze:
-    description: Unfreeze a player.
-    usage: /unfreeze <player>
-  god:
-    description: Give god mode to yourself or to a player.
-    usage: "/god\n/god <player>"
-    aliases:
-      - godmode
-      - gm
-      - god-mode
-  sandbox:
-    description: Create a sandbox world.
-    usage: " /sandbox create\n
-    /sandbox create <dimension>\n
-    /sandbox join <slot/world name>\n
-    /sandbox join <slot/world name> <player>\n
-    /sandbox leave\n
-    /sandbox leave <player>\n
-    /sandbox delete <slot/world name>"
-  tp-up:
-    description: Teleport up to a random height.
-  world:
-    description: Change world.
 
 permissions:
   vixplugin.commands:

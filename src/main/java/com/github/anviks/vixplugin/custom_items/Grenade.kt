@@ -1,6 +1,5 @@
 package com.github.anviks.vixplugin.custom_items
 
-import com.github.anviks.vixplugin.VixPlugin
 import com.github.anviks.vixplugin.util.isOfCustomType
 import com.github.anviks.vixplugin.util.setCustomType
 import net.kyori.adventure.text.Component
@@ -64,9 +63,9 @@ class Grenade(private val plugin: Plugin) : CustomItem, Listener {
         val itemStack: ItemStack = item.itemStack
         if (itemStack.isOfCustomType(Grenade::class.java)) {
             // Item#isDead returns true only after the final damage event is processed
-            Bukkit.getScheduler().runTaskLater(plugin, Runnable {
+            Bukkit.getScheduler().runTask(plugin, Runnable {
                 if (item.isDead) this.tryCancelGrenadeExplosion(item)
-            }, 1)
+            })
         }
     }
 

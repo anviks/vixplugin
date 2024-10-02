@@ -16,7 +16,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
 import kotlin.math.roundToInt
 
-class GiveCustomItem(private val plugin: JavaPlugin, customItems: List<CustomItem>) : CustomCommand {
+class CustomItemCommand(private val plugin: JavaPlugin, customItems: List<CustomItem>) : CustomCommand {
 
     private val customItems: MutableMap<String, CustomItem> = HashMap()
 

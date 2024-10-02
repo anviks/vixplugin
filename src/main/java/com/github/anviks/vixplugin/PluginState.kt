@@ -1,20 +1,21 @@
-@file:UseContextualSerialization(UUID::class, LocalDateTime::class)
+@file:UseContextualSerialization(UUID::class)
 
 package com.github.anviks.vixplugin
 
+import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseContextualSerialization
 import org.bukkit.Bukkit
 import org.bukkit.Location
-import java.time.LocalDateTime
 import java.util.UUID
 
 
 @Serializable
 data class PluginState(
     val protectedAreas: MutableMap<String, Area> = mutableMapOf(),
-    val tapedPlayers: MutableMap<UUID, LocalDateTime> = mutableMapOf(),
+    val tapedPlayers: MutableMap<UUID, Instant> = mutableMapOf(),
     val protectedEntities: MutableMap<UUID, MutableSet<UUID>> = mutableMapOf(),
+    val frozenPlayers: MutableMap<UUID, Instant> = mutableMapOf(),
 )
 
 @Serializable

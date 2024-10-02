@@ -1,43 +1,34 @@
-package com.github.anviks.vixplugin.commands;
+package com.github.anviks.vixplugin.commands
 
-import org.bukkit.Sound;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
+import dev.jorel.commandapi.CommandAPICommand
+import dev.jorel.commandapi.arguments.EntitySelectorArgument
+import dev.jorel.commandapi.executors.CommandArguments
+import net.kyori.adventure.text.Component.text
+import net.kyori.adventure.text.format.NamedTextColor.*
+import org.bukkit.command.CommandSender
+import org.bukkit.entity.Damageable
+import org.bukkit.entity.Entity
+import org.bukkit.plugin.java.JavaPlugin
 
-import java.util.Collection;
+class SlapCommand(private val plugin: JavaPlugin) : CustomCommand {
 
-public class SlapCommand implements CommandExecutor {
-    @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (sender.isOp()) {
-            if (args.length == 0) {
-                Collection<? extends Player> players = sender.getServer().getOnlinePlayers();
-                for (Player player : players) {
-                    player.damage(2);
-                    player.setVelocity(player.getFacing().getDirection().multiply(-3));
-                    player.sendMessage("You just got slapped by " + sender.getName() + "!");
-                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 2);
-                    player.playSound(player.getLocation(), Sound.ENTITY_GOAT_SCREAMING_AMBIENT, 1, 1);
-                }
-            } else {
-                for (String name : args) {
-                    Player target = sender.getServer().getPlayer(name);
-                    if (target == null) {
-                        sender.sendMessage(name + " is not online.");
-                    } else {
-                        target.damage(2);
-                        target.setVelocity(target.getFacing().getDirection().multiply(-3));
-                        target.sendMessage("You just got slapped by " + sender.getName() + "!");
-                        target.playSound(target.getLocation(), Sound.ENTITY_PARROT_IMITATE_VINDICATOR, 10, 1);
-                    }
-                }
-            }
-        } else {
-            sender.sendMessage("Sadly violence is only for those willing to abuse their power. You have none.");
+    override fun register() {
+        CommandAPICommand("slap")
+            .withPermission("vixplugin.commands.fun")
+            .withArguments(EntitySelectorArgument.ManyEntities("targets"))
+            .executes(this::run)
+            .register(plugin)
+    }
+
+    private fun run(sender: CommandSender, arguments: CommandArguments) {
+        val targets = arguments.getUnchecked<Collection<Entity>>("targets")!!
+
+        for (target in targets) {
+            if (target is Damageable) target.damage(2.0)
+            target.velocity = target.facing.direction.multiply(-3)
+            target.sendMessage(text("You just got slapped by ${sender.name}!", YELLOW))
         }
-        return true;
+
+        sender.sendMessage(text("You just slapped ${targets.size} entities!", GREEN))
     }
 }

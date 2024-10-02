@@ -1,49 +1,42 @@
-package com.github.anviks.vixplugin.commands;
+package com.github.anviks.vixplugin.commands
 
-import org.bukkit.Sound;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
-import org.jetbrains.annotations.NotNull;
+import dev.jorel.commandapi.CommandAPICommand
+import dev.jorel.commandapi.arguments.EntitySelectorArgument
+import dev.jorel.commandapi.executors.CommandArguments
+import org.bukkit.Sound
+import org.bukkit.command.CommandSender
+import org.bukkit.entity.Entity
+import org.bukkit.entity.Player
+import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.util.Vector
 
-import java.util.Collection;
+class LaunchCommand(private val plugin: JavaPlugin) : CustomCommand {
 
-public class LaunchCommand implements CommandExecutor {
-    @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (sender.isOp()) {
-            if (args.length == 0) {
-                Collection<? extends Player> players = sender.getServer().getOnlinePlayers();
-                for (Player player : players) {
-                    player.damage(1);
-                    player.setVelocity(new Vector(0, 100, 0));
-                    player.sendMessage(
-                            (player.getName().equals(sender.getName())) ?
-                                    "I believe I can fly." :
-                                    sender.getName() + " believes you can fly.");
-                    player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_AMBIENT, 10, 1);
-                }
+    override fun register() {
+        CommandAPICommand("launch")
+            .withPermission("vixplugin.commands.fun")
+            .withArguments(EntitySelectorArgument.ManyEntities("targets"))
+            .executes(this::run)
+            .register(plugin)
+    }
+
+    private fun run(sender: CommandSender, arguments: CommandArguments) {
+        val targets = arguments.getUnchecked<Collection<Entity>>("targets")!!
+
+        for (target in targets) {
+            if (target is Player) {
+                target.velocity = Vector(0, 100, 0)
             } else {
-                for (String name : args) {
-                    Player target = sender.getServer().getPlayer(name);
-                    if (target == null) {
-                        sender.sendMessage(name + " is not online.");
-                    } else {
-                        target.damage(1);
-                        target.setVelocity(new Vector(0, 100, 0));
-                        target.sendMessage(
-                                (target.getName().equals(sender.getName())) ?
-                                        "I believe I can fly." :
-                                        sender.getName() + " believes you can fly.");
-                        target.playSound(target.getLocation(), Sound.ENTITY_VILLAGER_AMBIENT, 10, 1);
-                    }
-                }
+                target.velocity = Vector(0, 4, 0)
             }
-        } else {
-            sender.sendMessage("Yea, right.");
+
+            target.sendMessage(
+                if (target.name == sender.name) "I believe I can fly." else "${sender.name} believes you can fly."
+            )
+
+            if (target is Player) {
+                target.playSound(target.location, Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 1f, 1f)
+            }
         }
-        return true;
     }
 }

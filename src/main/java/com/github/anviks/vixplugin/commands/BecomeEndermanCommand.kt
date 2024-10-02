@@ -23,7 +23,7 @@ import kotlin.math.floor
 import kotlin.random.Random
 
 
-class BecomeEnderman(private val plugin: JavaPlugin) : CustomCommand, Listener {
+class BecomeEndermanCommand(private val plugin: JavaPlugin) : CustomCommand, Listener {
 
     private val endermenEntities = mutableSetOf<UUID>()
 

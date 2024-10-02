@@ -26,7 +26,7 @@ import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.EntityExplodeEvent
 import org.bukkit.plugin.java.JavaPlugin
 
-class ProtectArea(
+class ProtectAreaCommand(
     private val plugin: JavaPlugin,
     private val pluginState: PluginState,
 ) : CustomCommand {
