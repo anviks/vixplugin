@@ -1,6 +1,5 @@
-package com.github.anviks.vixplugin.vanish
+package com.github.anviks.vixplugin.commands
 
-import com.github.anviks.vixplugin.commands.CustomCommand
 import com.github.anviks.vixplugin.util.PDCManager.getPDCData
 import com.github.anviks.vixplugin.util.PDCManager.setPDCData
 import dev.jorel.commandapi.CommandAPICommand
