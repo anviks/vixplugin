@@ -63,8 +63,22 @@ fun Player.isAllowedToFly(): Boolean {
 }
 
 /**
- * Set if a player is allowed to fly
+ * Set player allowed to fly status
  */
 fun Player.setAllowedToFly(allowed: Boolean) {
     this.setPDCData("allow_flight", PersistentDataType.BOOLEAN, allowed)
+}
+
+/**
+ * Check if a player is currently vanished
+ */
+fun Player.isVanished(): Boolean {
+    return this.getPDCData("vanished", PersistentDataType.BOOLEAN) == true
+}
+
+/**
+ * Set player vanished status
+ */
+fun Player.setVanished(vanished: Boolean) {
+    this.setPDCData("vanished", PersistentDataType.BOOLEAN, vanished)
 }

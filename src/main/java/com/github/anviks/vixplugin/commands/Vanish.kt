@@ -1,7 +1,7 @@
 package com.github.anviks.vixplugin.commands
 
-import com.github.anviks.vixplugin.util.PDCManager.getPDCData
-import com.github.anviks.vixplugin.util.PDCManager.setPDCData
+import com.github.anviks.vixplugin.util.isVanished
+import com.github.anviks.vixplugin.util.setVanished
 import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.CommandPermission
 import dev.jorel.commandapi.arguments.LiteralArgument
@@ -21,7 +21,6 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
-import org.bukkit.persistence.PersistentDataType
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitRunnable
 import java.util.*
@@ -38,13 +37,13 @@ class Vanish(private val plugin: JavaPlugin) : CustomCommand, Listener {
     fun onPlayerJoin(event: PlayerJoinEvent) {
         val player = event.player
 
-        if (isPlayerVanished(player)) {
+        if (player.isVanished()) {
             this.updatePlayerVisibilityForAll(player, false)
             this.displayVanishedActionBar(player)
         }
 
         for (onlinePlayer in Bukkit.getOnlinePlayers().minus(player)) {
-            if (isPlayerVanished(onlinePlayer)) {
+            if (onlinePlayer.isVanished()) {
                 this.updatePlayerVisibility(onlinePlayer, player, false)
             }
         }
@@ -72,14 +71,14 @@ class Vanish(private val plugin: JavaPlugin) : CustomCommand, Listener {
             return
         }
 
-        if (isPlayerVanished(player)) {
-            this.setPlayerVisibility(player, true)
+        if (player.isVanished()) {
+            player.setVanished(false)
             this.updatePlayerVisibilityForAll(player, true)
             this.broadcastJoinEvent(player)
             this.showVisibilityCountdown(player, 0)
         } else {
             this.broadcastQuitEvent(player)
-            this.setPlayerVisibility(player, false)
+            player.setVanished(true)
             this.updatePlayerVisibilityForAll(player, false)
             this.displayVanishedActionBar(player)
         }
@@ -93,7 +92,7 @@ class Vanish(private val plugin: JavaPlugin) : CustomCommand, Listener {
 
         vanishingPlayers.add(player.uniqueId)
 
-        if (isPlayerVanished(player)) {
+        if (player.isVanished()) {
             val effectsDuration = this.spawnUnvanishSpecialEffects(player)
             this.showVisibilityCountdown(player, effectsDuration)
 
@@ -101,13 +100,13 @@ class Vanish(private val plugin: JavaPlugin) : CustomCommand, Listener {
                 vanishingPlayers.remove(player.uniqueId)
                 // Get the player object again in case the player logged out and back in during the delay
                 val player = Bukkit.getPlayer(player.uniqueId) ?: return@Runnable
-                this.setPlayerVisibility(player, true)
+                player.setVanished(false)
                 this.updatePlayerVisibilityForAll(player, true)
                 this.broadcastJoinEvent(player)
             }, effectsDuration)
         } else {
             this.broadcastQuitEvent(player)
-            this.setPlayerVisibility(player, false)
+            player.setVanished(true)
             this.updatePlayerVisibilityForAll(player, false)
             this.spawnVanishSpecialEffects(player)
             this.displayVanishedActionBar(player)
@@ -152,18 +151,10 @@ class Vanish(private val plugin: JavaPlugin) : CustomCommand, Listener {
         }
     }
 
-    private fun isPlayerVanished(player: Player): Boolean {
-        return player.getPDCData("vanished", PersistentDataType.BOOLEAN) == true
-    }
-
-    private fun setPlayerVisibility(player: Player, visible: Boolean) {
-        player.setPDCData("vanished", PersistentDataType.BOOLEAN, !visible)
-    }
-
     private fun displayVanishedActionBar(player: Player) {
         object : BukkitRunnable() {
             override fun run() {
-                if (!player.isOnline || !isPlayerVanished(player) || player.uniqueId in vanishingPlayers) {
+                if (!player.isOnline || !player.isVanished() || player.uniqueId in vanishingPlayers) {
                     cancel()
                     return
                 }
