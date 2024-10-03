@@ -4,6 +4,7 @@ import com.github.anviks.vixplugin.commands.CustomCommand
 import com.github.anviks.vixplugin.custom_items.CustomCraftableItem
 import com.github.anviks.vixplugin.custom_items.CustomItem
 import com.github.anviks.vixplugin.util.PDCManager
+import com.jeff_media.armorequipevent.ArmorEquipEvent
 import com.jeff_media.customblockdata.CustomBlockData
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -31,6 +32,8 @@ class VixPlugin : JavaPlugin() {
 
     override fun onEnable() {
         CustomBlockData.registerListener(this)
+        ArmorEquipEvent.registerListener(this)
+
         PDCManager.init(this)
 
         dependencyRegistry.register<Plugin> { this }

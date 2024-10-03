@@ -10,7 +10,8 @@ val versionNumber = "1.0"
 // External packages to relocate
 val packagesToRelocate = listOf(
     "com.jeff_media.customblockdata",
-    "com.jeff_media.morepersistentdatatypes"
+    "com.jeff_media.morepersistentdatatypes",
+    "com.jeff_media.armorequipevent",
 )
 
 plugins {
@@ -70,6 +71,7 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-core:2.14.2")
     implementation("com.jeff-media:custom-block-data:2.2.2")
     implementation("com.jeff-media:MorePersistentDataTypes:2.4.0")
+    implementation("com.jeff-media:armor-equip-event:1.0.3")
     compileOnly("dev.jorel:commandapi-bukkit-core:9.5.0")
     paperweight.paperDevBundle("1.21.1-R0.1-SNAPSHOT")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.0.20")
