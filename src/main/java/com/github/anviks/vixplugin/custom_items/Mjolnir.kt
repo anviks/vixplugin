@@ -33,7 +33,7 @@ class Mjolnir(
         mjolnirMeta.addEnchant(Enchantment.CHANNELING, 10, true)
         mjolnirMeta.addEnchant(Enchantment.UNBREAKING, 3, true)
         mjolnir.setItemMeta(mjolnirMeta)
-        mjolnir.setCustomType(Mjolnir::class.java)
+        mjolnir.setCustomType<Mjolnir>()
 
         return mjolnir
     }
@@ -53,7 +53,7 @@ class Mjolnir(
             else
                 itemInOffHand
 
-        if (!shotTrident.isOfCustomType(Mjolnir::class.java)) return
+        if (!shotTrident.isOfCustomType<Mjolnir>()) return
 
         object : BukkitRunnable() {
             override fun run() {

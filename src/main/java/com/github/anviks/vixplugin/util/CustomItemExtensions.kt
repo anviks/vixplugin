@@ -9,14 +9,21 @@ import org.bukkit.persistence.PersistentDataType
 
 private const val CUSTOM_ITEM_KEY = "custom_item_type"
 
-fun ItemStack.isOfCustomType(clazz: Class<*>): Boolean = isObjectOfCustomType(this, clazz)
-fun Entity.isOfCustomType(clazz: Class<*>): Boolean = isObjectOfCustomType(this, clazz)
-fun Block.isOfCustomType(clazz: Class<*>): Boolean = isObjectOfCustomType(this, clazz)
+fun <T> ItemStack.isOfCustomType(clazz: Class<T>): Boolean = isObjectOfCustomType(this, clazz)
+fun <T> Entity.isOfCustomType(clazz: Class<T>): Boolean = isObjectOfCustomType(this, clazz)
+fun <T> Block.isOfCustomType(clazz: Class<T>): Boolean = isObjectOfCustomType(this, clazz)
 
-fun ItemStack.setCustomType(clazz: Class<*>) = setObjectCustomType(this, clazz)
-fun Entity.setCustomType(clazz: Class<*>) = setObjectCustomType(this, clazz)
+inline fun <reified T> ItemStack.isOfCustomType(): Boolean = this.isOfCustomType(T::class.java)
+inline fun <reified T> Entity.isOfCustomType(): Boolean = this.isOfCustomType(T::class.java)
+inline fun <reified T> Block.isOfCustomType(): Boolean = this.isOfCustomType(T::class.java)
 
-private fun isObjectOfCustomType(obj: Any, clazz: Class<*>): Boolean {
+fun <T> ItemStack.setCustomType(clazz: Class<T>) = setObjectCustomType(this, clazz)
+fun <T> Entity.setCustomType(clazz: Class<T>) = setObjectCustomType(this, clazz)
+
+inline fun <reified T> ItemStack.setCustomType() = this.setCustomType(T::class.java)
+inline fun <reified T> Entity.setCustomType() = this.setCustomType(T::class.java)
+
+private fun <T> isObjectOfCustomType(obj: Any, clazz: Class<T>): Boolean {
     val identifier = classToIdentifier(clazz)
 
     val data = when (obj) {

@@ -35,7 +35,7 @@ class CustomFuseTNT(private val plugin: Plugin) : CustomItem, Listener {
 
     fun getItem(count: Int, fuseTicks: Int): ItemStack {
         val item = ItemStack.of(Material.TNT, count)
-        item.setCustomType(CustomFuseTNT::class.java)
+        item.setCustomType<CustomFuseTNT>()
         item.setFuseTicks(fuseTicks)
 
         return item
@@ -73,7 +73,7 @@ class CustomFuseTNT(private val plugin: Plugin) : CustomItem, Listener {
         val itemInHand = event.itemInHand
         val blockPlaced = event.blockPlaced
 
-        if (itemInHand.isOfCustomType(CustomFuseTNT::class.java)) {
+        if (itemInHand.isOfCustomType<CustomFuseTNT>()) {
             itemInHand.copyPDCTo(blockPlaced)
         }
     }
@@ -81,7 +81,7 @@ class CustomFuseTNT(private val plugin: Plugin) : CustomItem, Listener {
     @EventHandler
     fun onTNTBreak(event: BlockBreakEvent) {
         val block = event.block
-        if (!block.isOfCustomType(CustomFuseTNT::class.java)) return
+        if (!block.isOfCustomType<CustomFuseTNT>()) return
 
         val blockLocation = block.location
         event.isDropItems = false
@@ -101,7 +101,7 @@ class CustomFuseTNT(private val plugin: Plugin) : CustomItem, Listener {
     @EventHandler
     fun onTNTExplode(event: EntityExplodeEvent) {
         for (block in event.blockList()) {
-            if (!block.isOfCustomType(CustomFuseTNT::class.java)) continue
+            if (!block.isOfCustomType<CustomFuseTNT>()) continue
 
             var ticks = block.getFuseTicks()
             val randomMultiplier = Random.nextDouble(.25, .75)
@@ -121,7 +121,7 @@ class CustomFuseTNT(private val plugin: Plugin) : CustomItem, Listener {
     fun onTNTSpawn(event: EntitySpawnEvent) {
         val tntEntity = event.entity as? TNTPrimed ?: return
         val block = tntEntity.location.block
-        if (!block.isOfCustomType(CustomFuseTNT::class.java)) return
+        if (!block.isOfCustomType<CustomFuseTNT>()) return
         tntEntity.fuseTicks = block.getFuseTicks()
     }
 
@@ -130,7 +130,7 @@ class CustomFuseTNT(private val plugin: Plugin) : CustomItem, Listener {
         val first = event.inventory.firstItem
         val second = event.inventory.secondItem
 
-        if (first?.isOfCustomType(CustomFuseTNT::class.java) != true) return
+        if (first?.isOfCustomType<CustomFuseTNT>() != true) return
 
         val ticks = first.getFuseTicks()
         val result = first.clone()

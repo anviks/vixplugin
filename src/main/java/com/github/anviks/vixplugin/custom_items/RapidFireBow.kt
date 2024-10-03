@@ -59,7 +59,7 @@ class RapidFireBow(private val plugin: Plugin) : CustomItem, Listener {
         meta.lore(lore)
         bow.itemMeta = meta
 
-        bow.setCustomType(RapidFireBow::class.java)
+        bow.setCustomType<RapidFireBow>()
 
         return bow
     }
@@ -67,7 +67,7 @@ class RapidFireBow(private val plugin: Plugin) : CustomItem, Listener {
     @EventHandler
     fun onBowShoot(event: EntityShootBowEvent) {
         val player = event.entity as? Player ?: return
-        if (event.bow!!.isOfCustomType(RapidFireBow::class.java)) {
+        if (event.bow!!.isOfCustomType<RapidFireBow>()) {
 //            event.setCancelled(true);  // BUG-ACCOMMODATION-11113: commented this line
             shootArrows(player, event)
         }

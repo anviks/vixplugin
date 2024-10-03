@@ -61,7 +61,7 @@ class BecomeEndermanCommand(private val plugin: JavaPlugin) : CustomCommand, Lis
     @EventHandler
     fun onArrowHit(event: ProjectileHitEvent) {
         val projectile = event.getEntity()
-        if (projectile.isOfCustomType(TeleportArrow::class.java)) return
+        if (projectile.isOfCustomType<TeleportArrow>()) return
         val hitEntity = event.hitEntity ?: return
 
         if (!endermenEntities.contains(hitEntity.uniqueId)) return

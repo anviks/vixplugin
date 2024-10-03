@@ -17,7 +17,7 @@ class GrapplingHook : CustomItem, Listener {
         meta.displayName(Component.text("Grappling hook"))
         meta.isUnbreakable = true
         hook.setItemMeta(meta)
-        hook.setCustomType(GrapplingHook::class.java)
+        hook.setCustomType<GrapplingHook>()
 
         return hook
     }
@@ -32,7 +32,7 @@ class GrapplingHook : CustomItem, Listener {
 
         val player = event.player
 
-        if (!player.inventory.itemInMainHand.isOfCustomType(GrapplingHook::class.java)) {
+        if (!player.inventory.itemInMainHand.isOfCustomType<GrapplingHook>()) {
             return
         }
 

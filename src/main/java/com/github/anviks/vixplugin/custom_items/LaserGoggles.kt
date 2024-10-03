@@ -40,16 +40,16 @@ class LaserGoggles(private val plugin: Plugin) : CustomItem, Listener {
         val meta = goggles.itemMeta
         meta.displayName(text("Laser Goggles", GOLD))
         goggles.itemMeta = meta
-        goggles.setCustomType(LaserGoggles::class.java)
+        goggles.setCustomType<LaserGoggles>()
 
         return goggles
     }
 
     @EventHandler
     fun onArmorEquip(event: ArmorEquipEvent) {
-        if (event.newArmorPiece?.isOfCustomType(LaserGoggles::class.java) == true) {
+        if (event.newArmorPiece?.isOfCustomType<LaserGoggles>() == true) {
             event.player.startShootingLaser()
-        } else if (event.oldArmorPiece?.isOfCustomType(LaserGoggles::class.java) == true) {
+        } else if (event.oldArmorPiece?.isOfCustomType<LaserGoggles>() == true) {
             event.player.stopShootingLaser()
         }
     }
@@ -68,7 +68,7 @@ class LaserGoggles(private val plugin: Plugin) : CustomItem, Listener {
         }
     }
 
-    private fun Player.isWearingGoggles() = this.equipment.helmet?.isOfCustomType(LaserGoggles::class.java) == true
+    private fun Player.isWearingGoggles() = this.equipment.helmet?.isOfCustomType<LaserGoggles>() == true
 
     private fun Player.startShootingLaser() {
         laserTasks[this.uniqueId] =

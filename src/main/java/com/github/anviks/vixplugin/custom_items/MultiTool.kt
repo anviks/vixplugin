@@ -25,7 +25,7 @@ class MultiTool : CustomItem, Listener {
         meta.addEnchant(Enchantment.MENDING, 1, false)
         meta.addEnchant(Enchantment.UNBREAKING, 3, false)
         tool.setItemMeta(meta)
-        tool.setCustomType(MultiTool::class.java)
+        tool.setCustomType<MultiTool>()
 
         return tool
     }
@@ -34,7 +34,7 @@ class MultiTool : CustomItem, Listener {
     fun onPlayerInteract(event: PlayerInteractEvent) {
         val eventItem = event.item ?: return
 
-        if (!eventItem.isOfCustomType(MultiTool::class.java)) return
+        if (!eventItem.isOfCustomType<MultiTool>()) return
 
         val player = event.player
         val block = event.clickedBlock

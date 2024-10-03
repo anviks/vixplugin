@@ -22,15 +22,15 @@ class TeleportArrow : CustomItem, Listener {
         tpArrowMeta.addEnchant(Enchantment.LUCK_OF_THE_SEA, 1, true)
         tpArrowMeta.displayName(Component.text("Teleport arrow", NamedTextColor.DARK_AQUA))
         tpArrow.setItemMeta(tpArrowMeta)
-        tpArrow.setCustomType(TeleportArrow::class.java)
+        tpArrow.setCustomType<TeleportArrow>()
 
         return tpArrow
     }
 
     @EventHandler
     fun onArrowShot(event: EntityShootBowEvent) {
-        if (event.consumable!!.isOfCustomType(TeleportArrow::class.java)) {
-            event.projectile.setCustomType(TeleportArrow::class.java)
+        if (event.consumable!!.isOfCustomType<TeleportArrow>()) {
+            event.projectile.setCustomType<TeleportArrow>()
         }
     }
 
@@ -38,7 +38,7 @@ class TeleportArrow : CustomItem, Listener {
     fun onArrowLand(event: ProjectileHitEvent) {
         val arrow = event.entity as? Arrow ?: return
 
-        if (arrow.isOfCustomType(TeleportArrow::class.java)) {
+        if (arrow.isOfCustomType<TeleportArrow>()) {
             event.isCancelled = true
             val player = checkNotNull(arrow.shooter as Player)
             val direction = player.eyeLocation.direction

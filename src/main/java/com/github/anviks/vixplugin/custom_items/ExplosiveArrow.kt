@@ -28,7 +28,7 @@ class ExplosiveArrow(private val plugin: Plugin) : CustomCraftableItem, Listener
         arrowMeta.displayName(Component.text("Explosive Arrow", NamedTextColor.YELLOW))
         arrowMeta.addEnchant(Enchantment.INFINITY, 1, false)
         arrows.setItemMeta(arrowMeta)
-        arrows.setCustomType(ExplosiveArrow::class.java)
+        arrows.setCustomType<ExplosiveArrow>()
 
         return arrows
     }
@@ -46,7 +46,7 @@ class ExplosiveArrow(private val plugin: Plugin) : CustomCraftableItem, Listener
 
     @EventHandler
     fun onDispenserPowered(event: BlockDispenseEvent) {
-        if (event.item.isOfCustomType(ExplosiveArrow::class.java)) {
+        if (event.item.isOfCustomType<ExplosiveArrow>()) {
             dispenserShotExplosiveArrow = true
         }
     }
@@ -56,8 +56,8 @@ class ExplosiveArrow(private val plugin: Plugin) : CustomCraftableItem, Listener
         val consumable = event.consumable
         val projectile = event.projectile
 
-        if (consumable != null && consumable.isOfCustomType(ExplosiveArrow::class.java)) {
-            projectile.setCustomType(ExplosiveArrow::class.java)
+        if (consumable != null && consumable.isOfCustomType<ExplosiveArrow>()) {
+            projectile.setCustomType<ExplosiveArrow>()
         }
     }
 
@@ -68,14 +68,14 @@ class ExplosiveArrow(private val plugin: Plugin) : CustomCraftableItem, Listener
 
         if (dispenserShotExplosiveArrow && shooter is BlockProjectileSource) {
             dispenserShotExplosiveArrow = false
-            projectile.setCustomType(ExplosiveArrow::class.java)
+            projectile.setCustomType<ExplosiveArrow>()
         }
     }
 
     @EventHandler
     fun onArrowLand(event: ProjectileHitEvent) {
         val projectile = event.entity
-        if (projectile.isOfCustomType(ExplosiveArrow::class.java)) {
+        if (projectile.isOfCustomType<ExplosiveArrow>()) {
             projectile.world.createExplosion(projectile.location, 7f, false, true, projectile)
             projectile.remove()
         }

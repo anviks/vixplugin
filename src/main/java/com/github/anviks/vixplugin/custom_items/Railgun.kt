@@ -28,7 +28,7 @@ class Railgun : CustomItem, Listener {
         railGunMeta.displayName(AdventureHelper.createAlternatingColoredText("RAILGUN", GRAY, YELLOW))
         railGunMeta.addEnchant(Enchantment.INFINITY, 1, true)
         railGun.setItemMeta(railGunMeta)
-        railGun.setCustomType(Railgun::class.java)
+        railGun.setCustomType<Railgun>()
 
         return railGun
     }
@@ -48,7 +48,7 @@ class Railgun : CustomItem, Listener {
             else
                 itemInOffHand
 
-        if (!shotTrident.isOfCustomType(Railgun::class.java)) {
+        if (!shotTrident.isOfCustomType<Railgun>()) {
             return
         }
 
