@@ -42,9 +42,11 @@ base {
 
 sourceSets {
     named("main") {
+        val mainPackagePath = groupPackage.replace(".", "/")
         java {
             setSrcDirs(listOf("src/main/java"))
-            exclude(groupPackage.replace(".", "/") + "/sandbox/**")
+            exclude("$mainPackagePath/sandbox/**")
+            exclude("$mainPackagePath/listeners/DeathMessages.kt")
         }
     }
 }

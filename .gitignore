@@ -1,6 +1,7 @@
 # User-specific stuff
 .idea/
 src/main/java/com/github/anviks/vixplugin/sandbox
+src/main/java/com/github/anviks/vixplugin/listeners/DeathMessages.kt
 future_ideas.txt
 
 *.iml
