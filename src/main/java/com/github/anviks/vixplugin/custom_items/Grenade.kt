@@ -1,5 +1,6 @@
 package com.github.anviks.vixplugin.custom_items
 
+import com.github.anviks.vixplugin.configuration.ConfigManager
 import com.github.anviks.vixplugin.util.isOfCustomType
 import com.github.anviks.vixplugin.util.setCustomType
 import net.kyori.adventure.text.Component.*
@@ -12,13 +13,14 @@ import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.EntityPickupItemEvent
 import org.bukkit.event.entity.ExpBottleEvent
+import org.bukkit.event.entity.ItemMergeEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
 import org.bukkit.scheduler.BukkitTask
 import java.util.UUID
 
-class Grenade(private val plugin: Plugin) : CustomItem, Listener {
+class Grenade(private val plugin: Plugin, private val configManager: ConfigManager) : CustomItem, Listener {
 
     private val liveGrenades = HashMap<UUID, BukkitTask>()
 
@@ -38,13 +40,7 @@ class Grenade(private val plugin: Plugin) : CustomItem, Listener {
         val itemDrop = event.itemDrop
 
         if (itemDrop.itemStack.isOfCustomType<Grenade>()) {
-            val task =
-                Runnable { event.player.world.createExplosion(itemDrop.location, 10f) }
-            val uuid = itemDrop.uniqueId
-            val bukkitTask = Bukkit.getScheduler()
-                .runTaskLater(plugin, task, 100)
-
-            liveGrenades[uuid] = bukkitTask
+            scheduleGrenadeExplosion(itemDrop)
         }
     }
 
@@ -53,7 +49,17 @@ class Grenade(private val plugin: Plugin) : CustomItem, Listener {
         val item = event.item
 
         if (item.itemStack.isOfCustomType<Grenade>()) {
-            this.tryCancelGrenadeExplosion(item)
+            tryCancelGrenadeExplosion(item)
+        }
+    }
+
+    @EventHandler
+    fun onItemMerge(event: ItemMergeEvent) {
+        if (event.entity.itemStack.isOfCustomType<Grenade>()) {
+            tryCancelGrenadeExplosion(event.entity)
+            tryCancelGrenadeExplosion(event.target)
+
+            scheduleGrenadeExplosion(event.target)
         }
     }
 
@@ -63,9 +69,9 @@ class Grenade(private val plugin: Plugin) : CustomItem, Listener {
         val itemStack: ItemStack = item.itemStack
         if (itemStack.isOfCustomType<Grenade>()) {
             // Item#isDead returns true only after the final damage event is processed
-            Bukkit.getScheduler().runTask(plugin, Runnable {
+            Bukkit.getScheduler().runTask(plugin) { ->
                 if (item.isDead) this.tryCancelGrenadeExplosion(item)
-            })
+            }
         }
     }
 
@@ -76,6 +82,20 @@ class Grenade(private val plugin: Plugin) : CustomItem, Listener {
             event.showEffect = false
             event.entity.world.createExplosion(event.entity.location, 5f)
         }
+    }
+
+    private fun scheduleGrenadeExplosion(item: Item) {
+        val uuid = item.uniqueId
+        liveGrenades[uuid] = Bukkit.getScheduler()
+            .runTaskLater(plugin, { ->
+                if (configManager.grenadesExplodeIndividually) {
+                    repeat(item.itemStack.amount) {
+                        item.world.createExplosion(item.location, 10f)
+                    }
+                } else {
+                    item.world.createExplosion(item.location, item.itemStack.amount * 3f + 7)
+                }
+            }, 100)
     }
 
     private fun tryCancelGrenadeExplosion(item: Item) {
