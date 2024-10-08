@@ -5,6 +5,10 @@ api-version: 1.21.1
 depend: [CommandAPI]
 
 permissions:
+  vixplugin.reloadconfig:
+    description: Allows the player to reload the config.
+    default: op
+
   vixplugin.commands:
     children:
       vixplugin.commands.moderator: true

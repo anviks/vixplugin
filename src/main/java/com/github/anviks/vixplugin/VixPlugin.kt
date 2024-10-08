@@ -1,8 +1,11 @@
 package com.github.anviks.vixplugin
 
 import com.github.anviks.vixplugin.commands.CustomCommand
+import com.github.anviks.vixplugin.configuration.ConfigOption
 import com.github.anviks.vixplugin.custom_items.CustomCraftableItem
 import com.github.anviks.vixplugin.custom_items.CustomItem
+import com.github.anviks.vixplugin.configuration.ConfigDependent
+import com.github.anviks.vixplugin.configuration.ConfigManager
 import com.github.anviks.vixplugin.util.PDCManager
 import com.jeff_media.armorequipevent.ArmorEquipEvent
 import com.jeff_media.customblockdata.CustomBlockData
@@ -31,14 +34,19 @@ class VixPlugin : JavaPlugin() {
     private val pluginData = loadPluginState()
 
     override fun onEnable() {
+        saveDefaultConfig()
+        reloadConfig()
+
         CustomBlockData.registerListener(this)
         ArmorEquipEvent.registerListener(this)
-
         PDCManager.init(this)
+
+        val configManager = ConfigManager(this)
 
         dependencyRegistry.register<Plugin> { this }
         dependencyRegistry.register<JavaPlugin> { this }  // CommandAPICommand requires JavaPlugin
         dependencyRegistry.register<PluginState> { pluginData }
+        dependencyRegistry.register { configManager }
 
         val customItems = createChildrenOf<CustomItem>()
 
@@ -69,8 +77,23 @@ class VixPlugin : JavaPlugin() {
         val childClasses = reflections.getSubTypesOf(T::class.java)
 
         return childClasses
-            .filter { it.constructors.isNotEmpty() }
+            .filter { shouldCreateClass(it) && it.constructors.isNotEmpty() }
             .map { getOrCreateInstance(it) }
+    }
+
+    private fun shouldCreateClass(clazz: Class<*>): Boolean {
+        val annotation = clazz.getAnnotation(ConfigDependent::class.java)
+        if (annotation?.configOption?.all { config.getBoolean(it.path, true) } == false) {
+            return false
+        }
+
+        var parents = clazz.interfaces
+        clazz.superclass?.let { parents += it }
+        for (parent in parents) {
+            if (!shouldCreateClass(parent)) return false
+        }
+
+        return true
     }
 
     private inline fun <reified T> getOrCreateInstance(clazz: Class<out T>): T {

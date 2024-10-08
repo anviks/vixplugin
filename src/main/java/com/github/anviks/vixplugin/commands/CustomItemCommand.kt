@@ -2,6 +2,8 @@ package com.github.anviks.vixplugin.commands
 
 import com.github.anviks.vixplugin.custom_items.CustomFuseTNT
 import com.github.anviks.vixplugin.custom_items.CustomItem
+import com.github.anviks.vixplugin.configuration.ConfigDependent
+import com.github.anviks.vixplugin.configuration.ConfigOption
 import com.github.anviks.vixplugin.util.camelToKebab
 import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.arguments.EntitySelectorArgument
@@ -16,6 +18,8 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
 import kotlin.math.roundToInt
 
+
+@ConfigDependent(ConfigOption.CUSTOM_ITEMS_ENABLED)
 class CustomItemCommand(private val plugin: JavaPlugin, customItems: List<CustomItem>) : CustomCommand {
 
     private val customItems: MutableMap<String, CustomItem> = HashMap()
