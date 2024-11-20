@@ -1,0 +1,12 @@
+# Settings related to custom items
+custom-items:
+
+  # Enable or disable custom items.
+  # Changing this setting will require a server restart/reload to take effect.
+  # Default: true (enabled)
+  enabled: true
+
+  # Determines if each grenade in a stack triggers a separate explosion,
+  # or if the entire stack causes a single large explosion.
+  # Default: false (all grenades in a stack explode as one large explosion)
+  grenades-explode-individually: false

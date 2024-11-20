@@ -1,115 +1,38 @@
 name: VixPlugin
-version: '${project.version}'
-main: me.captainpotatoaim.myplugin.Initializer
-api-version: 1.19
-commands:
-  fishplz:
-    description: You could solve world hunger with all that.
-    usage: /fishplz
-  loyalsquad:
-    description: Spawn a loyal army of puppers.
-    usage: "/loyalsquad\n/loyalsquad <player>"
-  slap:
-    description: Slap everyone.
-    usage: Slap!
-  fly:
-    description: Fly.
-    usage: Fly.
-  inventory:
-    description: Open player's inventory.
-    usage: Open inventory.
-  echest:
-    description: Open player's ender chest.
-    usage: Open player's ender chest.
-  launch:
-    description: Launch player(s).
-    usage: Launch someone.
-  zoom:
-    description: Zoom forward.
-  creeper:
-    description: Something.
-  setunbreakable:
-    description: Make a block unbreakable.
-#  permissions:
-#    description: Set, get or remove permissions.
-#    usage: "/permissions set <player> <permission> <true/false>\n
-#    /permissions unset <player> <permission>\n
-#    /permissions get <player>"
-#    aliases:
-#      - perms
-#      - perm
-#      - permission
-  freeze:
-    description: Freeze a player.
-    usage: /freeze <player> <duration>
-  unfreeze:
-    description: Unfreeze a player.
-    usage: /unfreeze <player>
-  gigachest:
-    description: Open a gigachest.
-  givegrenade:
-    description: Give grenades.
-  giveexplosivearrow:
-    description: Give explosive arrows.
-  god:
-    description: Give god mode to yourself or to a player.
-    usage: "/god\n/god <player>"
-    aliases:
-      - godmode
-      - gm
-      - god-mode
-  enchantanything:
-    description: Enchant anything with any level.
-  sandbox:
-    description: Create a sandbox world.
-    usage: " /sandbox create\n
-    /sandbox create <dimension>\n
-    /sandbox join <slot/world name>\n
-    /sandbox join <slot/world name> <player>\n
-    /sandbox leave\n
-    /sandbox leave <player>\n
-    /sandbox delete <slot/world name>"
-  giverailgun:
-    description: Give railgun to yourself.
-  giveteleportarrow:
-    description: Give teleport arrows.
-  creep:
-    description: Idk
-  creep2:
-    description: vol 2
-  tp-up:
-    description: Teleport up to a random height.
-  duct-tape:
-    description: Duct-tape someone.
-  grappling-hook:
-    description: Give grappling hook.
-  rapid-bow:
-    description: Give bow that rapid fires.
-  vanish:
-    description: Vanish.
-    aliases:
-      - v
-  enchantitem:
-    description: N
-  ender-toggle:
-    description: G
-  protect:
-    description: Protect an area.
-    usage: /protect <from> <to> as <area-name>
-  unprotect:
-    description: Unprotect an area.
-    usage: /unprotect <area-name>
-  give-multi-tool:
-    description: Give multi tool.
-  give-custom-fuse-tnt:
-    description: Give long fuse tnt.
-  world:
-    description: Change world.
+version: 1.0
+main: com.github.anviks.vixplugin.VixPlugin
+api-version: 1.21.1
+depend: [CommandAPI]
 
 permissions:
-  vix.move:
-    description: Allow or deny movement.
-    default: true
-  vix.moderate:
-    description: Access to troll commands.
+  vixplugin.reloadconfig:
+    description: Allows the player to reload the config.
     default: op
+
+  vixplugin.commands:
+    children:
+      vixplugin.commands.moderator: true
+      vixplugin.commands.admin: true
+      vixplugin.commands.fun: true
+      vixplugin.commands.utility: true
+      vixplugin.commands.givecustom: true
+
+  vixplugin.commands.moderator:
+    description: Allows the player to use commands like freeze, unfreeze, duct-tape, etc.
+    default: op
+  vixplugin.commands.admin:
+    description: Allows the player to use commands like god, fly, etc.
+    default: op
+  #  vixplugin.commands.sandbox:
+  #    description: Allows the player to use the sandbox commands.
+  #    default: op
+  vixplugin.commands.fun:
+    description: Allows the player to use the fun commands (commands that don't affect the gameplay a lot).
+    default: op
+  vixplugin.commands.utility:
+    description: Allows the player to use all the utility commands like inventory, echest, etc.
+    default: op
+  vixplugin.commands.givecustom:
+    description: Allows the player to use the give custom item command.
+    default: op
+
