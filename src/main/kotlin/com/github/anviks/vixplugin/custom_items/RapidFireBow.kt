@@ -183,12 +183,12 @@ class RapidFireBow(private val plugin: Plugin) : CustomItem, Listener {
             (arrowEntity as Arrow).basePotionType = meta.basePotionType
         }
 
-        if (arrowForce.toDouble() == 3.0) {
+        if (arrowForce == 3f) {
             arrowEntity.isCritical = true
         }
 
-        val pitch = arrowForce / 10 + 0.8
-        arrowEntity.world.playSound(arrowEntity.location, Sound.ENTITY_ARROW_SHOOT, 1f, pitch.toFloat())
+        val pitch = arrowForce / 10f + 0.8f
+        arrowEntity.world.playSound(arrowEntity.location, Sound.ENTITY_ARROW_SHOOT, 1f, pitch)
         arrowItem.copyPDCTo(arrowEntity)
     }
 
