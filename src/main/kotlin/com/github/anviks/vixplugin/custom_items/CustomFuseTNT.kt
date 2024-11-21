@@ -5,7 +5,6 @@ import com.github.anviks.vixplugin.util.PDCManager.getPDCData
 import com.github.anviks.vixplugin.util.PDCManager.setPDCData
 import com.github.anviks.vixplugin.util.isOfCustomType
 import com.github.anviks.vixplugin.util.setCustomType
-import com.jeff_media.customblockdata.CustomBlockData
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.text
 import org.bukkit.GameMode
@@ -34,7 +33,7 @@ class CustomFuseTNT(private val plugin: Plugin) : CustomItem, Listener {
     }
 
     fun getItem(count: Int, fuseTicks: Int): ItemStack {
-        val item = ItemStack.of(Material.TNT, count)
+        val item = ItemStack(Material.TNT, count)
         item.setCustomType<CustomFuseTNT>()
         item.setFuseTicks(fuseTicks)
 
@@ -144,6 +143,6 @@ class CustomFuseTNT(private val plugin: Plugin) : CustomItem, Listener {
         }
 
         event.result = result
-        event.view.repairCost = 1
+        event.inventory.repairCost = 1
     }
 }

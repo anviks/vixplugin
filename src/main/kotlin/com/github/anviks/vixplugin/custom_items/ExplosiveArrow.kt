@@ -26,7 +26,7 @@ class ExplosiveArrow(private val plugin: Plugin) : CustomCraftableItem, Listener
         val arrows = ItemStack(Material.SPECTRAL_ARROW, count)
         val arrowMeta = checkNotNull(arrows.itemMeta)
         arrowMeta.displayName(Component.text("Explosive Arrow", NamedTextColor.YELLOW))
-        arrowMeta.addEnchant(Enchantment.INFINITY, 1, false)
+        arrowMeta.addEnchant(Enchantment.ARROW_INFINITE, 1, false)
         arrows.setItemMeta(arrowMeta)
         arrows.setCustomType<ExplosiveArrow>()
 

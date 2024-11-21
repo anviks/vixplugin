@@ -26,7 +26,7 @@ class Railgun : CustomItem, Listener {
         val railGun = ItemStack(Material.TRIDENT, 1)
         val railGunMeta = railGun.itemMeta
         railGunMeta.displayName(AdventureHelper.createAlternatingColoredText("RAILGUN", GRAY, YELLOW))
-        railGunMeta.addEnchant(Enchantment.INFINITY, 1, true)
+        railGunMeta.addEnchant(Enchantment.ARROW_INFINITE, 1, true)
         railGun.setItemMeta(railGunMeta)
         railGun.setCustomType<Railgun>()
 

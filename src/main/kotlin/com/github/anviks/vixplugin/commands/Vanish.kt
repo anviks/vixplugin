@@ -15,7 +15,7 @@ import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Particle
-import org.bukkit.craftbukkit.entity.CraftPlayer
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -175,7 +175,7 @@ class Vanish(private val plugin: JavaPlugin) : CustomCommand, Listener {
     private fun spawnVanishSpecialEffects(player: Player) {
         val location = player.location
         location.y += 1
-        player.world.spawnParticle(Particle.LARGE_SMOKE, location, 250, 0.5, 0.5, 0.5, 0.1)
+        player.world.spawnParticle(Particle.SMOKE_LARGE, location, 250, 0.5, 0.5, 0.5, 0.1)
     }
 
     private fun broadcastJoinEvent(player: Player) {
@@ -207,7 +207,7 @@ class Vanish(private val plugin: JavaPlugin) : CustomCommand, Listener {
         val packet = if (visible) getTabListAddPacket(target) else getTabListRemovePacket(target)
 
         val nmsObserver = (observer as CraftPlayer).handle
-        nmsObserver.connection.sendPacket(packet)
+        nmsObserver.connection.send(packet)
 
         if (visible) {
             observer.showPlayer(plugin, target)

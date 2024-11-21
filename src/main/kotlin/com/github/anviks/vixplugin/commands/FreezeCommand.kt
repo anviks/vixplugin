@@ -101,8 +101,8 @@ class FreezeCommand(
     }
 
     private fun applyEffects(target: Player, durationTicks: Int) {
-        target.removePotionEffect(PotionEffectType.SLOWNESS)
-        target.addPotionEffect(PotionEffect(PotionEffectType.SLOWNESS, durationTicks, 0))
+        target.removePotionEffect(PotionEffectType.SLOW)
+        target.addPotionEffect(PotionEffect(PotionEffectType.SLOW, durationTicks, 0))
         target.freezeTicks = durationTicks * 2
     }
 

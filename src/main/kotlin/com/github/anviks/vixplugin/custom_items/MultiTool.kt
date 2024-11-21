@@ -21,9 +21,9 @@ class MultiTool : CustomItem, Listener {
         val meta = checkNotNull(tool.itemMeta)
         meta.displayName(Component.text("Multi-tool"))
         meta.lore(listOf(Component.text("One tool to fit all your needs.")))
-        meta.addEnchant(Enchantment.EFFICIENCY, 5, false)
+        meta.addEnchant(Enchantment.DIG_SPEED, 5, false)
         meta.addEnchant(Enchantment.MENDING, 1, false)
-        meta.addEnchant(Enchantment.UNBREAKING, 3, false)
+        meta.addEnchant(Enchantment.DURABILITY, 3, false)
         tool.setItemMeta(meta)
         tool.setCustomType<MultiTool>()
 
@@ -68,7 +68,7 @@ class MultiTool : CustomItem, Listener {
 
     private fun ensureMaterial(player: Player, tool: ItemStack, toolMaterial: Material) {
         if (tool.type != toolMaterial) {
-            val newTool = ItemStack.of(toolMaterial)
+            val newTool = ItemStack(toolMaterial)
             newTool.setItemMeta(tool.itemMeta)
             player.inventory.setItemInMainHand(newTool)
         }

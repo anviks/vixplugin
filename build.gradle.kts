@@ -44,7 +44,7 @@ sourceSets {
     named("main") {
         val mainPackagePath = groupPackage.replace(".", "/")
         java {
-            setSrcDirs(listOf("src/main/java"))
+            setSrcDirs(listOf("src/main/kotlin"))
             exclude("$mainPackagePath/sandbox/**")
             exclude("$mainPackagePath/listeners/DeathMessages.kt")
         }
@@ -75,7 +75,7 @@ dependencies {
     implementation("com.jeff-media:MorePersistentDataTypes:2.4.0")
     implementation("com.jeff-media:armor-equip-event:1.0.3")
     compileOnly("dev.jorel:commandapi-bukkit-core:9.5.0")
-    paperweight.paperDevBundle("1.21.1-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.20.4-R0.1-SNAPSHOT")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.0.20")
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.6.20")
     implementation("org.reflections:reflections:0.10.2")
@@ -98,5 +98,5 @@ tasks.named<ShadowJar>("shadowJar") {
         relocate(it, "$relocationTarget.${it.substringAfterLast('.')}")
     }
 
-    destinationDirectory.set(file("C:/Users/Andreas Viks/Desktop/MC Servers/Paper 1.21.1/plugins"))
+    destinationDirectory.set(file("C:/Users/Andreas Viks/Desktop/MC Servers/Paper 1.20.4/plugins"))
 }

@@ -1,7 +1,6 @@
 package com.github.anviks.vixplugin.custom_items
 
 import com.github.anviks.vixplugin.util.PDCManager.copyPDCTo
-import com.github.anviks.vixplugin.util.copyWithoutIntangibleTag
 import com.github.anviks.vixplugin.util.isOfCustomType
 import com.github.anviks.vixplugin.util.setCustomType
 import com.github.anviks.vixplugin.util.toInt
@@ -68,7 +67,7 @@ class RapidFireBow(private val plugin: Plugin) : CustomItem, Listener {
     fun onBowShoot(event: EntityShootBowEvent) {
         val player = event.entity as? Player ?: return
         if (event.bow!!.isOfCustomType<RapidFireBow>()) {
-//            event.setCancelled(true);  // BUG-ACCOMMODATION-11113: commented this line
+            event.isCancelled = true
             shootArrows(player, event)
         }
     }
@@ -110,7 +109,7 @@ class RapidFireBow(private val plugin: Plugin) : CustomItem, Listener {
         val task = Bukkit.getScheduler().runTaskTimer(
             plugin,
             Runnable { shootArrowTask(player, bow, arrowItem, event.force, arrowClass) },
-            shotDelay,  // BUG-ACCOMMODATION-11113: changed delay from 0 to shotDelay
+            0,
             shotDelay
         )
         shootingPlayers[player.uniqueId] = task
@@ -123,11 +122,6 @@ class RapidFireBow(private val plugin: Plugin) : CustomItem, Listener {
         arrowForce: Float,
         arrowClass: Class<out AbstractArrow?>
     ) {
-        var arrowItem = arrowItem
-        if (player.gameMode == GameMode.CREATIVE) {
-            arrowItem = arrowItem.copyWithoutIntangibleTag()
-        }
-
         if (!player.inventory.containsAtLeast(arrowItem, 1)) {
             stopShooting(player)
             return
@@ -141,8 +135,8 @@ class RapidFireBow(private val plugin: Plugin) : CustomItem, Listener {
             return
         }
 
-        if (bow.getEnchantmentLevel(Enchantment.INFINITY) == 0) {
-            player.inventory.removeItem(arrowItem)
+        if (bow.getEnchantmentLevel(Enchantment.ARROW_INFINITE) == 0) {
+            player.inventory.removeItem(arrowItem.clone().apply { amount = 1 })
         } else {
             arrowEntity.pickupStatus = AbstractArrow.PickupStatus.CREATIVE_ONLY
         }
@@ -163,7 +157,7 @@ class RapidFireBow(private val plugin: Plugin) : CustomItem, Listener {
         return player.world.spawnArrow(
             eyeLocation,
             eyeLocation.direction,
-            arrowForce,
+            arrowForce * 3,
             1f,
             arrowClass
         )
@@ -176,18 +170,17 @@ class RapidFireBow(private val plugin: Plugin) : CustomItem, Listener {
         arrowForce: Float
     ) {
         arrowEntity.shooter = player
-        arrowEntity.itemStack = arrowItem
 
         if (arrowItem.type == Material.TIPPED_ARROW) {
             val meta = arrowItem.itemMeta as PotionMeta
             (arrowEntity as Arrow).basePotionType = meta.basePotionType
         }
 
-        if (arrowForce.toDouble() == 3.0) {
+        if (arrowForce.toDouble() == 1.0) {
             arrowEntity.isCritical = true
         }
 
-        val pitch = arrowForce / 10 + 0.8
+        val pitch = arrowForce * 0.3 + 0.8
         arrowEntity.world.playSound(arrowEntity.location, Sound.ENTITY_ARROW_SHOOT, 1f, pitch.toFloat())
         arrowItem.copyPDCTo(arrowEntity)
     }
@@ -211,7 +204,7 @@ class RapidFireBow(private val plugin: Plugin) : CustomItem, Listener {
     }
 
     private fun calculateDamage(bow: ItemStack): Int {
-        val unbreakingLevel = bow.getEnchantmentLevel(Enchantment.UNBREAKING)
+        val unbreakingLevel = bow.getEnchantmentLevel(Enchantment.DURABILITY)
         val shouldDamage = Math.random() < 1.0 / (unbreakingLevel + 1)
         return shouldDamage.toInt()
     }
@@ -229,7 +222,7 @@ class RapidFireBow(private val plugin: Plugin) : CustomItem, Listener {
             val eyes = player.eyeLocation
             val direction = eyes.direction
             player.spawnParticle(
-                Particle.ITEM,
+                Particle.ITEM_CRACK,
                 eyes.add(direction.multiply(0.5)),
                 5,
                 0.1,

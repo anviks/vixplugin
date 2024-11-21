@@ -36,7 +36,7 @@ class LaserGoggles(private val plugin: Plugin) : CustomItem, Listener {
     }
 
     override fun getItem(count: Int): ItemStack {
-        val goggles = ItemStack.of(Material.IRON_HELMET)
+        val goggles = ItemStack(Material.IRON_HELMET)
         val meta = goggles.itemMeta
         meta.displayName(text("Laser Goggles", GOLD))
         goggles.itemMeta = meta
@@ -112,8 +112,8 @@ class LaserGoggles(private val plugin: Plugin) : CustomItem, Listener {
             eyeLocation.add(direction)
             leftEyeLocation.add(direction)
             rightEyeLocation.add(direction)
-            player.world.spawnParticle(Particle.DUST, leftEyeLocation, 1, Particle.DustOptions(Color.RED, .5f))
-            player.world.spawnParticle(Particle.DUST, rightEyeLocation, 1, Particle.DustOptions(Color.RED, .5f))
+            player.world.spawnParticle(Particle.REDSTONE, leftEyeLocation, 1, Particle.DustOptions(Color.RED, .5f))
+            player.world.spawnParticle(Particle.REDSTONE, rightEyeLocation, 1, Particle.DustOptions(Color.RED, .5f))
         }
     }
 

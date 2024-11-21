@@ -19,7 +19,7 @@ class TeleportArrow : CustomItem, Listener {
     override fun getItem(count: Int): ItemStack {
         val tpArrow = ItemStack(Material.ARROW, count)
         val tpArrowMeta = checkNotNull(tpArrow.itemMeta)
-        tpArrowMeta.addEnchant(Enchantment.LUCK_OF_THE_SEA, 1, true)
+        tpArrowMeta.addEnchant(Enchantment.LUCK, 1, true)
         tpArrowMeta.displayName(Component.text("Teleport arrow", NamedTextColor.DARK_AQUA))
         tpArrow.setItemMeta(tpArrowMeta)
         tpArrow.setCustomType<TeleportArrow>()

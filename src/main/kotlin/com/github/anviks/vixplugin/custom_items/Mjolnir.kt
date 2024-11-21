@@ -31,7 +31,7 @@ class Mjolnir(
         mjolnirMeta.addEnchant(Enchantment.LOYALTY, 3, false)
         mjolnirMeta.addEnchant(Enchantment.IMPALING, 10, true)
         mjolnirMeta.addEnchant(Enchantment.CHANNELING, 10, true)
-        mjolnirMeta.addEnchant(Enchantment.UNBREAKING, 3, true)
+        mjolnirMeta.addEnchant(Enchantment.DURABILITY, 3, true)
         mjolnir.setItemMeta(mjolnirMeta)
         mjolnir.setCustomType<Mjolnir>()
 
