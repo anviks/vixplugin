@@ -6,23 +6,33 @@ import com.github.anviks.vixplugin.util.setCustomType
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.format.NamedTextColor.AQUA
 import net.kyori.adventure.text.format.TextDecoration.BOLD
+import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
+import org.bukkit.entity.Entity
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.entity.Trident
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.block.Action
+import org.bukkit.event.entity.EntityToggleGlideEvent
 import org.bukkit.event.entity.ProjectileLaunchEvent
+import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.inventory.EntityEquipment
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
 import org.bukkit.scheduler.BukkitRunnable
+import org.bukkit.scheduler.BukkitTask
+import java.util.UUID
 
 class Mjolnir(
     private val plugin: Plugin,
     private val pluginState: PluginState,
 ) : CustomItem, Listener {
+
+    private val flyingPlayers = mutableMapOf<UUID, BukkitTask>()
 
     override fun getItem(count: Int): ItemStack {
         val mjolnir = ItemStack(Material.TRIDENT, 1)
@@ -54,6 +64,7 @@ class Mjolnir(
                 itemInOffHand
 
         if (!shotTrident.isOfCustomType<Mjolnir>()) return
+        stopFlight(shooter)
 
         object : BukkitRunnable() {
             override fun run() {
@@ -69,5 +80,48 @@ class Mjolnir(
                 protectedFrom.add(strike.uniqueId)
             }
         }.runTaskTimer(plugin, 1, 1)
+    }
+
+    @EventHandler
+    fun onPlayerInteract(event: PlayerInteractEvent) {
+        val item = event.item ?: return
+        if (item.isOfCustomType<Mjolnir>() && event.player.isGliding && event.action == Action.LEFT_CLICK_AIR) {
+            val uuid = event.player.uniqueId
+            val task = flyingPlayers.remove(uuid)
+
+            if (task != null) {
+                task.cancel()
+            } else {
+                flyingPlayers[uuid] = Bukkit.getScheduler().runTaskTimer(plugin, { ->
+                    acceleratePlayer(event.player)
+                }, 0, 1)
+            }
+        }
+    }
+
+    @EventHandler
+    fun onPlayerStopGlide(event: EntityToggleGlideEvent) {
+        if (!event.isGliding) {
+            stopFlight(event.entity)
+        }
+    }
+
+    @EventHandler
+    fun onPlayerLeave(event: PlayerQuitEvent) {
+        stopFlight(event.player)
+    }
+
+    private fun acceleratePlayer(player: Player) {
+        val direction = player.location.direction
+        val acceleration = 0.15
+
+        val currentVelocity = player.velocity
+        if (currentVelocity.length() >= 2.5) return
+        val newVelocity = currentVelocity.add(direction.multiply(acceleration))
+        player.velocity = newVelocity
+    }
+
+    private fun stopFlight(entity: Entity) {
+        flyingPlayers.remove(entity.uniqueId)?.cancel()
     }
 }
