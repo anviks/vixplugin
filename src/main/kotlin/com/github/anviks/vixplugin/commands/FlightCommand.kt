@@ -66,7 +66,7 @@ class FlightCommand(private val plugin: JavaPlugin) : CustomCommand, Listener {
 
     @EventHandler
     fun onGameModeChange(event: PlayerGameModeChangeEvent) {
-        if (event.newGameMode == GameMode.SURVIVAL) {
+        if (event.newGameMode in setOf(GameMode.SURVIVAL, GameMode.ADVENTURE)) {
             preserveFlying(event.player)
         }
     }
@@ -82,10 +82,11 @@ class FlightCommand(private val plugin: JavaPlugin) : CustomCommand, Listener {
     }
 
     private fun preserveFlying(player: Player) {
-        val canFly = player.isAllowedToFly()
+        val isFlying = player.isFlying
         Bukkit.getScheduler().runTask(plugin) { ->
+            val canFly = player.isAllowedToFly() || player.gameMode in setOf(GameMode.CREATIVE, GameMode.SPECTATOR)
             player.allowFlight = canFly
-            player.isFlying = canFly && player.isFlying
+            player.isFlying = canFly && isFlying
         }
     }
 }
