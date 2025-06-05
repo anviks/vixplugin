@@ -1,5 +1,6 @@
 package com.github.anviks.vixplugin.commands
 
+import com.github.anviks.vixplugin.util.split
 import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.arguments.EntitySelectorArgument
 import dev.jorel.commandapi.executors.CommandArguments
@@ -14,19 +15,21 @@ import org.bukkit.plugin.java.JavaPlugin
 class TeleportUpCommand(private val plugin: JavaPlugin) : CustomCommand {
 
     override fun register() {
-        val baseCommand = CommandAPICommand("teleport-up")
+        CommandAPICommand("teleport-up")
             .withAliases("tp-up")
-
-        baseCommand.copy()
-            .withPermission("vixplugin.commands.utility")
-            .executesPlayer(this::run)
-            .register(plugin)
-
-        baseCommand
-            .withPermission("vixplugin.commands.fun")
-            .withArguments(EntitySelectorArgument.ManyEntities("targets"))
-            .executes(this::run)
-            .register(plugin)
+            .split(
+                {
+                    it.withPermission("vixplugin.commands.utility")
+                        .executesPlayer(this::run)
+                        .register(plugin)
+                },
+                {
+                    it.withPermission("vixplugin.commands.fun")
+                        .withArguments(EntitySelectorArgument.ManyEntities("targets"))
+                        .executes(this::run)
+                        .register(plugin)
+                }
+            )
     }
 
     private fun run(sender: CommandSender, arguments: CommandArguments) {

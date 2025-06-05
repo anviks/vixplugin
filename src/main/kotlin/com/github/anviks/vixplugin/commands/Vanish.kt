@@ -2,6 +2,7 @@ package com.github.anviks.vixplugin.commands
 
 import com.github.anviks.vixplugin.util.isVanished
 import com.github.anviks.vixplugin.util.setVanished
+import com.github.anviks.vixplugin.util.split
 import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.CommandPermission
 import dev.jorel.commandapi.arguments.LiteralArgument
@@ -50,19 +51,21 @@ class Vanish(private val plugin: JavaPlugin) : CustomCommand, Listener {
     }
 
     override fun register() {
-        val commandBase = CommandAPICommand("vanish")
+        CommandAPICommand("vanish")
             .withPermission(CommandPermission.OP)
             .withRequirement { it is Player }
-
-        commandBase.copy()
-            .withArguments(LiteralArgument("silently"))
-            .executesPlayer(this::runSilently)
-            .register(plugin)
-
-        commandBase
-            .withArguments(LiteralArgument("with-effects"))
-            .executesPlayer(this::runWithEffects)
-            .register(plugin)
+            .split(
+                {
+                    it.withArguments(LiteralArgument("silently"))
+                        .executesPlayer(this::runSilently)
+                        .register(plugin)
+                },
+                {
+                    it.withArguments(LiteralArgument("with-effects"))
+                        .executesPlayer(this::runWithEffects)
+                        .register(plugin)
+                }
+            )
     }
 
     private fun runSilently(player: Player, args: CommandArguments) {

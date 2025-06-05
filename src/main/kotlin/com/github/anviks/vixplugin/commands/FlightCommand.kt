@@ -3,6 +3,7 @@ package com.github.anviks.vixplugin.commands
 import com.github.anviks.vixplugin.util.sendBulkToggleMessage
 import com.github.anviks.vixplugin.util.isAllowedToFly
 import com.github.anviks.vixplugin.util.setAllowedToFly
+import com.github.anviks.vixplugin.util.split
 import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.arguments.EntitySelectorArgument
 import dev.jorel.commandapi.executors.CommandArguments
@@ -23,17 +24,19 @@ import org.bukkit.plugin.java.JavaPlugin
 class FlightCommand(private val plugin: JavaPlugin) : CustomCommand, Listener {
 
     override fun register() {
-        val baseCommand = CommandAPICommand("fly")
+        CommandAPICommand("fly")
             .withPermission("vixplugin.commands.admin")
-
-        baseCommand.copy()
-            .withArguments(EntitySelectorArgument.ManyPlayers("targets"))
-            .executes(::run)
-            .register(plugin)
-
-        baseCommand
-            .executesPlayer(::run)
-            .register(plugin)
+            .split(
+                {
+                    it.withArguments(EntitySelectorArgument.ManyPlayers("targets"))
+                        .executes(::run)
+                        .register(plugin)
+                },
+                {
+                    it.executesPlayer(::run)
+                        .register(plugin)
+                }
+            )
     }
 
     private fun run(sender: CommandSender, arguments: CommandArguments) {

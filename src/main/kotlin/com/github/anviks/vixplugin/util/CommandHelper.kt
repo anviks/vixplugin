@@ -1,11 +1,15 @@
 package com.github.anviks.vixplugin.util
 
+import dev.jorel.commandapi.CommandAPICommand
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
 
+/**
+ * Sends a message to the sender indicating that a bulk toggle action has been performed on multiple targets.
+ */
 fun sendBulkToggleMessage(targets: Collection<Player>, sender: CommandSender, senderMsg: String, color: NamedTextColor) {
     val otherTargets = targets.toMutableList()
     if (sender is Player) otherTargets.remove(sender)
@@ -19,5 +23,11 @@ fun sendBulkToggleMessage(targets: Collection<Player>, sender: CommandSender, se
                 .color(color)
                 .build()
         )
+    }
+}
+
+fun CommandAPICommand.split(vararg subcommands: (CommandAPICommand) -> Unit) {
+    for (func in subcommands) {
+        func(this.copy())
     }
 }

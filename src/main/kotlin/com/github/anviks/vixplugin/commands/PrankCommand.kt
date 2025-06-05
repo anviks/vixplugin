@@ -3,6 +3,7 @@ package com.github.anviks.vixplugin.commands
 import com.github.anviks.vixplugin.util.face
 import com.github.anviks.vixplugin.util.setExperienceDrop
 import com.github.anviks.vixplugin.util.setItemDrops
+import com.github.anviks.vixplugin.util.split
 import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.arguments.EntitySelectorArgument
 import dev.jorel.commandapi.arguments.LiteralArgument
@@ -23,24 +24,26 @@ import kotlin.random.Random
 class PrankCommand(private val plugin: JavaPlugin) : CustomCommand {
 
     override fun register() {
-        val baseCommand = CommandAPICommand("prank")
+        CommandAPICommand("prank")
             .withPermission("vixplugin.commands.fun")
             .withArguments(EntitySelectorArgument.ManyPlayers("targets"))
-
-        baseCommand.copy()
-            .withArguments(LiteralArgument("creeper"))
-            .executes(::runCreeperPrank)
-            .register(plugin)
-
-        baseCommand.copy()
-            .withArguments(LiteralArgument("elder-guardian"))
-            .executes(::runElderGuardianPrank)
-            .register(plugin)
-
-        baseCommand
-            .withArguments(LiteralArgument("evil"))
-            .executes(::runEvilPrank)
-            .register(plugin)
+            .split(
+                {
+                    it.withArguments(LiteralArgument("creeper"))
+                        .executes(::runCreeperPrank)
+                        .register(plugin)
+                },
+                {
+                    it.withArguments(LiteralArgument("elder-guardian"))
+                        .executes(::runElderGuardianPrank)
+                        .register(plugin)
+                },
+                {
+                    it.withArguments(LiteralArgument("evil"))
+                        .executes(::runEvilPrank)
+                        .register(plugin)
+                }
+            )
     }
 
     private fun runElderGuardianPrank(sender: CommandSender, arguments: CommandArguments) {

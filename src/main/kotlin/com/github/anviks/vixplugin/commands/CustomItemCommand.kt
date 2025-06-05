@@ -5,6 +5,7 @@ import com.github.anviks.vixplugin.custom_items.CustomItem
 import com.github.anviks.vixplugin.configuration.ConfigDependent
 import com.github.anviks.vixplugin.configuration.ConfigOption
 import com.github.anviks.vixplugin.util.camelToKebab
+import com.github.anviks.vixplugin.util.split
 import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.arguments.EntitySelectorArgument
 import dev.jorel.commandapi.arguments.FloatArgument
@@ -33,22 +34,24 @@ class CustomItemCommand(private val plugin: JavaPlugin, customItems: List<Custom
     }
 
     override fun register() {
-        val baseGiveCommand = CommandAPICommand("give-custom")
+        CommandAPICommand("give-custom")
             .withPermission("vixplugin.commands.givecustom")
             .withArguments(EntitySelectorArgument.ManyPlayers("targets"))
-
-        baseGiveCommand.copy()
-            .withArguments(MultiLiteralArgument("item", *customItems.keys.minus("custom-fuse-tnt").toTypedArray()))
-            .withOptionalArguments(IntegerArgument("count", 1))
-            .executes(this::giveItem)
-            .register(plugin)
-
-        baseGiveCommand
-            .withArguments(LiteralArgument("custom-fuse-tnt"))
-            .withArguments(FloatArgument("fuse-seconds", 0f))
-            .withOptionalArguments(IntegerArgument("count", 1))
-            .executes(this::giveCustomFuseTnt)
-            .register(plugin)
+            .split(
+                {
+                    it.withArguments(MultiLiteralArgument("item", *customItems.keys.minus("custom-fuse-tnt").toTypedArray()))
+                        .withOptionalArguments(IntegerArgument("count", 1))
+                        .executes(this::giveItem)
+                        .register(plugin)
+                },
+                {
+                    it.withArguments(LiteralArgument("custom-fuse-tnt"))
+                        .withArguments(FloatArgument("fuse-seconds", 0f))
+                        .withOptionalArguments(IntegerArgument("count", 1))
+                        .executes(this::giveCustomFuseTnt)
+                        .register(plugin)
+                }
+            )
     }
 
     private fun giveItem(sender: CommandSender, arguments: CommandArguments) {
