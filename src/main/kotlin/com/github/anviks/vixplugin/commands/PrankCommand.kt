@@ -42,8 +42,25 @@ class PrankCommand(private val plugin: JavaPlugin) : CustomCommand {
                     it.withArguments(LiteralArgument("evil"))
                         .executes(::runEvilPrank)
                         .register(plugin)
+                },
+                {
+                    it.withArguments(LiteralArgument("arrow"))
+                        .executes(::runArrowHitPrank)
+                        .register(plugin)
                 }
             )
+    }
+
+    private fun runArrowHitPrank(sender: CommandSender, arguments: CommandArguments) {
+        val targets = arguments.getUnchecked<Collection<Player>>("targets")!!
+        targets.forEach {
+            val location = it.location
+            location.add(0.0, 1.0, 0.0)
+            location.pitch = 0f
+            val direction = location.direction
+            val locationBehind = location.subtract(direction)
+            it.world.spawnArrow(locationBehind, direction, 1f, 1f)
+        }
     }
 
     private fun runElderGuardianPrank(sender: CommandSender, arguments: CommandArguments) {
@@ -74,7 +91,7 @@ class PrankCommand(private val plugin: JavaPlugin) : CustomCommand {
             val amount = Random.nextInt(5, 20)
 
             repeat(amount) {
-                val wolf = target.world.spawnEntity(target.getLocation(), EntityType.WOLF) as Wolf
+                val wolf = target.world.spawnEntity(target.location, EntityType.WOLF) as Wolf
                 wolf.customName(text("Doggo"))
                 wolf.owner = target
                 Bukkit.getScheduler().runTaskLater(plugin, { -> wolf.damage(50.0, target) }, 400)
