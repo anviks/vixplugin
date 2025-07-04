@@ -1,6 +1,6 @@
 package com.github.anviks.vixplugin.commands
 
-import com.github.anviks.vixplugin.util.split
+import com.github.anviks.vixplugin.util.withOverloads
 import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.arguments.EntitySelectorArgument
 import dev.jorel.commandapi.executors.CommandArguments
@@ -12,7 +12,7 @@ class EnderChestCommand(private val plugin: JavaPlugin) : CustomCommand {
     override fun register() {
         CommandAPICommand("ender-chest")
             .withAliases("echest", "ec")
-            .split(
+            .withOverloads(
                 {
                     it.withPermission("vixplugin.commands.moderator")
                         .withArguments(EntitySelectorArgument.OnePlayer("target"))

@@ -1,6 +1,6 @@
 package com.github.anviks.vixplugin.commands
 
-import com.github.anviks.vixplugin.util.split
+import com.github.anviks.vixplugin.util.withOverloads
 import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.arguments.EntitySelectorArgument
 import dev.jorel.commandapi.executors.CommandArguments
@@ -17,7 +17,7 @@ class TeleportUpCommand(private val plugin: JavaPlugin) : CustomCommand {
     override fun register() {
         CommandAPICommand("teleport-up")
             .withAliases("tp-up")
-            .split(
+            .withOverloads(
                 {
                     it.withPermission("vixplugin.commands.utility")
                         .executesPlayer(this::run)

@@ -2,7 +2,7 @@ package com.github.anviks.vixplugin.commands
 
 import com.github.anviks.vixplugin.util.isVanished
 import com.github.anviks.vixplugin.util.setVanished
-import com.github.anviks.vixplugin.util.split
+import com.github.anviks.vixplugin.util.withOverloads
 import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.CommandPermission
 import dev.jorel.commandapi.arguments.LiteralArgument
@@ -54,7 +54,7 @@ class Vanish(private val plugin: JavaPlugin) : CustomCommand, Listener {
         CommandAPICommand("vanish")
             .withPermission(CommandPermission.OP)
             .withRequirement { it is Player }
-            .split(
+            .withOverloads(
                 {
                     it.withArguments(LiteralArgument("silently"))
                         .executesPlayer(this::runSilently)

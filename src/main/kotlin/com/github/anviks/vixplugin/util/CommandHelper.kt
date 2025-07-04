@@ -26,8 +26,14 @@ fun sendBulkToggleMessage(targets: Collection<Player>, sender: CommandSender, se
     }
 }
 
-fun CommandAPICommand.split(vararg subcommands: (CommandAPICommand) -> Unit) {
-    for (func in subcommands) {
+/**
+ * Applies multiple "overloads" to a CommandAPICommand instance.
+ * This allows to define different behaviours, executors, or arguments for the same command name.
+ * This differs from CommandAPI's subcommands in that subcommands require an additional literal string argument
+ * to be specified (the subcommand's name), while overloads do not.
+ */
+fun CommandAPICommand.withOverloads(vararg overloads: (CommandAPICommand) -> Unit) {
+    for (func in overloads) {
         func(this.copy())
     }
 }

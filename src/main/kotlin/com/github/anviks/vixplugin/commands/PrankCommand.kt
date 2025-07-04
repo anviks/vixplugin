@@ -3,7 +3,7 @@ package com.github.anviks.vixplugin.commands
 import com.github.anviks.vixplugin.util.face
 import com.github.anviks.vixplugin.util.setExperienceDrop
 import com.github.anviks.vixplugin.util.setItemDrops
-import com.github.anviks.vixplugin.util.split
+import com.github.anviks.vixplugin.util.withOverloads
 import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.arguments.EntitySelectorArgument
 import dev.jorel.commandapi.arguments.LiteralArgument
@@ -27,7 +27,7 @@ class PrankCommand(private val plugin: JavaPlugin) : CustomCommand {
         CommandAPICommand("prank")
             .withPermission("vixplugin.commands.fun")
             .withArguments(EntitySelectorArgument.ManyPlayers("targets"))
-            .split(
+            .withOverloads(
                 {
                     it.withArguments(LiteralArgument("creeper"))
                         .executes(::runCreeperPrank)

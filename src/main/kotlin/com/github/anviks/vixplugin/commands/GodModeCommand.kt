@@ -1,7 +1,7 @@
 package com.github.anviks.vixplugin.commands
 
 import com.github.anviks.vixplugin.util.sendBulkToggleMessage
-import com.github.anviks.vixplugin.util.split
+import com.github.anviks.vixplugin.util.withOverloads
 import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.arguments.EntitySelectorArgument
 import dev.jorel.commandapi.executors.CommandArguments
@@ -18,7 +18,7 @@ class GodModeCommand(private val plugin: JavaPlugin) : CustomCommand {
         CommandAPICommand("god-mode")
             .withAliases("god")
             .withPermission("vixplugin.commands.admin")
-            .split(
+            .withOverloads(
                 {
                     it.withArguments(EntitySelectorArgument.ManyPlayers("targets"))
                         .executes(::run)

@@ -5,7 +5,7 @@ import com.github.anviks.vixplugin.custom_items.CustomItem
 import com.github.anviks.vixplugin.configuration.ConfigDependent
 import com.github.anviks.vixplugin.configuration.ConfigOption
 import com.github.anviks.vixplugin.util.camelToKebab
-import com.github.anviks.vixplugin.util.split
+import com.github.anviks.vixplugin.util.withOverloads
 import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.arguments.EntitySelectorArgument
 import dev.jorel.commandapi.arguments.FloatArgument
@@ -37,7 +37,7 @@ class CustomItemCommand(private val plugin: JavaPlugin, customItems: List<Custom
         CommandAPICommand("give-custom")
             .withPermission("vixplugin.commands.givecustom")
             .withArguments(EntitySelectorArgument.ManyPlayers("targets"))
-            .split(
+            .withOverloads(
                 {
                     it.withArguments(MultiLiteralArgument("item", *customItems.keys.minus("custom-fuse-tnt").toTypedArray()))
                         .withOptionalArguments(IntegerArgument("count", 1))
