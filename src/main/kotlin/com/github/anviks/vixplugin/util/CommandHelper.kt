@@ -32,8 +32,10 @@ fun sendBulkToggleMessage(targets: Collection<Player>, sender: CommandSender, se
  * This differs from CommandAPI's subcommands in that subcommands require an additional literal string argument
  * to be specified (the subcommand's name), while overloads do not.
  */
-fun CommandAPICommand.withOverloads(vararg overloads: (CommandAPICommand) -> Unit) {
+fun CommandAPICommand.withOverloads(vararg overloads: (CommandAPICommand) -> CommandAPICommand): List<CommandAPICommand> {
+    val commands = mutableListOf<CommandAPICommand>()
     for (func in overloads) {
-        func(this.copy())
+        commands.add(func(this.copy()))
     }
+    return commands
 }

@@ -8,18 +8,18 @@ import dev.jorel.commandapi.executors.CommandArguments
 import org.bukkit.command.CommandSender
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
-import org.bukkit.plugin.java.JavaPlugin
 
-class EnchantAnythingCommand(private val plugin: JavaPlugin) : CustomCommand {
+class EnchantAnythingCommand : CustomCommand {
 
-    override fun register() {
-        CommandAPICommand("enchantanything")
-            .withPermission("vixplugin.commands.admin")
-            .withArguments(ManyPlayers("players"))
-            .withArguments(EnchantmentArgument("enchantment"))
-            .withArguments(IntegerArgument("level", 0, 255))
-            .executes(this::run)
-            .register(plugin)
+    override fun getCommands(): List<CommandAPICommand> {
+        return listOf(
+            CommandAPICommand("enchantanything")
+                .withPermission("vixplugin.commands.admin")
+                .withArguments(ManyPlayers("players"))
+                .withArguments(EnchantmentArgument("enchantment"))
+                .withArguments(IntegerArgument("level", 0, 255))
+                .executes(this::run)
+        )
     }
 
     private fun run(sender: CommandSender, args: CommandArguments) {

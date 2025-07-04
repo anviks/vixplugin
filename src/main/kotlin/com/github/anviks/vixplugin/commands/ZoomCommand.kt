@@ -2,24 +2,25 @@ package com.github.anviks.vixplugin.commands
 
 import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.executors.CommandArguments
-import net.kyori.adventure.text.Component.text
-import net.kyori.adventure.text.format.NamedTextColor.RED
+import net.kyori.adventure.text.Component.*
+import net.kyori.adventure.text.format.NamedTextColor.*
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.Sound
 import org.bukkit.entity.Player
-import org.bukkit.plugin.java.JavaPlugin
-import java.util.UUID
+import org.bukkit.plugin.Plugin
+import java.util.*
 
-class ZoomCommand(private val plugin: JavaPlugin) : CustomCommand {
+class ZoomCommand(private val plugin: Plugin) : CustomCommand {
 
     private val runningCommands = mutableSetOf<UUID>()
 
-    override fun register() {
-        CommandAPICommand("zoom")
-            .withPermission("vixplugin.commands.fun")
-            .executesPlayer(this::run)
-            .register(plugin)
+    override fun getCommands(): List<CommandAPICommand> {
+        return listOf(
+            CommandAPICommand("zoom")
+                .withPermission("vixplugin.commands.fun")
+                .executesPlayer(this::run)
+        )
     }
 
     private fun run(sender: Player, args: CommandArguments) {

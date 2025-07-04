@@ -5,24 +5,21 @@ import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.arguments.EntitySelectorArgument
 import dev.jorel.commandapi.executors.CommandArguments
 import org.bukkit.entity.Player
-import org.bukkit.plugin.java.JavaPlugin
 
-class EnderChestCommand(private val plugin: JavaPlugin) : CustomCommand {
+class EnderChestCommand : CustomCommand {
 
-    override fun register() {
-        CommandAPICommand("ender-chest")
+    override fun getCommands(): List<CommandAPICommand> {
+        return CommandAPICommand("ender-chest")
             .withAliases("echest", "ec")
             .withOverloads(
                 {
                     it.withPermission("vixplugin.commands.moderator")
                         .withArguments(EntitySelectorArgument.OnePlayer("target"))
                         .executesPlayer(this::run)
-                        .register(plugin)
                 },
                 {
                     it.withPermission("vixplugin.commands.utility")
                         .executesPlayer(this::run)
-                        .register(plugin)
                 }
             )
     }

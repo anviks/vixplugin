@@ -10,24 +10,21 @@ import org.bukkit.Location
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
-import org.bukkit.plugin.java.JavaPlugin
 
-class TeleportUpCommand(private val plugin: JavaPlugin) : CustomCommand {
+class TeleportUpCommand : CustomCommand {
 
-    override fun register() {
-        CommandAPICommand("teleport-up")
+    override fun getCommands(): List<CommandAPICommand> {
+        return CommandAPICommand("teleport-up")
             .withAliases("tp-up")
             .withOverloads(
                 {
                     it.withPermission("vixplugin.commands.utility")
                         .executesPlayer(this::run)
-                        .register(plugin)
                 },
                 {
                     it.withPermission("vixplugin.commands.fun")
                         .withArguments(EntitySelectorArgument.ManyEntities("targets"))
                         .executes(this::run)
-                        .register(plugin)
                 }
             )
     }

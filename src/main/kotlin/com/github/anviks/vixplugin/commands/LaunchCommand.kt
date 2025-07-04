@@ -7,17 +7,17 @@ import org.bukkit.Sound
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
-import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.util.Vector
 
-class LaunchCommand(private val plugin: JavaPlugin) : CustomCommand {
+class LaunchCommand : CustomCommand {
 
-    override fun register() {
-        CommandAPICommand("launch")
-            .withPermission("vixplugin.commands.fun")
-            .withArguments(EntitySelectorArgument.ManyEntities("targets"))
-            .executes(this::run)
-            .register(plugin)
+    override fun getCommands(): List<CommandAPICommand> {
+        return listOf(
+            CommandAPICommand("launch")
+                .withPermission("vixplugin.commands.fun")
+                .withArguments(EntitySelectorArgument.ManyEntities("targets"))
+                .executes(this::run)
+        )
     }
 
     private fun run(sender: CommandSender, arguments: CommandArguments) {

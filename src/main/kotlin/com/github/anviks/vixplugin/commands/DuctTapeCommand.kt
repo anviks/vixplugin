@@ -18,13 +18,13 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.plugin.java.JavaPlugin
-import java.util.UUID
+import org.bukkit.plugin.Plugin
+import java.util.*
 import kotlin.random.Random
 
 
 class DuctTapeCommand(
-    private val plugin: JavaPlugin,
+    private val plugin: Plugin,
     private val pluginState: PluginState,
 ) : CustomCommand, Listener {
 
@@ -35,14 +35,15 @@ class DuctTapeCommand(
         }
     }
 
-    override fun register() {
-        CommandAPICommand("duct-tape")
-            .withAliases("tape")
-            .withPermission("vixplugin.commands.moderator")
-            .withArguments(EntitySelectorArgument.ManyPlayers("targets"))
-            .withArguments(TimeArgument("duration"))
-            .executes(this::run)
-            .register(this.plugin)
+    override fun getCommands(): List<CommandAPICommand> {
+        return listOf(
+            CommandAPICommand("duct-tape")
+                .withAliases("tape")
+                .withPermission("vixplugin.commands.moderator")
+                .withArguments(EntitySelectorArgument.ManyPlayers("targets"))
+                .withArguments(TimeArgument("duration"))
+                .executes(this::run)
+        )
     }
 
     fun run(sender: CommandSender, arguments: CommandArguments) {

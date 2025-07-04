@@ -8,7 +8,7 @@ import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.arguments.EntitySelectorArgument
 import dev.jorel.commandapi.arguments.LiteralArgument
 import dev.jorel.commandapi.executors.CommandArguments
-import net.kyori.adventure.text.Component.text
+import net.kyori.adventure.text.Component.*
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Sound
@@ -17,36 +17,32 @@ import org.bukkit.entity.Creeper
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.entity.Wolf
-import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.plugin.Plugin
 import kotlin.random.Random
 
 
-class PrankCommand(private val plugin: JavaPlugin) : CustomCommand {
+class PrankCommand(private val plugin: Plugin) : CustomCommand {
 
-    override fun register() {
-        CommandAPICommand("prank")
+    override fun getCommands(): List<CommandAPICommand> {
+        return CommandAPICommand("prank")
             .withPermission("vixplugin.commands.fun")
             .withArguments(EntitySelectorArgument.ManyPlayers("targets"))
             .withOverloads(
                 {
                     it.withArguments(LiteralArgument("creeper"))
                         .executes(::runCreeperPrank)
-                        .register(plugin)
                 },
                 {
                     it.withArguments(LiteralArgument("elder-guardian"))
                         .executes(::runElderGuardianPrank)
-                        .register(plugin)
                 },
                 {
                     it.withArguments(LiteralArgument("evil"))
                         .executes(::runEvilPrank)
-                        .register(plugin)
                 },
                 {
                     it.withArguments(LiteralArgument("arrow"))
                         .executes(::runArrowHitPrank)
-                        .register(plugin)
                 }
             )
     }

@@ -17,23 +17,23 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.ProjectileHitEvent
-import org.bukkit.plugin.java.JavaPlugin
-import java.util.UUID
+import java.util.*
 import kotlin.math.floor
 import kotlin.random.Random
 
 
-class BecomeEndermanCommand(private val plugin: JavaPlugin) : CustomCommand, Listener {
+class BecomeEndermanCommand : CustomCommand, Listener {
 
     private val endermenEntities = mutableSetOf<UUID>()
 
-    override fun register() {
-        CommandAPICommand("become-enderman")
-            .withAliases("enderman")
-            .withPermission("vixplugin.commands.fun")
-            .executesPlayer(this::run)
-            .executesProxy(ProxyCommandExecutor(this::runProxy))
-            .register(plugin)
+    override fun getCommands(): List<CommandAPICommand> {
+        return listOf(
+            CommandAPICommand("become-enderman")
+                .withAliases("enderman")
+                .withPermission("vixplugin.commands.fun")
+                .executesPlayer(this::run)
+                .executesProxy(ProxyCommandExecutor(this::runProxy))
+        )
     }
 
     private fun run(sender: Player, args: CommandArguments) {

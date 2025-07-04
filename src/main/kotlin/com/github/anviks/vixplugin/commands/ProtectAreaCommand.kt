@@ -5,50 +5,37 @@ import com.github.anviks.vixplugin.PluginState
 import com.github.anviks.vixplugin.SerializableLocation
 import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.CommandPermission
-import dev.jorel.commandapi.arguments.ArgumentSuggestions
-import dev.jorel.commandapi.arguments.GreedyStringArgument
-import dev.jorel.commandapi.arguments.LiteralArgument
-import dev.jorel.commandapi.arguments.LocationArgument
-import dev.jorel.commandapi.arguments.LocationType
+import dev.jorel.commandapi.arguments.*
 import dev.jorel.commandapi.executors.CommandArguments
-import net.kyori.adventure.text.Component.text
+import net.kyori.adventure.text.Component.*
 import net.kyori.adventure.text.format.NamedTextColor.*
 import org.bukkit.Location
 import org.bukkit.command.CommandSender
 import org.bukkit.event.Cancellable
 import org.bukkit.event.EventHandler
-import org.bukkit.event.block.BlockBreakEvent
-import org.bukkit.event.block.BlockDamageEvent
-import org.bukkit.event.block.BlockEvent
-import org.bukkit.event.block.BlockExplodeEvent
-import org.bukkit.event.block.BlockMultiPlaceEvent
-import org.bukkit.event.block.BlockPlaceEvent
+import org.bukkit.event.block.*
 import org.bukkit.event.entity.EntityExplodeEvent
-import org.bukkit.plugin.java.JavaPlugin
 
-class ProtectAreaCommand(
-    private val plugin: JavaPlugin,
-    private val pluginState: PluginState,
-) : CustomCommand {
+class ProtectAreaCommand(private val pluginState: PluginState) : CustomCommand {
 
-    override fun register() {
-        CommandAPICommand("protect-area")
+    override fun getCommands(): List<CommandAPICommand> {
+        val protectCommand = CommandAPICommand("protect-area")
             .withPermission("vixplugin.commands.utility")
             .withArguments(LocationArgument("start", LocationType.BLOCK_POSITION))
             .withArguments(LocationArgument("end", LocationType.BLOCK_POSITION))
             .withArguments(LiteralArgument("as"))
             .withArguments(GreedyStringArgument("area-name"))
             .executes(this::protectArea)
-            .register(plugin)
 
-        CommandAPICommand("unprotect-area")
+        val unprotectCommand = CommandAPICommand("unprotect-area")
             .withPermission(CommandPermission.OP)
             .withArguments(
                 GreedyStringArgument("area-name")
                     .replaceSuggestions(ArgumentSuggestions.strings { pluginState.protectedAreas.keys.toTypedArray() })
             )
             .executes(this::unprotectArea)
-            .register(plugin)
+
+        return listOf(protectCommand, unprotectCommand)
     }
 
     private fun protectArea(sender: CommandSender, arguments: CommandArguments) {

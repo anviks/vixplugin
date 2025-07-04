@@ -1,27 +1,22 @@
 package com.github.anviks.vixplugin.commands
 
-import com.github.anviks.vixplugin.custom_items.CustomFuseTNT
-import com.github.anviks.vixplugin.custom_items.CustomItem
 import com.github.anviks.vixplugin.configuration.ConfigDependent
 import com.github.anviks.vixplugin.configuration.ConfigOption
+import com.github.anviks.vixplugin.custom_items.CustomFuseTNT
+import com.github.anviks.vixplugin.custom_items.CustomItem
 import com.github.anviks.vixplugin.util.camelToKebab
 import com.github.anviks.vixplugin.util.withOverloads
 import dev.jorel.commandapi.CommandAPICommand
-import dev.jorel.commandapi.arguments.EntitySelectorArgument
-import dev.jorel.commandapi.arguments.FloatArgument
-import dev.jorel.commandapi.arguments.IntegerArgument
-import dev.jorel.commandapi.arguments.LiteralArgument
-import dev.jorel.commandapi.arguments.MultiLiteralArgument
+import dev.jorel.commandapi.arguments.*
 import dev.jorel.commandapi.executors.CommandArguments
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import org.bukkit.plugin.java.JavaPlugin
 import kotlin.math.roundToInt
 
 
 @ConfigDependent(ConfigOption.CUSTOM_ITEMS_ENABLED)
-class CustomItemCommand(private val plugin: JavaPlugin, customItems: List<CustomItem>) : CustomCommand {
+class CustomItemCommand(customItems: List<CustomItem>) : CustomCommand {
 
     private val customItems: MutableMap<String, CustomItem> = HashMap()
 
@@ -33,8 +28,8 @@ class CustomItemCommand(private val plugin: JavaPlugin, customItems: List<Custom
         }
     }
 
-    override fun register() {
-        CommandAPICommand("give-custom")
+    override fun getCommands(): List<CommandAPICommand> {
+        return CommandAPICommand("give-custom")
             .withPermission("vixplugin.commands.givecustom")
             .withArguments(EntitySelectorArgument.ManyPlayers("targets"))
             .withOverloads(
@@ -42,14 +37,12 @@ class CustomItemCommand(private val plugin: JavaPlugin, customItems: List<Custom
                     it.withArguments(MultiLiteralArgument("item", *customItems.keys.minus("custom-fuse-tnt").toTypedArray()))
                         .withOptionalArguments(IntegerArgument("count", 1))
                         .executes(this::giveItem)
-                        .register(plugin)
                 },
                 {
                     it.withArguments(LiteralArgument("custom-fuse-tnt"))
                         .withArguments(FloatArgument("fuse-seconds", 0f))
                         .withOptionalArguments(IntegerArgument("count", 1))
                         .executes(this::giveCustomFuseTnt)
-                        .register(plugin)
                 }
             )
     }

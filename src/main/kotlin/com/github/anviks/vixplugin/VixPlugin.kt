@@ -1,7 +1,6 @@
 package com.github.anviks.vixplugin
 
 import com.github.anviks.vixplugin.commands.CustomCommand
-import com.github.anviks.vixplugin.configuration.ConfigOption
 import com.github.anviks.vixplugin.custom_items.CustomCraftableItem
 import com.github.anviks.vixplugin.custom_items.CustomItem
 import com.github.anviks.vixplugin.configuration.ConfigDependent
@@ -9,6 +8,7 @@ import com.github.anviks.vixplugin.configuration.ConfigManager
 import com.github.anviks.vixplugin.util.PDCManager
 import com.jeff_media.armorequipevent.ArmorEquipEvent
 import com.jeff_media.customblockdata.CustomBlockData
+import dev.jorel.commandapi.CommandAPI
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
@@ -34,6 +34,8 @@ class VixPlugin : JavaPlugin() {
     private val pluginData = loadPluginState()
 
     override fun onEnable() {
+        CommandAPI.onEnable()
+
         saveDefaultConfig()
         reloadConfig()
 
@@ -44,7 +46,6 @@ class VixPlugin : JavaPlugin() {
         val configManager = ConfigManager(this)
 
         dependencyRegistry.register<Plugin> { this }
-        dependencyRegistry.register<JavaPlugin> { this }  // CommandAPICommand requires JavaPlugin
         dependencyRegistry.register<PluginState> { pluginData }
         dependencyRegistry.register { configManager }
 
@@ -56,7 +57,7 @@ class VixPlugin : JavaPlugin() {
         val customListeners = createChildrenOf<Listener>()
         val craftableItems = createChildrenOf<CustomCraftableItem>()
 
-        customCommands.forEach { it.register() }
+        customCommands.forEach { it.getCommands().forEach { it.register(this) } }
         customListeners.forEach { server.pluginManager.registerEvents(it, this) }
         craftableItems.forEach { Bukkit.addRecipe(it.getRecipe()) }
 

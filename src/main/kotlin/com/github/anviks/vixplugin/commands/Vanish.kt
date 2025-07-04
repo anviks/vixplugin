@@ -7,10 +7,10 @@ import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.CommandPermission
 import dev.jorel.commandapi.arguments.LiteralArgument
 import dev.jorel.commandapi.executors.CommandArguments
-import net.kyori.adventure.text.Component.text
+import net.kyori.adventure.text.Component.*
 import net.kyori.adventure.text.format.NamedTextColor
-import net.kyori.adventure.text.format.NamedTextColor.RED
-import net.kyori.adventure.text.format.TextDecoration.BOLD
+import net.kyori.adventure.text.format.NamedTextColor.*
+import net.kyori.adventure.text.format.TextDecoration.*
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoRemovePacket
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket
 import org.bukkit.Bukkit
@@ -22,13 +22,13 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
-import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.plugin.Plugin
 import org.bukkit.scheduler.BukkitRunnable
 import java.util.*
 import kotlin.math.ceil
 import kotlin.math.max
 
-class Vanish(private val plugin: JavaPlugin) : CustomCommand, Listener {
+class Vanish(private val plugin: Plugin) : CustomCommand, Listener {
 
     private val vanishingPlayers = mutableSetOf<UUID>()
     private val alreadyVanishingMessage =
@@ -50,20 +50,18 @@ class Vanish(private val plugin: JavaPlugin) : CustomCommand, Listener {
         }
     }
 
-    override fun register() {
-        CommandAPICommand("vanish")
+    override fun getCommands(): List<CommandAPICommand> {
+        return CommandAPICommand("vanish")
             .withPermission(CommandPermission.OP)
             .withRequirement { it is Player }
             .withOverloads(
                 {
                     it.withArguments(LiteralArgument("silently"))
                         .executesPlayer(this::runSilently)
-                        .register(plugin)
                 },
                 {
                     it.withArguments(LiteralArgument("with-effects"))
                         .executesPlayer(this::runWithEffects)
-                        .register(plugin)
                 }
             )
     }

@@ -1,7 +1,7 @@
 package com.github.anviks.vixplugin.commands
 
-import com.github.anviks.vixplugin.util.sendBulkToggleMessage
 import com.github.anviks.vixplugin.util.isAllowedToFly
+import com.github.anviks.vixplugin.util.sendBulkToggleMessage
 import com.github.anviks.vixplugin.util.setAllowedToFly
 import com.github.anviks.vixplugin.util.withOverloads
 import dev.jorel.commandapi.CommandAPICommand
@@ -19,22 +19,20 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerGameModeChangeEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerRespawnEvent
-import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.plugin.Plugin
 
-class FlightCommand(private val plugin: JavaPlugin) : CustomCommand, Listener {
+class FlightCommand(private val plugin: Plugin) : CustomCommand, Listener {
 
-    override fun register() {
-        CommandAPICommand("fly")
+    override fun getCommands(): List<CommandAPICommand> {
+        return CommandAPICommand("fly")
             .withPermission("vixplugin.commands.admin")
             .withOverloads(
                 {
                     it.withArguments(EntitySelectorArgument.ManyPlayers("targets"))
                         .executes(::run)
-                        .register(plugin)
                 },
                 {
                     it.executesPlayer(::run)
-                        .register(plugin)
                 }
             )
     }

@@ -4,17 +4,17 @@ import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.arguments.EntitySelectorArgument
 import dev.jorel.commandapi.executors.CommandArguments
 import org.bukkit.entity.Player
-import org.bukkit.plugin.java.JavaPlugin
 
-class InventoryCommand(private val plugin: JavaPlugin) : CustomCommand {
+class InventoryCommand : CustomCommand {
 
-    override fun register() {
-        CommandAPICommand("inventory")
-            .withAliases("inv")
-            .withPermission("vixplugin.commands.moderator")
-            .withArguments(EntitySelectorArgument.OnePlayer("target"))
-            .executesPlayer(this::run)
-            .register(plugin)
+    override fun getCommands(): List<CommandAPICommand> {
+        return listOf(
+            CommandAPICommand("inventory")
+                .withAliases("inv")
+                .withPermission("vixplugin.commands.moderator")
+                .withArguments(EntitySelectorArgument.OnePlayer("target"))
+                .executesPlayer(this::run)
+        )
     }
 
     private fun run(sender: Player, arguments: CommandArguments) {

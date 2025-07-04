@@ -18,17 +18,18 @@ import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.player.PlayerRespawnEvent
 import org.bukkit.event.player.PlayerTeleportEvent
-import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause.*
-import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause.CHORUS_FRUIT
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause.ENDER_PEARL
+import org.bukkit.plugin.Plugin
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.scheduler.BukkitTask
-import java.util.UUID
+import java.util.*
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
 
 class FreezeCommand(
-    private val plugin: JavaPlugin,
+    private val plugin: Plugin,
     private val pluginState: PluginState,
 ) : CustomCommand, Listener {
 
@@ -41,19 +42,19 @@ class FreezeCommand(
         }
     }
 
-    override fun register() {
-        CommandAPICommand("freeze")
+    override fun getCommands(): List<CommandAPICommand> {
+        val freezeCommand = CommandAPICommand("freeze")
             .withPermission("vixplugin.commands.moderator")
             .withArguments(EntitySelectorArgument.ManyPlayers("targets"))
             .withArguments(TimeArgument("duration"))
             .executes(::freezePlayer)
-            .register(plugin)
 
-        CommandAPICommand("unfreeze")
+        val unfreezeCommand = CommandAPICommand("unfreeze")
             .withPermission("vixplugin.commands.moderator")
             .withArguments(EntitySelectorArgument.ManyPlayers("targets"))
             .executes(::unfreezePlayer)
-            .register(plugin)
+
+        return listOf(freezeCommand, unfreezeCommand)
     }
 
     private fun freezePlayer(sender: CommandSender, arguments: CommandArguments) {

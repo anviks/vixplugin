@@ -4,18 +4,15 @@ import com.github.anviks.vixplugin.configuration.ConfigManager
 import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.executors.CommandArguments
 import org.bukkit.command.CommandSender
-import org.bukkit.plugin.java.JavaPlugin
 
-class ReloadConfigCommand(
-    private val plugin: JavaPlugin,
-    private val configManager: ConfigManager,
-) : CustomCommand {
+class ReloadConfigCommand(private val configManager: ConfigManager) : CustomCommand {
 
-    override fun register() {
-        CommandAPICommand("reloadconfig")
-            .withPermission("vixplugin.reloadconfig")
-            .executes(this::run)
-            .register(plugin)
+    override fun getCommands(): List<CommandAPICommand> {
+        return listOf(
+            CommandAPICommand("reloadconfig")
+                .withPermission("vixplugin.reloadconfig")
+                .executes(this::run)
+        )
     }
 
     private fun run(sender: CommandSender, arguments: CommandArguments) {
