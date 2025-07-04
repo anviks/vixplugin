@@ -8,7 +8,7 @@ import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.arguments.EntitySelectorArgument
 import dev.jorel.commandapi.arguments.LiteralArgument
 import dev.jorel.commandapi.executors.CommandArguments
-import net.kyori.adventure.text.Component.*
+import net.kyori.adventure.text.Component.text
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Sound
@@ -54,8 +54,7 @@ class PrankCommand(private val plugin: JavaPlugin) : CustomCommand {
     private fun runArrowHitPrank(sender: CommandSender, arguments: CommandArguments) {
         val targets = arguments.getUnchecked<Collection<Player>>("targets")!!
         targets.forEach {
-            val location = it.location
-            location.add(0.0, 1.0, 0.0)
+            val location = it.eyeLocation
             location.pitch = 0f
             val direction = location.direction
             val locationBehind = location.subtract(direction)
